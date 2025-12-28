@@ -71,12 +71,12 @@ static void about_draw_callback(Canvas* canvas, void* context) {
 
     // Animated TPP decoration (centered)
     canvas_set_font(canvas, FontKeyboard);
-    if(g_state.frame % 8 < 4) {
+    if(g_state.frame % 20 < 15) {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>=================<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "======================");
     } else {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>======[TPP]======<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "============ Leeroy ==");
     }
 
     // Draw credits region (clip area)
@@ -111,15 +111,15 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     // Redraw header over mask
     canvas_set_color(canvas, ColorBlack);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, x_off, 10, "ProtoPirate v" FAP_VERSION);
+    canvas_draw_str(canvas, x_off, 10, "Carzzz v" FAP_VERSION);
 
     canvas_set_font(canvas, FontKeyboard);
-    if(g_state.frame % 8 < 4) {
+    if(g_state.frame % 20 < 15) {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>=================<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "======================");
     } else {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>======[TPP]======<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "============ Leeroy ==");
     }
 
     // Redraw static in header area
@@ -129,8 +129,8 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     }
 
     // Footer: The Pirate's Plunder Discord
-    canvas_set_font(canvas, FontKeyboard);
-    canvas_draw_str_aligned(canvas, 127, 62, AlignRight, AlignBottom, "discord.gg/thepirates");
+    //canvas_set_font(canvas, FontKeyboard);
+    //canvas_draw_str_aligned(canvas, 127, 62, AlignRight, AlignBottom, "discord.gg/thepirates");
 
     // Rare subtle glitch bar
     if(rand() % 30 == 0) {
