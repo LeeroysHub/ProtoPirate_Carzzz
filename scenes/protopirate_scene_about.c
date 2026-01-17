@@ -50,11 +50,11 @@ typedef struct {
 
 static GlitchState g_state = {0};
 
-static void draw_noise_pixels(Canvas* canvas, uint8_t density) {
+/* static void draw_noise_pixels(Canvas* canvas, uint8_t density) {
     for(uint8_t i = 0; i < density; i++) {
         canvas_draw_dot(canvas, rand() % 128, rand() % 64);
     }
-}
+} */
 
 static void about_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
@@ -64,10 +64,10 @@ static void about_draw_callback(Canvas* canvas, void* context) {
 
     // Light background static
     canvas_set_color(canvas, ColorBlack);
-    draw_noise_pixels(canvas, 6 + (rand() % 6));
+    //draw_noise_pixels(canvas, 6 + (rand() % 6));
 
     // Occasional subtle x-jitter
-    int8_t x_off = (rand() % 15 == 0) ? ((rand() % 4) - 2) : 0;
+    //int8_t x_off = (rand() % 15 == 0) ? ((rand() % 4) - 2) : 0;
 
     // Animated TPP decoration (centered)
     canvas_set_font(canvas, FontKeyboard);
@@ -99,7 +99,7 @@ static void about_draw_callback(Canvas* canvas, void* context) {
 
         // Only draw if in visible region
         if(y >= CREDITS_START_Y - CREDIT_LINE_HEIGHT && y <= CREDITS_END_Y) {
-            canvas_draw_str(canvas, x_off, y, credits[i]);
+            canvas_draw_str(canvas, 0, y, credits[i]);
         }
     }
 
@@ -111,7 +111,7 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     // Redraw header over mask
     canvas_set_color(canvas, ColorBlack);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, x_off, 10, "Carzzz v" FAP_VERSION);
+    canvas_draw_str(canvas, 0, 10, "Carzzz v" FAP_VERSION);
 
     canvas_set_font(canvas, FontKeyboard);
     if(g_state.frame % 20 < 15) {
