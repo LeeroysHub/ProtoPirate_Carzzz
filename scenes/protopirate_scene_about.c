@@ -133,11 +133,11 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     //canvas_draw_str_aligned(canvas, 127, 62, AlignRight, AlignBottom, "discord.gg/thepirates");
 
     // Rare subtle glitch bar
-    if(rand() % 30 == 0) {
-        canvas_set_color(canvas, ColorXOR);
-        uint8_t y = rand() % 60;
-        canvas_draw_box(canvas, 0, y, 128, 2);
-    }
+    //if(rand() % 30 == 0) {
+    //    canvas_set_color(canvas, ColorXOR);
+    //    uint8_t y = rand() % 60;
+    //    canvas_draw_box(canvas, 0, y, 128, 2);
+    //}
 }
 
 static bool about_input_callback(InputEvent* event, void* context) {
