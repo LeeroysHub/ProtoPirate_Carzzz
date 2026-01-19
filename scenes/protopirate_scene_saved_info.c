@@ -147,11 +147,6 @@ void protopirate_scene_saved_info_on_enter(void* context) {
     }
 
     flipper_format_rewind(ff);
-    if(flipper_format_read_uint32(ff, "BSMagic", &temp_data, 1)) {
-        furi_string_cat_printf(info_str, "BS Magic: %02X\n", (uint8_t)temp_data);
-    }
-
-    flipper_format_rewind(ff);
     if(flipper_format_read_uint32(ff, "CRC", &temp_data, 1)) {
         furi_string_cat_printf(info_str, "CRC: %02X\n", (uint8_t)temp_data);
     }
