@@ -10,14 +10,15 @@
 
 static const char* credits[] = {
     "",
-    "-=> App Development by",
+    "-=> App Development by <=-",
     "RocketGod",
     "MMX",
     "Leeroy",
     "gullradriel",
     "Skorp's Weather App",
     "Vadim's Radio Driver",
-    "-=> Protocol Magic by",
+    "",
+    "-=> Protocol Magic by <=-",
     "L0rdDiakon",
     "Leeroy",
     "Li0ard",
@@ -29,7 +30,8 @@ static const char* credits[] = {
     "Slackware",
     "Trikk",
     "Wootini",
-    "-=> RE Support",
+    "",
+    "-=> RE Support <=-",
     "DoobTheGoober",
     "Li0ard",
     "MMX",
@@ -98,7 +100,7 @@ static void about_draw_callback(Canvas* canvas, void* context) {
         }
 
         // Only draw if in visible region
-        if(y >= CREDITS_START_Y - CREDIT_LINE_HEIGHT && y <= CREDITS_END_Y) {
+        if(y >= CREDITS_START_Y - CREDIT_LINE_HEIGHT) {
             canvas_draw_str(canvas, 0, y, credits[i]);
         }
     }
@@ -106,7 +108,7 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     // Draw fade/mask bars at top and bottom of credits area
     canvas_set_color(canvas, ColorWhite);
     canvas_draw_box(canvas, 0, 0, 128, CREDITS_START_Y - CREDIT_LINE_HEIGHT);
-    canvas_draw_box(canvas, 0, CREDITS_END_Y, 128, 14);
+    //canvas_draw_box(canvas, 0, CREDITS_END_Y, 128, 14);
 
     // Redraw header over mask
     canvas_set_color(canvas, ColorBlack);
