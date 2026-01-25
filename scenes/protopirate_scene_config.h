@@ -19,3 +19,4 @@ ADD_SCENE(protopirate, emulate, Emulate)
 #ifdef ENABLE_TIMING_TUNER_SCENE
 ADD_SCENE(protopirate, timing_tuner, TimingTuner)
 #endif
+ADD_SCENE(protopirate, set_type, SetType)
