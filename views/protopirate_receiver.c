@@ -41,7 +41,7 @@ typedef struct {
     ProtoPirateLock lock;
     uint8_t lock_count;
     uint8_t animation_frame;
-    bool dolphin_view;
+    bool radar_view;
     bool sub_decode_mode;
 } ProtoPirateReceiverModel;
 
@@ -270,7 +270,7 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
         }
     } else {
         //Are we in Radar View or FLipper View Mode?
-        if(!model->dolphin_view) {
+        if(model->radar_view) {
             // Cool animated radar with expanding dots
             int center_x = 64;
             int center_y = 22;
@@ -316,10 +316,10 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             }
 
             // Static guide circles (very faint)
-            for(int angle = 0; angle < 360; angle += 45) {
+            /* for(int angle = 0; angle < 360; angle += 45) {
                 float rad = angle * 3.14159f / 180.0f;
                 canvas_draw_dot(canvas, center_x + 15 * cosf(rad), center_y + 15 * sinf(rad));
-            }
+            }*/
 
             // Rotating sweep line with glow effect
             float sweep_angle = (animation_frame * 3.75f) * 3.14159f / 180.0f;
@@ -346,7 +346,7 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
                 center_y + 20 * sinf(glow_angle2));
 
             // Sweep trail (fading dots)
-            for(int i = 1; i <= 12; i++) {
+            /* for(int i = 1; i <= 12; i++) {
                 float trail_angle = sweep_angle - (i * 0.15f);
                 int trail_radius = 22 - i;
                 if(trail_radius > 0) {
@@ -357,7 +357,7 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
                         canvas_draw_dot(canvas, trail_x, trail_y);
                     }
                 }
-            }
+            }*/
 
             // Pulsing center
             int pulse = (animation_frame % 32);
@@ -369,16 +369,16 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             if(pulse < 8 || (pulse > 16 && pulse < 24)) {
                 canvas_draw_dot(canvas, center_x, center_y);
             }
+
+            // Status bar separator
+            //canvas_set_color(canvas, ColorBlack);
+            //canvas_draw_line(canvas, 0, 48, 127, 48);
         } else {
             canvas_draw_icon(
-                canvas,
-                0,
-                0,
-                model->external_radio ? &I_PP_scanning_ext_123x52 : &I_PP_scanning_123x52);
-            //canvas_set_font(canvas, FontPrimary);
-            //canvas_draw_str(canvas, 63, 46, "Scanning...");
-            //canvas_set_font(canvas, FontSecondary);
-            //canvas_draw_str(canvas, 44, 10, model->external_radio ? "Ext" : "Int");       //FOR EXACT FLIPPER CLONE
+                canvas, 0, 0, model->external_radio ? &I_Fishing_123x52 : &I_Scanning_123x52);
+            canvas_set_font(canvas, FontPrimary);
+            canvas_draw_str(canvas, 63, 46, "Scanning...");
+            canvas_set_font(canvas, FontSecondary);
         }
 
         // Draw EXT/INT indicator in upper right corner
@@ -491,19 +491,19 @@ bool protopirate_view_receiver_input(InputEvent* event, void* context) {
 
                     if(item_count > 0) {
                         do_ok_cb = true;
-                    } else if(event->type == InputTypeLong) {
+                    } /*else if(event->type == InputTypeLong) {
                         do_toggle = true;
-                    }
+                    } */
                 },
                 false);
             /* Only redraw if we actually changed dolphin_view */
-            if(do_toggle) {
+            /* if(do_toggle) {
                 with_view_model(
                     receiver->view,
                     ProtoPirateReceiverModel * model,
                     { model->dolphin_view = !model->dolphin_view; },
                     true);
-            }
+            } */
 
             if(do_ok_cb && receiver->callback) {
                 receiver->callback(ProtoPirateCustomEventViewReceiverOK, receiver->context);
@@ -633,8 +633,7 @@ void protopirate_view_receiver_sync_menu_from_history(
     furi_check(line);
     for(uint16_t i = 0; i < count; i++) {
         protopirate_history_get_text_item_menu(history, line, i);
-        protopirate_view_receiver_add_item_to_menu(
-            receiver, furi_string_get_cstr(line), 0);
+        protopirate_view_receiver_add_item_to_menu(receiver, furi_string_get_cstr(line), 0);
     }
     furi_string_free(line);
 }
@@ -653,8 +652,7 @@ void protopirate_view_receiver_pop_first_menu_item(ProtoPirateReceiver* receiver
                 if(model->history_item > 0) {
                     model->history_item--;
                 }
-                size_t item_count =
-                    ProtoPirateReceiverMenuItemArray_size(model->history_item_arr);
+                size_t item_count = ProtoPirateReceiverMenuItemArray_size(model->history_item_arr);
                 if(model->list_offset > 0 && model->list_offset >= item_count) {
                     model->list_offset = item_count > 0 ? item_count - 1 : 0;
                 }
@@ -677,8 +675,7 @@ void protopirate_view_receiver_append_menu_row_from_history(
         return;
     }
     protopirate_history_get_text_item_menu(history, line, idx);
-    protopirate_view_receiver_add_item_to_menu(
-        receiver, furi_string_get_cstr(line), 0);
+    protopirate_view_receiver_add_item_to_menu(receiver, furi_string_get_cstr(line), 0);
     furi_string_free(line);
 }
 
