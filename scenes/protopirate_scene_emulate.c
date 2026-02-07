@@ -246,13 +246,13 @@ static void protopirate_emulate_draw_callback(Canvas* canvas, void* context) {
     snprintf(info_str, sizeof(info_str), "SN:%08lX", (unsigned long)emulate_context->serial);
     canvas_draw_str(canvas, 2, 20, info_str);
 
-    snprintf(
+    /*snprintf(
         info_str,
         sizeof(info_str),
         "F:%lu.%02lu",
         emulate_context->freq / 1000000,
         (emulate_context->freq % 1000000) / 10000);
-    canvas_draw_str(canvas, 2, 30, info_str);
+    canvas_draw_str(canvas, 2, 30, info_str);*/
 
     // Counter - left aligned
     snprintf(
@@ -269,8 +269,8 @@ static void protopirate_emulate_draw_callback(Canvas* canvas, void* context) {
         canvas_draw_str(canvas, 112, 20, info_str);
     }
 
-    snprintf(info_str, sizeof(info_str), "%s", emulate_context->preset);
-    canvas_draw_str(canvas, 95, 30, info_str);
+    //snprintf(info_str, sizeof(info_str), "%s", emulate_context->preset);
+    //canvas_draw_str(canvas, 95, 30, info_str);
 
     // Divider
     //canvas_draw_line(canvas, 0, 34, 127, 34);
