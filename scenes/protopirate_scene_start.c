@@ -26,7 +26,7 @@ static void protopirate_scene_start_submenu_callback(void* context, uint32_t ind
     furi_check(context);
     ProtoPirateApp* app = context;
 
-    // Handle "Saved Captures" directly here, not via custom event
+    // Handle "Saved Remotes" directly here, not via custom event
     if(index == SubmenuIndexProtoPirateSaved) {
         protopirate_scene_start_open_saved_captures(app);
     } else {
@@ -134,14 +134,14 @@ void protopirate_scene_start_on_enter(void* context) {
 
     submenu_add_item(
         app->submenu,
-        "Receive",
+        "Clone Remote",
         SubmenuIndexProtoPirateReceiver,
         protopirate_scene_start_submenu_callback,
         app);
 
     submenu_add_item(
         app->submenu,
-        "Saved Captures",
+        "Saved Remotes",
         SubmenuIndexProtoPirateSaved,
         protopirate_scene_start_submenu_callback,
         app);
