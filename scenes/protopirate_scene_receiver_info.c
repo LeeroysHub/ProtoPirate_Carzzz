@@ -192,7 +192,7 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
         widget_add_button_element(
             app->widget,
             GuiButtonTypeLeft,
-            "Emulate",
+            "Remote",
             protopirate_scene_receiver_info_widget_callback,
             app);
     }
