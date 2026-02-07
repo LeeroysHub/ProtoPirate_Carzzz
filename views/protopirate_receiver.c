@@ -41,7 +41,6 @@ typedef struct {
     ProtoPirateLock lock;
     uint8_t lock_count;
     uint8_t animation_frame;
-    bool radar_view;
     bool sub_decode_mode;
 } ProtoPirateReceiverModel;
 
@@ -238,6 +237,10 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
         // Draw received items list
         size_t shift_position = model->list_offset;
 
+        //Only allocate buffer when needed (moved from above)
+        FuriString* str_buff;
+        str_buff = furi_string_alloc();
+
         for(size_t i = 0; i < MIN(item_count, MENU_ITEMS); i++) {
             size_t idx = shift_position + i;
             ProtoPirateReceiverMenuItem* item =
@@ -257,6 +260,9 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
                 canvas, 4, 9 + (i * FRAME_HEIGHT), furi_string_get_cstr(model->draw_scratch));
         }
 
+        //Free the buffer string (This was my memory leak).
+        furi_string_free(str_buff);
+
         //Draw scrollbar if needed
         if(scrollbar) {
             // Calculate maximum scroll position
@@ -269,117 +275,11 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             elements_scrollbar_pos(canvas, 128, 0, 49, scroll_pos, scrollable_total);
         }
     } else {
-        //Are we in Radar View or FLipper View Mode?
-        if(model->radar_view) {
-            // Cool animated radar with expanding dots
-            int center_x = 64;
-            int center_y = 22;
-
-            // Three waves of expanding circles with different speeds
-            for(int wave = 0; wave < 3; wave++) {
-                // Calculate radius for this wave with offset
-                int base_radius = ((animation_frame + wave * 32) % 96) / 3;
-
-                if(base_radius < 28) {
-                    // Calculate fade based on distance from center
-                    int dot_density = 24 - (base_radius / 2);
-
-                    // Draw circle with dots
-                    for(int angle = 0; angle < 360; angle += (360 / dot_density)) {
-                        float rad = (angle + wave * 15) * 3.14159 / 180.0;
-                        int x = center_x + base_radius * cosf(rad);
-                        int y = center_y + base_radius * sinf(rad);
-
-                        // Only draw if within bounds and create fade effect
-                        if(x > 0 && x < 128 && y > 0 && y < 48) {
-                            // Dots get smaller/fade as they expand
-                            if(base_radius < 10) {
-                                canvas_draw_dot(canvas, x, y);
-                                // Double dot for inner circles for brightness
-                                if(base_radius < 5) {
-                                    canvas_draw_dot(canvas, x + 1, y);
-                                }
-                            } else if(base_radius < 20) {
-                                // Skip some dots for fade effect
-                                if(angle % 30 == 0) {
-                                    canvas_draw_dot(canvas, x, y);
-                                }
-                            } else {
-                                // Very sparse dots at edge
-                                if(angle % 60 == 0) {
-                                    canvas_draw_dot(canvas, x, y);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Static guide circles (very faint)
-            /* for(int angle = 0; angle < 360; angle += 45) {
-                float rad = angle * 3.14159f / 180.0f;
-                canvas_draw_dot(canvas, center_x + 15 * cosf(rad), center_y + 15 * sinf(rad));
-            }*/
-
-            // Rotating sweep line with glow effect
-            float sweep_angle = (animation_frame * 3.75f) * 3.14159f / 180.0f;
-
-            // Main sweep line
-            int sweep_x = center_x + 22 * cosf(sweep_angle);
-            int sweep_y = center_y + 22 * sinf(sweep_angle);
-            canvas_draw_line(canvas, center_x, center_y, sweep_x, sweep_y);
-
-            // Sweep "glow" - additional lines at slight offsets
-            float glow_angle1 = sweep_angle - 0.05f;
-            float glow_angle2 = sweep_angle + 0.05f;
-            canvas_draw_line(
-                canvas,
-                center_x,
-                center_y,
-                center_x + 20 * cosf(glow_angle1),
-                center_y + 20 * sinf(glow_angle1));
-            canvas_draw_line(
-                canvas,
-                center_x,
-                center_y,
-                center_x + 20 * cosf(glow_angle2),
-                center_y + 20 * sinf(glow_angle2));
-
-            // Sweep trail (fading dots)
-            /* for(int i = 1; i <= 12; i++) {
-                float trail_angle = sweep_angle - (i * 0.15f);
-                int trail_radius = 22 - i;
-                if(trail_radius > 0) {
-                    int trail_x = center_x + trail_radius * cosf(trail_angle);
-                    int trail_y = center_y + trail_radius * sinf(trail_angle);
-                    // Only draw every other dot in trail for fade effect
-                    if(i % 2 == 0 || i < 4) {
-                        canvas_draw_dot(canvas, trail_x, trail_y);
-                    }
-                }
-            }*/
-
-            // Pulsing center
-            int pulse = (animation_frame % 32);
-            if(pulse < 16) {
-                canvas_draw_disc(canvas, center_x, center_y, 2);
-            } else {
-                canvas_draw_circle(canvas, center_x, center_y, 2);
-            }
-            if(pulse < 8 || (pulse > 16 && pulse < 24)) {
-                canvas_draw_dot(canvas, center_x, center_y);
-            }
-
-            // Status bar separator
-            //canvas_set_color(canvas, ColorBlack);
-            //canvas_draw_line(canvas, 0, 48, 127, 48);
-        } else {
-            canvas_draw_icon(
-                canvas, 0, 0, model->external_radio ? &I_Fishing_123x52 : &I_Scanning_123x52);
-            canvas_set_font(canvas, FontPrimary);
-            canvas_draw_str(canvas, 63, 46, "Scanning...");
-            canvas_set_font(canvas, FontSecondary);
-        }
+        canvas_draw_icon(
+            canvas, 0, 0, model->external_radio ? &I_Fishing_123x52 : &I_Scanning_123x52);
+        canvas_set_font(canvas, FontPrimary);
+        canvas_draw_str(canvas, 63, 46, "Scanning...");
+        canvas_set_font(canvas, FontSecondary);
 
         // Draw EXT/INT indicator in upper right corner
         canvas_set_font(canvas, FontSecondary);
@@ -480,7 +380,7 @@ bool protopirate_view_receiver_input(InputEvent* event, void* context) {
             break;
         case InputKeyOk:
             bool do_ok_cb = false;
-            bool do_toggle = false;
+            //bool do_toggle = false;
             /* Read-only: do not redraw */
             with_view_model(
                 receiver->view,
@@ -564,7 +464,6 @@ ProtoPirateReceiver* protopirate_view_receiver_alloc(bool auto_save) {
             model->lock_count = 0;
             model->auto_save = auto_save;
             model->animation_frame = 0;
-            model->dolphin_view = false;
             model->sub_decode_mode = false;
         },
         true);
