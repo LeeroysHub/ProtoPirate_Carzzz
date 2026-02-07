@@ -356,17 +356,29 @@ static void protopirate_emulate_draw_callback(Canvas* canvas, void* context) {
     canvas_draw_box(canvas, 0, 0, 128, 11);
     canvas_invert_color(canvas);
     canvas_set_font(canvas, FontSecondary);
-    const char* proto_name = furi_string_get_cstr(emulate_context->protocol_name);
-    canvas_draw_str_aligned(canvas, 64, 2, AlignCenter, AlignTop, proto_name);
+    //const char* proto_name = furi_string_get_cstr(emulate_context->protocol_name);
+    canvas_draw_str_aligned(canvas, 64, 2, AlignCenter, AlignTop, "Car Key" /*proto_name*/);
+
+    // Increment on right if changed
+    if(emulate_context->current_counter > emulate_context->original_counter) {
+        char info_str[6];
+        snprintf(
+            info_str,
+            sizeof(info_str),
+            "+%ld",
+            (long)(emulate_context->current_counter - emulate_context->original_counter));
+        canvas_draw_str_aligned(canvas, 126, 2, AlignRight, AlignTop, info_str);
+    }
+
+    //Invert the Canvas back now, we have finished the header.
     canvas_invert_color(canvas);
 
     // Info section
-    canvas_set_font(canvas, FontSecondary);
+    //canvas_set_font(canvas, FontSecondary);
 
     // Serial - left aligned
-    char info_str[32];
-    snprintf(info_str, sizeof(info_str), "SN:%08lX", (unsigned long)emulate_context->serial);
-    canvas_draw_str(canvas, 2, 20, info_str);
+    /*snprintf(info_str, sizeof(info_str), "SN:%08lX", (unsigned long)emulate_context->serial);
+    canvas_draw_str(canvas, 2, 20, info_str);*/
 
     /*snprintf(
         info_str,
@@ -377,19 +389,9 @@ static void protopirate_emulate_draw_callback(Canvas* canvas, void* context) {
     canvas_draw_str(canvas, 2, 30, info_str);*/
 
     // Counter - left aligned
-    snprintf(
-        info_str, sizeof(info_str), "CNT:%04lX", (unsigned long)emulate_context->current_counter);
-    canvas_draw_str(canvas, 68, 20, info_str);
-
-    // Increment on right if changed
-    if(emulate_context->current_counter > emulate_context->original_counter) {
-        snprintf(
-            info_str,
-            sizeof(info_str),
-            "+%ld",
-            (long)(emulate_context->current_counter - emulate_context->original_counter));
-        canvas_draw_str(canvas, 112, 20, info_str);
-    }
+    //snprintf(
+    //    info_str, sizeof(info_str), "CNT:%04lX", (unsigned long)emulate_context->current_counter);
+    //canvas_draw_str(canvas, 2, 20, info_str);
 
     //snprintf(info_str, sizeof(info_str), "%s", emulate_context->preset);
     //canvas_draw_str(canvas, 95, 30, info_str);
@@ -398,38 +400,38 @@ static void protopirate_emulate_draw_callback(Canvas* canvas, void* context) {
     //canvas_draw_line(canvas, 0, 34, 127, 34);
 
     // Button mapping - adjusted positioning
-    canvas_set_font(canvas, FontSecondary);
+    //canvas_set_font(canvas, FontSecondary);
 
     // OK in Centre
     char* unlock_text = "UNLOCK";
     uint16_t width_button = canvas_string_width(canvas, unlock_text) + 8;
     uint16_t height_button = canvas_current_font_height(canvas);
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 45 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 42 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 64, 49, AlignCenter, AlignBottom, unlock_text);
+    canvas_draw_str_aligned(canvas, 64, 46, AlignCenter, AlignBottom, unlock_text);
     canvas_invert_color(canvas); // Back to Black
 
     // Row 1
     char* panic_text = "PANIC";
     width_button = canvas_string_width(canvas, panic_text) + 8;
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 33 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 27 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 64, 37, AlignCenter, AlignBottom, "LOCK");
+    canvas_draw_str_aligned(canvas, 64, 31, AlignCenter, AlignBottom, "LOCK");
     canvas_invert_color(canvas); // Back to Black
 
     // Left Centre Row
-    canvas_draw_rbox(canvas, 0, 46 - (height_button / 2), width_button, height_button, 3);
+    canvas_draw_rbox(canvas, 0, 42 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, (width_button / 2), 50, AlignCenter, AlignBottom, panic_text);
+    canvas_draw_str_aligned(canvas, (width_button / 2), 46, AlignCenter, AlignBottom, panic_text);
     canvas_invert_color(canvas); // Back to Black
 
     // Right Centre Row
     canvas_draw_rbox(
-        canvas, 127 - width_button, 46 - (height_button / 2), width_button, height_button, 3);
+        canvas, 127 - width_button, 42 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 127 - (width_button / 2), 50, AlignCenter, AlignBottom, "XXX");
+    canvas_draw_str_aligned(canvas, 127 - (width_button / 2), 46, AlignCenter, AlignBottom, "XXX");
     canvas_invert_color(canvas); // Back to Black
 
     // Row 3
