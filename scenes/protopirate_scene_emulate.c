@@ -407,38 +407,38 @@ static void protopirate_emulate_draw_callback(Canvas* canvas, void* context) {
     uint16_t width_button = canvas_string_width(canvas, unlock_text) + 8;
     uint16_t height_button = canvas_current_font_height(canvas);
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 42 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 38 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 64, 46, AlignCenter, AlignBottom, unlock_text);
+    canvas_draw_str_aligned(canvas, 64, 42, AlignCenter, AlignBottom, unlock_text);
     canvas_invert_color(canvas); // Back to Black
 
     // Row 1
     char* panic_text = "PANIC";
     width_button = canvas_string_width(canvas, panic_text) + 8;
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 27 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 23 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 64, 31, AlignCenter, AlignBottom, "LOCK");
+    canvas_draw_str_aligned(canvas, 64, 27, AlignCenter, AlignBottom, "LOCK");
     canvas_invert_color(canvas); // Back to Black
 
     // Left Centre Row
-    canvas_draw_rbox(canvas, 0, 42 - (height_button / 2), width_button, height_button, 3);
+    canvas_draw_rbox(canvas, 0, 38 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, (width_button / 2), 46, AlignCenter, AlignBottom, panic_text);
+    canvas_draw_str_aligned(canvas, (width_button / 2), 42, AlignCenter, AlignBottom, panic_text);
     canvas_invert_color(canvas); // Back to Black
 
     // Right Centre Row
     canvas_draw_rbox(
-        canvas, 127 - width_button, 42 - (height_button / 2), width_button, height_button, 3);
+        canvas, 127 - width_button, 38 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 127 - (width_button / 2), 46, AlignCenter, AlignBottom, "XXX");
+    canvas_draw_str_aligned(canvas, 127 - (width_button / 2), 42, AlignCenter, AlignBottom, "XXX");
     canvas_invert_color(canvas); // Back to Black
 
     // Row 3
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 57 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 53 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas); //Switch to white
-    canvas_draw_str_aligned(canvas, 64, 61, AlignCenter, AlignBottom, "BOOT");
+    canvas_draw_str_aligned(canvas, 64, 57, AlignCenter, AlignBottom, "BOOT");
     canvas_invert_color(canvas); // Back to Black
 
     // Transmitting overlay
