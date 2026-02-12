@@ -171,6 +171,9 @@ void protopirate_scene_receiver_on_enter(void* context) {
 
     FURI_LOG_I(TAG, "=== ENTERING RECEIVER SCENE ===");
 
+    //Stop charging while using the radio.
+    furi_hal_power_suppress_charge_enter();
+
 // Now safe to access radio device
 #ifndef REMOVE_LOGS
     bool is_external =
@@ -384,6 +387,9 @@ void protopirate_scene_receiver_on_exit(void* context) {
     } else {
         FURI_LOG_D(TAG, "History was NULL, skipping free");
     }
+
+    //We can charge again now that we are back on the main menu.
+    furi_hal_power_suppress_charge_exit();
 }
 
 void protopirate_scene_receiver_view_callback(ProtoPirateCustomEvent event, void* context) {

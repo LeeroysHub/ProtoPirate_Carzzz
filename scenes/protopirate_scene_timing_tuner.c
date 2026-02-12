@@ -610,6 +610,9 @@ void protopirate_scene_timing_tuner_on_enter(void* context) {
     furi_check(context);
     ProtoPirateApp* app = context;
 
+    //Stop charging while using the radio.
+    furi_hal_power_suppress_charge_enter();
+
     FURI_LOG_I(TAG, "Entering Timing Tuner");
 
     g_timing_ctx = malloc(sizeof(TimingTunerContext));
@@ -720,5 +723,7 @@ void protopirate_scene_timing_tuner_on_exit(void* context) {
         free(g_timing_ctx);
         g_timing_ctx = NULL;
     }
+
+    furi_hal_power_suppress_charge_exit();
 }
 #endif

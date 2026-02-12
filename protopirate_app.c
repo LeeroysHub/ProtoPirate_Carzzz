@@ -515,12 +515,10 @@ void protopirate_app_free(ProtoPirateApp* app) {
 }
 
 int32_t protopirate_app(char* p) {
-    furi_hal_power_suppress_charge_enter();
-
     ProtoPirateApp* protopirate_app = protopirate_app_alloc();
     if(!protopirate_app) {
         // logging is already done in protopirate_app_alloc()
-        furi_hal_power_suppress_charge_exit();
+        //furi_hal_power_suppress_charge_exit();
         return -1;
     }
 
@@ -551,8 +549,6 @@ int32_t protopirate_app(char* p) {
     view_dispatcher_run(protopirate_app->view_dispatcher);
 
     protopirate_app_free(protopirate_app);
-
-    furi_hal_power_suppress_charge_exit();
 
     return 0;
 }
