@@ -188,6 +188,9 @@ static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
         subghz_worker_set_context(app->txrx->worker, app->txrx->receiver);
     }
 
+    //Stop charging while using the radio.
+    furi_hal_power_suppress_charge_enter();
+
     subghz_receiver_set_rx_callback(app->txrx->receiver, protopirate_scene_receiver_callback, app);
 
     if(app->txrx->hopper_state != ProtoPirateHopperStateOFF) {
@@ -268,10 +271,9 @@ void protopirate_scene_receiver_on_enter(void* context) {
 }
 
 static void protopirate_scene_receiver_handle_back(ProtoPirateApp* app) {
-    if(app->txrx->history &&
-       protopirate_history_get_item(app->txrx->history) > 0 && !app->auto_save) {
-        scene_manager_set_scene_state(
-            app->scene_manager, ProtoPirateSceneReceiver, 1);
+    if(app->txrx->history && protopirate_history_get_item(app->txrx->history) > 0 &&
+       !app->auto_save) {
+        scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneReceiver, 1);
         scene_manager_next_scene(app->scene_manager, ProtoPirateSceneNeedSaving);
     } else {
         scene_manager_search_and_switch_to_previous_scene(
@@ -409,6 +411,9 @@ void protopirate_scene_receiver_on_exit(void* context) {
     } else {
         FURI_LOG_D(TAG, "History was NULL, skipping free");
     }
+
+    //We can charge again now that we are back on the main menu.
+    furi_hal_power_suppress_charge_exit();
 }
 
 void protopirate_scene_receiver_view_callback(ProtoPirateCustomEvent event, void* context) {

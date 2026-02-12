@@ -503,6 +503,9 @@ static bool protopirate_emulate_input_callback(InputEvent* event, void* context)
 void protopirate_scene_emulate_on_enter(void* context) {
     ProtoPirateApp* app = context;
 
+    //Stop charging while using the radio.
+    furi_hal_power_suppress_charge_enter();
+
     if(emulate_context != NULL) {
         FURI_LOG_W(TAG, "Previous emulate context not freed, cleaning up");
         emulate_context_free();
@@ -894,5 +897,7 @@ void protopirate_scene_emulate_on_exit(void* context) {
     view_set_draw_callback(app->view_about, NULL);
     view_set_input_callback(app->view_about, NULL);
     view_set_context(app->view_about, NULL);
+
+    furi_hal_power_suppress_charge_exit();
 }
 #endif
