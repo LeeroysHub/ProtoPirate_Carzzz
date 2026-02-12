@@ -41,7 +41,7 @@ const uint8_t tx_power_value[TX_PRESET_VALUES_COUNT] = {
     0x0E, // -20dBm
     0x12, //-30dBm
 
-    //AM Power Values for 1st PA Table Byte.
+    //AM Power Values for 2nd PA Table Byte.
     0xC0, //12dBm
     0xCD, //7dBm
     0x86, //5dBm
