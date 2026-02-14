@@ -435,7 +435,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
             FuriString* filename_str = furi_string_alloc();
 
             if(ff) {
-                if(app->datetime_filenames) {
+                if(app->option_flags & FLAG_DATETIME_FILENAMES) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -468,7 +468,9 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                 // Get the next auto-generated filename (just the name part)
                 FuriString* auto_path = furi_string_alloc();
                 if(protopirate_storage_get_next_filename(
-                       furi_string_get_cstr(filename_str), auto_path, (app->datetime_filenames))) {
+                       furi_string_get_cstr(filename_str),
+                       auto_path,
+                       (app->option_flags & FLAG_DATETIME_FILENAMES))) {
                     // Extract just the filename without folder and extension
                     const char* full = furi_string_get_cstr(auto_path);
                     const char* slash = strrchr(full, '/');

@@ -11,10 +11,13 @@ typedef struct {
     uint32_t frequency;
     uint8_t preset_index;
     uint8_t tx_power;
-    bool auto_save;
     bool hopping_enabled;
-    bool datetime_filenames;
+    uint8_t option_flags;
 } ProtoPirateSettings;
+
+//AND Flags instead of a million booleans
+#define FLAG_AUTO_SAVE          1
+#define FLAG_DATETIME_FILENAMES 2
 
 void protopirate_settings_load(ProtoPirateSettings* settings);
 void protopirate_settings_save(ProtoPirateSettings* settings);
