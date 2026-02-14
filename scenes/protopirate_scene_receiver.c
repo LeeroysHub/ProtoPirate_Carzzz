@@ -109,39 +109,45 @@ static void protopirate_scene_receiver_callback(
                 app->txrx->history, protopirate_history_get_item(app->txrx->history) - 1);
 
             if(ff) {
-                FuriString* protocol = furi_string_alloc();
-                if(!protocol) {
-                    FURI_LOG_E(TAG, "protocol allocation failed");
-                    furi_string_free(str_buff);
-                    return;
-                }
-
-                flipper_format_rewind(ff);
-                if(!flipper_format_read_string(ff, "Protocol", protocol)) {
-                    furi_string_set_str(protocol, "Unknown");
-                }
-
-                // Clean protocol name for filename
-                furi_string_replace_all(protocol, "/", "_");
-                furi_string_replace_all(protocol, " ", "_");
-
                 FuriString* saved_path = furi_string_alloc();
-                if(!saved_path) {
-                    FURI_LOG_E(TAG, "saved_path allocation failed");
-                    furi_string_free(protocol);
-                    furi_string_free(str_buff);
-                    return;
+                FuriString* file_name_str = furi_string_alloc();
+
+                if(app->datetime_filenames) {
+                    //Get the date and time to save.
+                    DateTime date_time;
+                    furi_hal_rtc_get_datetime(&date_time);
+                    furi_string_printf(
+                        file_name_str,
+                        "%.4d-%.2d-%.2d_%.2d.%.2d.%.2d",
+                        date_time.year,
+                        date_time.month,
+                        date_time.day,
+                        date_time.hour,
+                        date_time.minute,
+                        date_time.second);
+                } else {
+                    flipper_format_rewind(ff);
+                    if(!flipper_format_read_string(ff, "Protocol", file_name_str)) {
+                        furi_string_set_str(file_name_str, "Unknown");
+                    }
+
+                    // Clean protocol name for filename
+                    furi_string_replace_all(file_name_str, "/", "_");
+                    furi_string_replace_all(file_name_str, " ", "_");
                 }
 
                 if(protopirate_storage_save_capture(
-                       ff, furi_string_get_cstr(protocol), saved_path)) {
+                       ff,
+                       furi_string_get_cstr(file_name_str),
+                       saved_path,
+                       app->datetime_filenames)) {
                     FURI_LOG_I(TAG, "Auto-saved: %s", furi_string_get_cstr(saved_path));
                     notification_message(app->notifications, &sequence_double_vibro);
                 } else {
                     FURI_LOG_E(TAG, "Auto-save failed");
                 }
 
-                furi_string_free(protocol);
+                furi_string_free(file_name_str);
                 furi_string_free(saved_path);
             }
         }
@@ -188,9 +194,6 @@ static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
         subghz_worker_set_context(app->txrx->worker, app->txrx->receiver);
     }
 
-    //Stop charging while using the radio.
-    furi_hal_power_suppress_charge_enter();
-
     subghz_receiver_set_rx_callback(app->txrx->receiver, protopirate_scene_receiver_callback, app);
 
     if(app->txrx->hopper_state != ProtoPirateHopperStateOFF) {
@@ -233,6 +236,9 @@ void protopirate_scene_receiver_on_enter(void* context) {
             return;
         }
     }
+
+    //Stop charging while using the radio.
+    furi_hal_power_suppress_charge_enter();
 
     protopirate_view_receiver_set_callback(
         app->protopirate_receiver, protopirate_scene_receiver_view_callback, app);

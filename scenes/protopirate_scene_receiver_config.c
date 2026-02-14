@@ -9,6 +9,7 @@ enum ProtoPirateSettingIndex {
     ProtoPirateSettingIndexTXPower,
 #endif
     ProtoPirateSettingIndexAutoSave,
+    ProtoPirateSettingIndexDateTimeFilenames,
     ProtoPirateSettingIndexLock,
 };
 
@@ -23,10 +24,16 @@ const uint32_t hopping_value[HOPPING_COUNT] = {
     ProtoPirateHopperStateRunning,
 };
 
-#define AUTO_SAVE_COUNT 2
-const char* const auto_save_text[AUTO_SAVE_COUNT] = {
+#define ON_OFF_COUNT 2
+const char* const on_off_text[ON_OFF_COUNT] = {
     "OFF",
     "ON",
+};
+
+#define TIME_SEQ_COUNT 2
+const char* const sequence_time_text[ON_OFF_COUNT] = {
+    "Sequential",
+    "Time",
 };
 
 #ifdef ENABLE_EMULATE_FEATURE
@@ -166,7 +173,15 @@ static void protopirate_scene_receiver_config_set_auto_save(VariableItem* item) 
     uint8_t index = variable_item_get_current_value_index(item);
 
     app->auto_save = (index == 1);
-    variable_item_set_current_value_text(item, auto_save_text[index]);
+    variable_item_set_current_value_text(item, on_off_text[index]);
+}
+
+static void protopirate_scene_receiver_config_set_datetime_filenames(VariableItem* item) {
+    ProtoPirateApp* app = variable_item_get_context(item);
+    uint8_t index = variable_item_get_current_value_index(item);
+
+    app->datetime_filenames = (index == 1);
+    variable_item_set_current_value_text(item, sequence_time_text[index]);
 }
 
 #ifdef ENABLE_EMULATE_FEATURE
@@ -252,12 +267,24 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     item = variable_item_list_add(
         app->variable_item_list,
         "Auto-Save:",
-        AUTO_SAVE_COUNT,
+        ON_OFF_COUNT,
         protopirate_scene_receiver_config_set_auto_save,
         app);
     variable_item_set_current_value_index(item, app->auto_save ? 1 : 0);
-    variable_item_set_current_value_text(item, auto_save_text[app->auto_save ? 1 : 0]);
+    variable_item_set_current_value_text(item, on_off_text[app->auto_save ? 1 : 0]);
 
+    // Date/time filenames option
+    item = variable_item_list_add(
+        app->variable_item_list,
+        "Filenames:",
+        2,
+        protopirate_scene_receiver_config_set_datetime_filenames,
+        app);
+    variable_item_set_current_value_index(item, app->datetime_filenames ? 1 : 0);
+    variable_item_set_current_value_text(
+        item, sequence_time_text[app->datetime_filenames ? 1 : 0]);
+
+    //Lock Keyboard option
     variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
     variable_item_list_set_enter_callback(
         app->variable_item_list, protopirate_scene_receiver_config_var_list_enter_callback, app);
