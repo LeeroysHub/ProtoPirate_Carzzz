@@ -612,7 +612,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 FuriString* saved_path = furi_string_alloc();
                 FuriString* file_name_str = furi_string_alloc();
 
-                if(app->datetime_filenames) {
+                if(app->option_flags & FLAG_DATETIME_FILENAMES) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -640,7 +640,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                        ff,
                        furi_string_get_cstr(file_name_str),
                        saved_path,
-                       app->datetime_filenames)) {
+                       (app->option_flags & FLAG_DATETIME_FILENAMES))) {
                     notification_message(app->notifications, &sequence_success);
                 } else {
                     notification_message(app->notifications, &sequence_error);

@@ -172,7 +172,11 @@ static void protopirate_scene_receiver_config_set_auto_save(VariableItem* item) 
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    app->auto_save = (index == 1);
+    if(index == 1) {
+        if(!(app->option_flags & FLAG_AUTO_SAVE)) app->option_flags += FLAG_AUTO_SAVE;
+    } else {
+        if(app->option_flags & FLAG_AUTO_SAVE) app->option_flags -= FLAG_AUTO_SAVE;
+    }
     variable_item_set_current_value_text(item, on_off_text[index]);
 }
 
@@ -180,7 +184,13 @@ static void protopirate_scene_receiver_config_set_datetime_filenames(VariableIte
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    app->datetime_filenames = (index == 1);
+    if(index == 1) {
+        if(!(app->option_flags & FLAG_DATETIME_FILENAMES))
+            app->option_flags += FLAG_DATETIME_FILENAMES;
+    } else {
+        if(app->option_flags & FLAG_DATETIME_FILENAMES)
+            app->option_flags -= FLAG_DATETIME_FILENAMES;
+    }
     variable_item_set_current_value_text(item, sequence_time_text[index]);
 }
 
@@ -270,8 +280,9 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         ON_OFF_COUNT,
         protopirate_scene_receiver_config_set_auto_save,
         app);
-    variable_item_set_current_value_index(item, app->auto_save ? 1 : 0);
-    variable_item_set_current_value_text(item, on_off_text[app->auto_save ? 1 : 0]);
+    variable_item_set_current_value_index(item, (app->option_flags & FLAG_AUTO_SAVE) ? 1 : 0);
+    variable_item_set_current_value_text(
+        item, on_off_text[(app->option_flags & FLAG_AUTO_SAVE) ? 1 : 0]);
 
     // Date/time filenames option
     item = variable_item_list_add(
@@ -280,9 +291,10 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         2,
         protopirate_scene_receiver_config_set_datetime_filenames,
         app);
-    variable_item_set_current_value_index(item, app->datetime_filenames ? 1 : 0);
+    variable_item_set_current_value_index(
+        item, (app->option_flags & FLAG_DATETIME_FILENAMES) ? 1 : 0);
     variable_item_set_current_value_text(
-        item, sequence_time_text[app->datetime_filenames ? 1 : 0]);
+        item, sequence_time_text[(app->option_flags & FLAG_DATETIME_FILENAMES) ? 1 : 0]);
 
     //Lock Keyboard option
     variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);

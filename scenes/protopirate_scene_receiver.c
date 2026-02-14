@@ -104,7 +104,7 @@ static void protopirate_scene_receiver_callback(
         protopirate_view_receiver_set_idx_menu(app->protopirate_receiver, last_index);
 
         // Auto-save if enabled
-        if(app->auto_save) {
+        if(app->option_flags & FLAG_AUTO_SAVE) {
             FlipperFormat* ff = protopirate_history_get_raw_data(
                 app->txrx->history, protopirate_history_get_item(app->txrx->history) - 1);
 
@@ -112,7 +112,7 @@ static void protopirate_scene_receiver_callback(
                 FuriString* saved_path = furi_string_alloc();
                 FuriString* file_name_str = furi_string_alloc();
 
-                if(app->datetime_filenames) {
+                if(app->option_flags & FLAG_DATETIME_FILENAMES) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -140,7 +140,7 @@ static void protopirate_scene_receiver_callback(
                        ff,
                        furi_string_get_cstr(file_name_str),
                        saved_path,
-                       app->datetime_filenames)) {
+                       (app->option_flags & FLAG_DATETIME_FILENAMES))) {
                     FURI_LOG_I(TAG, "Auto-saved: %s", furi_string_get_cstr(saved_path));
                     notification_message(app->notifications, &sequence_double_vibro);
                 } else {
@@ -246,7 +246,8 @@ void protopirate_scene_receiver_on_enter(void* context) {
     protopirate_scene_receiver_update_statusbar(app);
 
     protopirate_view_receiver_set_lock(app->protopirate_receiver, app->lock);
-    protopirate_view_receiver_set_autosave(app->protopirate_receiver, app->auto_save);
+    protopirate_view_receiver_set_autosave(
+        app->protopirate_receiver, app->option_flags & FLAG_AUTO_SAVE);
     protopirate_view_receiver_set_sub_decode_mode(app->protopirate_receiver, false);
 
     if(app->radio_initialized && !app->txrx->receiver) {
@@ -278,7 +279,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
 
 static void protopirate_scene_receiver_handle_back(ProtoPirateApp* app) {
     if(app->txrx->history && protopirate_history_get_item(app->txrx->history) > 0 &&
-       !app->auto_save) {
+       !((app->option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE)) {
         scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneReceiver, 1);
         scene_manager_next_scene(app->scene_manager, ProtoPirateSceneNeedSaving);
     } else {
