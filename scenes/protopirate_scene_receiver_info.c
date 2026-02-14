@@ -434,22 +434,45 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
         if(event.event == ProtoPirateCustomEventReceiverInfoSave) {
             FlipperFormat* ff =
                 protopirate_history_get_raw_data(app->txrx->history, app->txrx->idx_menu_chosen);
+            FuriString* filename_str = furi_string_alloc();
+
             if(ff) {
-                // Read protocol name for default filename
+                if(app->option_flags & FLAG_DATETIME_FILENAMES) {
+                    //Get the date and time to save.
+                    DateTime date_time;
+                    furi_hal_rtc_get_datetime(&date_time);
+                    furi_string_printf(
+                        filename_str,
+                        "%.2d%.2d%.2d_%.2d.%.2d.%.2d_",
+                        date_time.year,
+                        date_time.month,
+                        date_time.day,
+                        date_time.hour,
+                        date_time.minute,
+                        date_time.second);
+                }
+
+                // Extract protocol name
                 FuriString* protocol = furi_string_alloc();
                 flipper_format_rewind(ff);
                 if(!flipper_format_read_string(ff, "Protocol", protocol)) {
                     furi_string_set_str(protocol, "Unknown");
                 }
 
+                //Add the protocol
+                furi_string_cat(filename_str, protocol);
+                //furi_string_free(protocol);
+
                 // Clean protocol name for filename
-                furi_string_replace_all(protocol, "/", "_");
-                furi_string_replace_all(protocol, " ", "_");
+                furi_string_replace_all(filename_str, "/", "_");
+                furi_string_replace_all(filename_str, " ", "_");
 
                 // Get the next auto-generated filename (just the name part)
                 FuriString* auto_path = furi_string_alloc();
                 if(protopirate_storage_get_next_filename(
-                       furi_string_get_cstr(protocol), auto_path)) {
+                       furi_string_get_cstr(filename_str),
+                       auto_path,
+                       (app->option_flags & FLAG_DATETIME_FILENAMES))) {
                     // Extract just the filename without folder and extension
                     const char* full = furi_string_get_cstr(auto_path);
                     const char* slash = strrchr(full, '/');
@@ -488,6 +511,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
 
                 view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewTextInput);
             }
+            furi_string_free(filename_str);
             consumed = true;
         }
 

@@ -111,11 +111,12 @@ ProtoPirateApp* protopirate_app_alloc() {
     protopirate_settings_load(&settings);
 
     // Apply auto-save setting
-    app->auto_save = settings.auto_save;
+    app->option_flags = settings.option_flags;
     app->tx_power = settings.tx_power;
 
     // Receiver Views
-    app->protopirate_receiver = protopirate_view_receiver_alloc(app->auto_save);
+    app->protopirate_receiver =
+        protopirate_view_receiver_alloc(((app->option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE));
     view_dispatcher_add_view(
         app->view_dispatcher,
         ProtoPirateViewReceiver,
@@ -182,7 +183,7 @@ ProtoPirateApp* protopirate_app_alloc() {
         "Settings: freq=%lu, preset=%s, auto_save=%d, hopping=%d",
         frequency,
         preset_name,
-        settings.auto_save,
+        ((settings.option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
         settings.hopping_enabled);
 
     protopirate_preset_init(app, preset_name, frequency, preset_data, preset_data_size);
@@ -392,7 +393,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
     // Save settings before exiting
     ProtoPirateSettings settings;
     settings.frequency = app->txrx->preset->frequency;
-    settings.auto_save = app->auto_save;
+    settings.option_flags = app->option_flags;
     settings.tx_power = app->tx_power;
     settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
 
@@ -411,7 +412,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
         "Saving settings: freq=%lu, preset=%u, auto_save=%d, hopping=%d",
         settings.frequency,
         settings.preset_index,
-        settings.auto_save,
+        ((settings.option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
         settings.hopping_enabled);
 
     protopirate_settings_save(&settings);

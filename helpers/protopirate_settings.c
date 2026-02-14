@@ -13,7 +13,7 @@ void protopirate_settings_set_defaults(ProtoPirateSettings* settings) {
     settings->frequency = 433920000;
     settings->preset_index = 0;
     settings->tx_power = 0;
-    settings->auto_save = false;
+    settings->option_flags = 0;
     settings->hopping_enabled = false;
 }
 
@@ -67,13 +67,13 @@ void protopirate_settings_load(ProtoPirateSettings* settings) {
         }
         settings->preset_index = (uint8_t)preset_temp;
 
-        // Read auto-save
-        uint32_t auto_save_temp = 0;
-        if(!flipper_format_read_uint32(ff, "AutoSave", &auto_save_temp, 1)) {
-            FURI_LOG_W(TAG, "Failed to read auto-save, using default");
-            auto_save_temp = 0;
+        // Read options flag (auto-save and date time filenames)
+        uint32_t option_flags_temp = 0;
+        if(!flipper_format_read_uint32(ff, "OptionFlags", &option_flags_temp, 1)) {
+            FURI_LOG_W(TAG, "Failed to read Option Flags, using default");
+            option_flags_temp = 0;
         }
-        settings->auto_save = (auto_save_temp == 1);
+        settings->option_flags = option_flags_temp;
 
         // Read tx-power
         uint32_t tx_power_temp = 0;
@@ -96,7 +96,7 @@ void protopirate_settings_load(ProtoPirateSettings* settings) {
             "Settings loaded: freq=%lu, preset=%u, auto_save=%d, hopping=%d",
             settings->frequency,
             settings->preset_index,
-            settings->auto_save,
+            ((settings->option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
             settings->hopping_enabled);
 
     } while(false);
@@ -135,8 +135,8 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
             break;
         }
 
-        uint32_t auto_save_temp = settings->auto_save ? 1 : 0;
-        if(!flipper_format_write_uint32(ff, "AutoSave", &auto_save_temp, 1)) {
+        uint32_t option_flags_temp = settings->option_flags;
+        if(!flipper_format_write_uint32(ff, "OptionFlags", &option_flags_temp, 1)) {
             FURI_LOG_E(TAG, "Failed to write auto-save");
             break;
         }
@@ -158,7 +158,7 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
             "Settings saved: freq=%lu, preset=%u, auto_save=%d, hopping=%d",
             settings->frequency,
             settings->preset_index,
-            settings->auto_save,
+            ((settings->option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
             settings->hopping_enabled);
 
     } while(false);
