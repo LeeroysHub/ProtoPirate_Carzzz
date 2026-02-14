@@ -111,6 +111,7 @@ ProtoPirateApp* protopirate_app_alloc() {
 
     // Apply auto-save setting
     app->auto_save = settings.auto_save;
+    app->datetime_filenames = settings.datetime_filenames;
     app->tx_power = settings.tx_power;
 
     // Receiver Views
@@ -392,6 +393,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
     ProtoPirateSettings settings;
     settings.frequency = app->txrx->preset->frequency;
     settings.auto_save = app->auto_save;
+    settings.datetime_filenames = app->datetime_filenames;
     settings.tx_power = app->tx_power;
     settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
 
