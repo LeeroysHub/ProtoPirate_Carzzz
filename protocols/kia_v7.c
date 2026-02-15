@@ -9,7 +9,7 @@
 #define KIA_V7_KEY_BITS           64U
 #define KIA_V7_DEFAULT_TX_REPEAT  10U
 
-static const SubGhzBlockConst kia_protocol_v7_const = {
+static const SubGhzBlockConst subghz_protocol_kia_v7_const = {
     .te_short = 250,
     .te_long = 500,
     .te_delta = 100,
@@ -87,12 +87,13 @@ static uint64_t kia_v7_bytes_to_u64_be(const uint8_t bytes[8]) {
 }
 
 static bool kia_v7_is_short(uint32_t duration) {
-    return DURATION_DIFF(duration, kia_protocol_v7_const.te_short) <
-           kia_protocol_v7_const.te_delta;
+    return DURATION_DIFF(duration, subghz_protocol_kia_v7_const.te_short) <
+           subghz_protocol_kia_v7_const.te_delta;
 }
 
 static bool kia_v7_is_long(uint32_t duration) {
-    return DURATION_DIFF(duration, kia_protocol_v7_const.te_long) < kia_protocol_v7_const.te_delta;
+    return DURATION_DIFF(duration, subghz_protocol_kia_v7_const.te_long) <
+           subghz_protocol_kia_v7_const.te_delta;
 }
 
 static const char* kia_v7_get_button_name(uint8_t button) {
@@ -214,8 +215,10 @@ static void kia_v7_decode_key_encoder(SubGhzProtocolEncoderKiaV7* instance) {
 static bool kia_v7_encoder_get_upload(SubGhzProtocolEncoderKiaV7* instance) {
     furi_check(instance);
 
-    const LevelDuration high_short = level_duration_make(true, kia_protocol_v7_const.te_short);
-    const LevelDuration low_short = level_duration_make(false, kia_protocol_v7_const.te_short);
+    const LevelDuration high_short =
+        level_duration_make(true, subghz_protocol_kia_v7_const.te_short);
+    const LevelDuration low_short =
+        level_duration_make(false, subghz_protocol_kia_v7_const.te_short);
     const LevelDuration low_tail = level_duration_make(false, KIA_V7_TAIL_GAP_US);
     const size_t max_size = KIA_V7_UPLOAD_CAPACITY;
 
@@ -267,7 +270,7 @@ static bool kia_v7_encoder_get_upload(SubGhzProtocolEncoderKiaV7* instance) {
 }
 #endif
 
-const SubGhzProtocolDecoder kia_protocol_v7_decoder = {
+const SubGhzProtocolDecoder subghz_protocol_kia_v7_decoder = {
     .alloc = kia_protocol_decoder_v7_alloc,
     .free = kia_protocol_decoder_v7_free,
     .feed = kia_protocol_decoder_v7_feed,
@@ -279,7 +282,7 @@ const SubGhzProtocolDecoder kia_protocol_v7_decoder = {
 };
 
 #ifdef ENABLE_EMULATE_FEATURE
-const SubGhzProtocolEncoder kia_protocol_v7_encoder = {
+const SubGhzProtocolEncoder subghz_protocol_kia_v7_encoder = {
     .alloc = kia_protocol_encoder_v7_alloc,
     .free = kia_protocol_encoder_v7_free,
     .deserialize = kia_protocol_encoder_v7_deserialize,
@@ -287,7 +290,7 @@ const SubGhzProtocolEncoder kia_protocol_v7_encoder = {
     .yield = kia_protocol_encoder_v7_yield,
 };
 #else
-const SubGhzProtocolEncoder kia_protocol_v7_encoder = {
+const SubGhzProtocolEncoder subghz_protocol_kia_v7_encoder = {
     .alloc = NULL,
     .free = NULL,
     .deserialize = NULL,
@@ -296,13 +299,13 @@ const SubGhzProtocolEncoder kia_protocol_v7_encoder = {
 };
 #endif
 
-const SubGhzProtocol kia_protocol_v7 = {
+const SubGhzProtocol subghz_protocol_kia_v7 = {
     .name = KIA_PROTOCOL_V7_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
             SubGhzProtocolFlag_Load | SubGhzProtocolFlag_Save | SubGhzProtocolFlag_Send,
-    .decoder = &kia_protocol_v7_decoder,
-    .encoder = &kia_protocol_v7_encoder,
+    .decoder = &subghz_protocol_kia_v7_decoder,
+    .encoder = &subghz_protocol_kia_v7_encoder,
 };
 
 #ifdef ENABLE_EMULATE_FEATURE
@@ -312,7 +315,7 @@ void* kia_protocol_encoder_v7_alloc(SubGhzEnvironment* environment) {
     SubGhzProtocolEncoderKiaV7* instance = calloc(1, sizeof(SubGhzProtocolEncoderKiaV7));
     furi_check(instance);
 
-    instance->base.protocol = &kia_protocol_v7;
+    instance->base.protocol = &subghz_protocol_kia_v7;
     instance->generic.protocol_name = instance->base.protocol->name;
     instance->encoder.repeat = 1;
     instance->encoder.size_upload = KIA_V7_UPLOAD_CAPACITY;
@@ -457,7 +460,7 @@ void* kia_protocol_decoder_v7_alloc(SubGhzEnvironment* environment) {
     SubGhzProtocolDecoderKiaV7* instance = calloc(1, sizeof(SubGhzProtocolDecoderKiaV7));
     furi_check(instance);
 
-    instance->base.protocol = &kia_protocol_v7;
+    instance->base.protocol = &subghz_protocol_kia_v7;
     instance->generic.protocol_name = instance->base.protocol->name;
 
     return instance;

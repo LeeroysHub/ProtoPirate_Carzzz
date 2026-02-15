@@ -123,7 +123,7 @@ const SubGhzProtocolEncoder kia_protocol_v5_encoder = {
     .yield = NULL,
 };
 
-const SubGhzProtocol kia_protocol_v5 = {
+const SubGhzProtocol subghz_protocol_kia_v5 = {
     .name = KIA_PROTOCOL_V5_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable,
@@ -139,7 +139,7 @@ static void kia_v5_add_bit(SubGhzProtocolDecoderKiaV5* instance, bool bit) {
 void* kia_protocol_decoder_v5_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderKiaV5* instance = malloc(sizeof(SubGhzProtocolDecoderKiaV5));
-    instance->base.protocol = &kia_protocol_v5;
+    instance->base.protocol = &subghz_protocol_kia_v5;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }

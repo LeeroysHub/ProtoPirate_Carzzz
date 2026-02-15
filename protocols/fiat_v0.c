@@ -72,7 +72,7 @@ const SubGhzProtocolEncoder subghz_protocol_fiat_v0_encoder = {
     .yield = subghz_protocol_encoder_fiat_v0_yield,
 };
 
-const SubGhzProtocol fiat_protocol_v0 = {
+const SubGhzProtocol subghz_protocol_fiat_v0 = {
     .name = FIAT_PROTOCOL_V0_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
@@ -114,7 +114,7 @@ void* subghz_protocol_encoder_fiat_v0_alloc(SubGhzEnvironment* environment) {
     SubGhzProtocolEncoderFiatV0* instance = calloc(1, sizeof(SubGhzProtocolEncoderFiatV0));
     furi_check(instance);
 
-    instance->base.protocol = &fiat_protocol_v0;
+    instance->base.protocol = &subghz_protocol_fiat_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
 
     instance->encoder.repeat = 10;
@@ -358,7 +358,7 @@ void* subghz_protocol_decoder_fiat_v0_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderFiatV0* instance = calloc(1, sizeof(SubGhzProtocolDecoderFiatV0));
     furi_check(instance);
-    instance->base.protocol = &fiat_protocol_v0;
+    instance->base.protocol = &subghz_protocol_fiat_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }
