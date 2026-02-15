@@ -181,7 +181,7 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
     if(psa_needs_bf) {
         widget_add_button_element(
             app->widget,
-            GuiButtonTypeLeft,
+            GuiButtonTypeRight,
             "Brute force",
             protopirate_scene_receiver_info_widget_callback,
             app);
@@ -190,7 +190,7 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
     else if(!is_emu_off) {
         widget_add_button_element(
             app->widget,
-            GuiButtonTypeLeft,
+            GuiButtonTypeRight,
             "Remote",
             protopirate_scene_receiver_info_widget_callback,
             app);
@@ -199,7 +199,7 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
 
     widget_add_button_element(
         app->widget,
-        GuiButtonTypeRight,
+        GuiButtonTypeLeft,
         "Save",
         protopirate_scene_receiver_info_widget_callback,
         app);
@@ -237,10 +237,10 @@ static void protopirate_scene_receiver_info_widget_callback(
     void* context) {
     ProtoPirateApp* app = context;
     if(type == InputTypeShort || type == InputTypeLong) {
-        if(result == GuiButtonTypeRight) {
+        if(result == GuiButtonTypeLeft) {
             view_dispatcher_send_custom_event(
                 app->view_dispatcher, ProtoPirateCustomEventReceiverInfoSave);
-        } else if(result == GuiButtonTypeLeft) {
+        } else if(result == GuiButtonTypeRight) {
             if(!app->psa_bf_thread && psa_item_needs_bruteforce(app)) {
                 view_dispatcher_send_custom_event(
                     app->view_dispatcher, ProtoPirateCustomEventReceiverInfoBruteforceStart);

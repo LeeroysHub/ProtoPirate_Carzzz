@@ -13,14 +13,14 @@ static void protopirate_scene_saved_info_widget_callback(
     void* context) {
     ProtoPirateApp* app = context;
 
-    if((result == GuiButtonTypeLeft) && (type == InputTypeShort)) {
+    if((result == GuiButtonTypeRight) && (type == InputTypeShort)) {
 #ifdef ENABLE_EMULATE_FEATURE
         if(!is_emu_off) {
             view_dispatcher_send_custom_event(
                 app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
         }
 #endif
-    } else if(result == GuiButtonTypeRight && (type == InputTypeShort)) {
+    } else if(result == GuiButtonTypeLeft && (type == InputTypeShort)) {
         //Send delete event and get user confirmation to delete.
         view_dispatcher_send_custom_event(
             app->view_dispatcher, ProtoPirateCustomEventSavedInfoDelete);
@@ -211,7 +211,7 @@ cleanup:
         if(!is_emu_off) {
             widget_add_button_element(
                 app->widget,
-                GuiButtonTypeLeft,
+                GuiButtonTypeRight,
                 "Remote",
                 protopirate_scene_saved_info_widget_callback,
                 app);
@@ -219,7 +219,7 @@ cleanup:
 #endif
         widget_add_button_element(
             app->widget,
-            GuiButtonTypeRight,
+            GuiButtonTypeLeft,
             "Delete",
             protopirate_scene_saved_info_widget_callback,
             app);
