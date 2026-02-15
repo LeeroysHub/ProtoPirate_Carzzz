@@ -2,13 +2,21 @@
 #include "../protopirate_app_i.h"
 #include "../helpers/protopirate_storage.h"
 
+#ifdef BUILD_MAIN_APP
 #include "proto_pirate_icons.h"
+#else
+#include "proto_pirate_utils_icons.h"
+#endif
 
 #define TAG "ProtoPirateSceneStart"
 
 typedef enum {
+#ifdef ENABLE_RECEIVER_SCENE
     SubmenuIndexProtoPirateReceiver,
+#endif
+#ifdef ENABLE_SAVED_SCENE
     SubmenuIndexProtoPirateSaved,
+#endif
     SubmenuIndexProtoPirateReceiverConfig,
 #ifdef ENABLE_SUB_DECODE_SCENE
     SubmenuIndexProtoPirateSubDecode,
@@ -16,25 +24,33 @@ typedef enum {
 #ifdef ENABLE_TIMING_TUNER_SCENE
     SubmenuIndexProtoPirateTimingTuner,
 #endif
+#ifdef ENABLE_SET_TYPE_SCENE
     SubmenuIndexAddManually,
+#endif
     SubmenuIndexProtoPirateAbout,
 } SubmenuIndex;
 
 // Forward declaration
+#ifdef ENABLE_SAVED_SCENE
 static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app);
+#endif
 
 static void protopirate_scene_start_submenu_callback(void* context, uint32_t index) {
     furi_check(context);
     ProtoPirateApp* app = context;
 
-    // Handle "Saved Remotes" directly here, not via custom event
+// Handle "Saved Remotes" directly here, not via custom event
+#ifdef ENABLE_SAVED_SCENE
     if(index == SubmenuIndexProtoPirateSaved) {
         protopirate_scene_start_open_saved_captures(app);
-    } else {
+    } else
+#endif
+    {
         view_dispatcher_send_custom_event(app->view_dispatcher, index);
     }
 }
 
+#ifdef ENABLE_SAVED_SCENE
 static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
     FURI_LOG_I(TAG, "[1] Opening saved captures browser");
     FURI_LOG_I(TAG, "[1a] PROTOPIRATE_APP_FOLDER = %s", PROTOPIRATE_APP_FOLDER);
@@ -72,7 +88,11 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
 
     // Set starting path
     FURI_LOG_D(TAG, "[8] Setting file_path");
+#ifdef BUILD_MAIN_APP
     furi_string_set(app->file_path, PROTOPIRATE_APP_FOLDER);
+#else
+    furi_string_set(app->file_path, "/ext/apps_data/proto_pirate/");
+#endif
     FURI_LOG_D(TAG, "[9] file_path set to: %s", furi_string_get_cstr(app->file_path));
 
     // Configure file browser
@@ -128,25 +148,28 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
 
     FURI_LOG_I(TAG, "[20] open_saved_captures complete");
 }
+#endif //ENABLE_SAVED_SCENE
 
 void protopirate_scene_start_on_enter(void* context) {
     furi_check(context);
     ProtoPirateApp* app = context;
 
+#ifdef ENABLE_RECEIVER_SCENE
     submenu_add_item(
         app->submenu,
         "Clone Remote",
         SubmenuIndexProtoPirateReceiver,
         protopirate_scene_start_submenu_callback,
         app);
-
+#endif
+#ifdef ENABLE_RECEIVER_SCENE
     submenu_add_item(
         app->submenu,
         "Saved Remotes",
         SubmenuIndexProtoPirateSaved,
         protopirate_scene_start_submenu_callback,
         app);
-
+#endif
     submenu_add_item(
         app->submenu,
         "Configuration",
@@ -169,14 +192,14 @@ void protopirate_scene_start_on_enter(void* context) {
         protopirate_scene_start_submenu_callback,
         app);
 #endif
-
+#ifdef ENABLE_SET_TYPE_SCENE
     submenu_add_item(
         app->submenu,
         "Add Manually",
         SubmenuIndexAddManually,
         protopirate_scene_start_submenu_callback,
         app);
-
+#endif
     submenu_add_item(
         app->submenu,
         "About",
@@ -199,10 +222,14 @@ bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
         if(event.event == SubmenuIndexProtoPirateAbout) {
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneAbout);
             consumed = true;
-        } else if(event.event == SubmenuIndexProtoPirateReceiver) {
+        }
+#ifdef ENABLE_RECEIVER_SCENE
+        else if(event.event == SubmenuIndexProtoPirateReceiver) {
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneReceiver);
             consumed = true;
-        } else if(event.event == SubmenuIndexProtoPirateReceiverConfig) {
+        }
+#endif
+        else if(event.event == SubmenuIndexProtoPirateReceiverConfig) {
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneReceiverConfig);
             consumed = true;
         }
@@ -216,7 +243,10 @@ bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
         else if(event.event == SubmenuIndexProtoPirateTimingTuner) {
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneTimingTuner);
             consumed = true;
-        } else if(event.event == SubmenuIndexAddManually) {
+        }
+#endif
+#ifdef ENABLE_SET_TYPE_SCENE
+        else if(event.event == SubmenuIndexAddManually) {
             //scene_manager_set_scene_state(
             //    subghz->scene_manager, SubGhzSceneStart, SubmenuIndexAddManually);
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneSetType);
