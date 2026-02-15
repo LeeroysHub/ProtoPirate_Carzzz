@@ -110,7 +110,7 @@ const SubGhzProtocolEncoder subghz_protocol_mazda_v0_encoder = {
 };
 #endif
 
-const SubGhzProtocol mazda_v0_protocol = {
+const SubGhzProtocol subghz_protocol_mazda_v0 = {
     .name = MAZDA_PROTOCOL_V0_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
@@ -360,7 +360,7 @@ void* subghz_protocol_encoder_mazda_v0_alloc(SubGhzEnvironment* environment) {
     SubGhzProtocolEncoderMazdaV0* instance = calloc(1, sizeof(SubGhzProtocolEncoderMazdaV0));
     furi_check(instance);
 
-    instance->base.protocol = &mazda_v0_protocol;
+    instance->base.protocol = &subghz_protocol_mazda_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
     instance->encoder.repeat = 10;
     instance->encoder.size_upload = 0;
@@ -517,7 +517,7 @@ void* subghz_protocol_decoder_mazda_v0_alloc(SubGhzEnvironment* environment) {
     SubGhzProtocolDecoderMazdaV0* instance = calloc(1, sizeof(SubGhzProtocolDecoderMazdaV0));
     furi_check(instance);
 
-    instance->base.protocol = &mazda_v0_protocol;
+    instance->base.protocol = &subghz_protocol_mazda_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
 
     return instance;

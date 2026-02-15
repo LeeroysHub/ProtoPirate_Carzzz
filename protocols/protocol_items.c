@@ -3,24 +3,23 @@
 
 const SubGhzProtocol* protopirate_protocol_registry_items[] = {
     &subghz_protocol_scher_khan, // Heap: free 16320
-    &kia_protocol_v0, // Heap: free 16976
-    &kia_protocol_v1, // Heap: free 17192
-    &kia_protocol_v2, // Heap: free 16944
-    &kia_protocol_v3_v4, // Heap: free 18432
-    &kia_protocol_v5, // Heap: free 16528
-    &kia_protocol_v6, // Heap: free 18296
-    &ford_protocol_v0, // Heap: free 19456
-    &fiat_protocol_v0, // Heap: free 16864
-    &fiat_v1_protocol,
-    &mazda_v0_protocol,
-    &kia_protocol_v7,
-    &mitsubishi_v0_protocol,
-    &porsche_touareg_protocol,
-    &subaru_protocol, // Heap: free 17280
-    &vag_protocol, // Heap: free 29352
+    &subghz_protocol_kia_v0, // Heap: free 16976
+    &subghz_protocol_kia_v1, // Heap: free 17192
+    &subghz_protocol_kia_v2, // Heap: free 16944
+    &subghz_protocol_kia_v3_v4, // Heap: free 18432
+    &subghz_protocol_kia_v5, // Heap: free 16528
+    &subghz_protocol_kia_v6, // Heap: free 18296
+    &subghz_protocol_kia_v7,
+    &subghz_protocol_ford_v0, // Heap: free 19456
+    &subghz_protocol_fiat_v0, // Heap: free 16864
+    &subghz_protocol_fiat_v1,
+    &subghz_protocol_mitsubishi_v0,
+    &subghz_protocol_porsche_touareg,
+    &subghz_protocol_subaru, // Heap: free 17280
+    &subghz_protocol_vag, // Heap: free 29352
     &subghz_protocol_star_line, // Heap: free 18632
-    &psa_protocol, // Heap: free 25408
-    &honda_static_protocol,
+    &subghz_protocol_psa, // Heap: free 25408
+    &subghz_protocol_honda_static,
 };
 // TODO: See above
 // Current HEAP situation:

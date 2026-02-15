@@ -15,7 +15,7 @@
 
 #define FORD_PROTOCOL_V0_NAME "Ford V0"
 
-extern const SubGhzProtocol ford_protocol_v0;
+extern const SubGhzProtocol subghz_protocol_ford_v0;
 
 // Decoder functions
 void* subghz_protocol_decoder_ford_v0_alloc(SubGhzEnvironment* environment);

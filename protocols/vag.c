@@ -545,7 +545,7 @@ const SubGhzProtocolEncoder subghz_protocol_vag_encoder = {
 };
 #endif
 
-const SubGhzProtocol vag_protocol = {
+const SubGhzProtocol subghz_protocol_vag = {
     .name = VAG_PROTOCOL_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_Decodable |
@@ -558,7 +558,7 @@ void* subghz_protocol_decoder_vag_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderVAG* instance = calloc(1, sizeof(SubGhzProtocolDecoderVAG));
     furi_check(instance);
-    instance->base.protocol = &vag_protocol;
+    instance->base.protocol = &subghz_protocol_vag;
     instance->generic.protocol_name = instance->base.protocol->name;
     instance->decrypted = false;
     instance->key_idx = 0xFF;
@@ -1612,7 +1612,7 @@ void* subghz_protocol_encoder_vag_alloc(SubGhzEnvironment* environment) {
 
     SubGhzProtocolEncoderVAG* instance = calloc(1, sizeof(SubGhzProtocolEncoderVAG));
     furi_check(instance);
-    instance->base.protocol = &vag_protocol;
+    instance->base.protocol = &subghz_protocol_vag;
     instance->generic.protocol_name = instance->base.protocol->name;
 
     instance->upload = calloc(VAG_ENCODER_UPLOAD_MAX_SIZE, sizeof(LevelDuration));

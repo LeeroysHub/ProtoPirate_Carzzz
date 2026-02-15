@@ -6,7 +6,7 @@
 
 #define KIA_PROTOCOL_V3_V4_NAME "Kia V3/V4"
 
-extern const SubGhzProtocol kia_protocol_v3_v4;
+extern const SubGhzProtocol subghz_protocol_kia_v3_v4;
 
 // Decoder functions
 void* kia_protocol_decoder_v3_v4_alloc(SubGhzEnvironment* environment);

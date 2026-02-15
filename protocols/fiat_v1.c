@@ -138,7 +138,7 @@ const SubGhzProtocolEncoder subghz_protocol_fiat_marelli_encoder = {
     .yield = NULL,
 };
 
-const SubGhzProtocol fiat_v1_protocol = {
+const SubGhzProtocol subghz_protocol_fiat_v1 = {
     .name = FIAT_MARELLI_PROTOCOL_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
@@ -152,7 +152,7 @@ void* subghz_protocol_decoder_fiat_marelli_alloc(SubGhzEnvironment* environment)
     SubGhzProtocolDecoderFiatMarelli* instance =
         calloc(1, sizeof(SubGhzProtocolDecoderFiatMarelli));
     furi_check(instance);
-    instance->base.protocol = &fiat_v1_protocol;
+    instance->base.protocol = &subghz_protocol_fiat_v1;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }

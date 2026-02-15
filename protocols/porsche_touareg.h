@@ -15,7 +15,7 @@
 
 typedef struct SubGhzProtocolDecoderPorscheCayenne SubGhzProtocolDecoderPorscheCayenne;
 
-extern const SubGhzProtocol porsche_touareg_protocol;
+extern const SubGhzProtocol subghz_protocol_porsche_touareg;
 
 void* subghz_protocol_decoder_porsche_cayenne_alloc(SubGhzEnvironment* environment);
 void subghz_protocol_decoder_porsche_cayenne_free(void* context);

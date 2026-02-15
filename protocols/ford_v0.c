@@ -133,7 +133,7 @@ const SubGhzProtocolEncoder subghz_protocol_ford_v0_encoder = {
 };
 #endif
 
-const SubGhzProtocol ford_protocol_v0 = {
+const SubGhzProtocol subghz_protocol_ford_v0 = {
     .name = FORD_PROTOCOL_V0_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
@@ -362,7 +362,7 @@ void* subghz_protocol_encoder_ford_v0_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolEncoderFordV0* instance = malloc(sizeof(SubGhzProtocolEncoderFordV0));
 
-    instance->base.protocol = &ford_protocol_v0;
+    instance->base.protocol = &subghz_protocol_ford_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
 
     instance->encoder.repeat = 10;
@@ -719,7 +719,7 @@ static bool ford_v0_process_data(SubGhzProtocolDecoderFordV0* instance) {
 void* subghz_protocol_decoder_ford_v0_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderFordV0* instance = malloc(sizeof(SubGhzProtocolDecoderFordV0));
-    instance->base.protocol = &ford_protocol_v0;
+    instance->base.protocol = &subghz_protocol_ford_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }
