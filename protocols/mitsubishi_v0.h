@@ -15,7 +15,7 @@
 
 typedef struct SubGhzProtocolDecoderMitsubishi SubGhzProtocolDecoderMitsubishi;
 
-extern const SubGhzProtocol mitsubishi_v0_protocol;
+extern const SubGhzProtocol subghz_protocol_mitsubishi_v0;
 
 void* subghz_protocol_decoder_mitsubishi_alloc(SubGhzEnvironment* environment);
 void subghz_protocol_decoder_mitsubishi_free(void* context);

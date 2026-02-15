@@ -2,9 +2,9 @@
 #include <string.h>
 // Original implementation by @lupettohf
 
-#define MAZDA_PREAMBLE_MIN 13
-#define MAZDA_COMPLETION_MIN 80
-#define MAZDA_COMPLETION_MAX 105
+#define MAZDA_PREAMBLE_MIN     13
+#define MAZDA_COMPLETION_MIN   80
+#define MAZDA_COMPLETION_MAX   105
 #define MAZDA_DATA_BUFFER_SIZE 14
 
 static const SubGhzBlockConst subghz_protocol_mazda_const = {
@@ -107,7 +107,8 @@ static void mazda_collect_bit(SubGhzProtocolDecoderMazda* instance, uint8_t stat
 }
 
 static bool mazda_check_completion(SubGhzProtocolDecoderMazda* instance) {
-    if(instance->bit_counter < MAZDA_COMPLETION_MIN || instance->bit_counter > MAZDA_COMPLETION_MAX) {
+    if(instance->bit_counter < MAZDA_COMPLETION_MIN ||
+       instance->bit_counter > MAZDA_COMPLETION_MAX) {
         return false;
     }
 
@@ -138,8 +139,10 @@ static bool mazda_check_completion(SubGhzProtocolDecoderMazda* instance) {
     return true;
 }
 
-static bool
-    mazda_process_pair(SubGhzProtocolDecoderMazda* instance, uint32_t dur_first, uint32_t dur_second) {
+static bool mazda_process_pair(
+    SubGhzProtocolDecoderMazda* instance,
+    uint32_t dur_first,
+    uint32_t dur_second) {
     bool first_short = mazda_is_short(dur_first);
     bool first_long = mazda_is_long(dur_first);
     bool second_short = mazda_is_short(dur_second);
@@ -192,7 +195,7 @@ const SubGhzProtocolEncoder subghz_protocol_mazda_encoder = {
     .yield = NULL,
 };
 
-const SubGhzProtocol mazda_v0_protocol = {
+const SubGhzProtocol subghz_protocol_mazda_v0 = {
     .name = MAZDA_PROTOCOL_NAME,
     .type = SubGhzProtocolTypeStatic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
@@ -209,7 +212,7 @@ void* subghz_protocol_decoder_mazda_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderMazda* instance = calloc(1, sizeof(SubGhzProtocolDecoderMazda));
     furi_check(instance);
-    instance->base.protocol = &mazda_v0_protocol;
+    instance->base.protocol = &subghz_protocol_mazda_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }

@@ -66,7 +66,7 @@ const SubGhzProtocolEncoder subghz_protocol_kia_encoder = {
     .yield = subghz_protocol_encoder_kia_yield,
 };
 
-const SubGhzProtocol kia_protocol_v0 = {
+const SubGhzProtocol subghz_protocol_kia_v0 = {
     .name = KIA_PROTOCOL_V0_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable |
@@ -135,7 +135,7 @@ static bool kia_verify_crc(uint64_t data) {
 void* subghz_protocol_encoder_kia_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolEncoderKIA* instance = malloc(sizeof(SubGhzProtocolEncoderKIA));
-    instance->base.protocol = &kia_protocol_v0;
+    instance->base.protocol = &subghz_protocol_kia_v0;
     instance->serial = 0;
     instance->button = 0;
     instance->counter = 0;
@@ -523,7 +523,7 @@ uint8_t subghz_protocol_encoder_kia_get_button(void* context) {
 void* subghz_protocol_decoder_kia_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderKIA* instance = malloc(sizeof(SubGhzProtocolDecoderKIA));
-    instance->base.protocol = &kia_protocol_v0;
+    instance->base.protocol = &subghz_protocol_kia_v0;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }

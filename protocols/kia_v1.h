@@ -11,7 +11,7 @@ typedef struct SubGhzProtocolEncoderKiaV1 SubGhzProtocolEncoderKiaV1;
 
 extern const SubGhzProtocolDecoder kia_protocol_v1_decoder;
 extern const SubGhzProtocolEncoder kia_protocol_v1_encoder;
-extern const SubGhzProtocol kia_protocol_v1;
+extern const SubGhzProtocol subghz_protocol_kia_v1;
 
 // Decoder functions
 void* kia_protocol_decoder_v1_alloc(SubGhzEnvironment* environment);

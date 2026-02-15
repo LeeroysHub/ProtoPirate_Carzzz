@@ -15,7 +15,7 @@
 
 typedef struct SubGhzProtocolDecoderMazda SubGhzProtocolDecoderMazda;
 
-extern const SubGhzProtocol mazda_v0_protocol;
+extern const SubGhzProtocol subghz_protocol_mazda_v0;
 
 void* subghz_protocol_decoder_mazda_alloc(SubGhzEnvironment* environment);
 void subghz_protocol_decoder_mazda_free(void* context);

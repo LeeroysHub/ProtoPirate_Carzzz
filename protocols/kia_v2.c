@@ -55,7 +55,7 @@ const SubGhzProtocolEncoder kia_protocol_v2_encoder = {
     .yield = kia_protocol_encoder_v2_yield,
 };
 
-const SubGhzProtocol kia_protocol_v2 = {
+const SubGhzProtocol subghz_protocol_kia_v2 = {
     .name = KIA_PROTOCOL_V2_NAME,
     .type = SubGhzProtocolTypeDynamic,
     .flag = SubGhzProtocolFlag_315 | SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM |
@@ -137,7 +137,7 @@ void* kia_protocol_encoder_v2_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolEncoderKiaV2* instance = malloc(sizeof(SubGhzProtocolEncoderKiaV2));
 
-    instance->base.protocol = &kia_protocol_v2;
+    instance->base.protocol = &subghz_protocol_kia_v2;
     instance->generic.protocol_name = instance->base.protocol->name;
 
     instance->encoder.repeat = 10;
@@ -358,7 +358,7 @@ LevelDuration kia_protocol_encoder_v2_yield(void* context) {
 void* kia_protocol_decoder_v2_alloc(SubGhzEnvironment* environment) {
     UNUSED(environment);
     SubGhzProtocolDecoderKiaV2* instance = malloc(sizeof(SubGhzProtocolDecoderKiaV2));
-    instance->base.protocol = &kia_protocol_v2;
+    instance->base.protocol = &subghz_protocol_kia_v2;
     instance->generic.protocol_name = instance->base.protocol->name;
     return instance;
 }

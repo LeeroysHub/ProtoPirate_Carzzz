@@ -14,7 +14,7 @@
 
 #define SUZUKI_PROTOCOL_NAME "Suzuki"
 
-extern const SubGhzProtocol suzuki_protocol;
+extern const SubGhzProtocol subghz_protocol_suzuki;
 
 // Decoder functions
 void* subghz_protocol_decoder_suzuki_alloc(SubGhzEnvironment* environment);
