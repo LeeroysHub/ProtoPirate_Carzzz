@@ -1,9 +1,15 @@
 // scenes/protopirate_scene_receiver.c
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_RECEIVER_SCENE
 #include "../helpers/protopirate_storage.h"
 #include "views/protopirate_receiver.h"
 #include <notification/notification_messages.h>
+
+#ifdef BUILD_MAIN_APP
 #include "proto_pirate_icons.h"
+#else
+#include "proto_pirate_utils_icons.h"
+#endif
 
 #define TAG                             "ProtoPirateSceneRx"
 #define PROTOPIRATE_DISPLAY_HISTORY_MAX 20 // Reduced from 50 to save memory
@@ -407,3 +413,4 @@ void protopirate_scene_receiver_view_callback(ProtoPirateCustomEvent event, void
     ProtoPirateApp* app = context;
     view_dispatcher_send_custom_event(app->view_dispatcher, event);
 }
+#endif //ENABLE_RECEIVER_SCENE

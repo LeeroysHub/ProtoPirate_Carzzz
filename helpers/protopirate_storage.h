@@ -4,8 +4,14 @@
 #include <furi.h>
 #include <storage/storage.h>
 #include <flipper_format/flipper_format.h>
+#include <defines.h>
 
-#define PROTOPIRATE_APP_FOLDER       APP_DATA_PATH("saved")
+#ifdef BUILD_MAIN_APP
+#define PROTOPIRATE_APP_FOLDER APP_DATA_PATH("saved")
+#else
+#define PROTOPIRATE_APP_FOLDER "/ext/apps_data/proto_pirate/saved"
+#endif
+
 #define PROTOPIRATE_APP_EXTENSION    ".psf"
 #define PROTOPIRATE_APP_FILE_VERSION 1
 #define PROTOPIRATE_TEMP_FILE        APP_DATA_PATH("saved/.temp.psf")

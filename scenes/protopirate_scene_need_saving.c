@@ -1,5 +1,6 @@
 // scenes/protopirate_scene_need_saving.c
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_RECEIVER_SCENE
 #include "proto_pirate_icons.h"
 
 static void
@@ -79,3 +80,4 @@ void protopirate_scene_need_saving_on_exit(void* context) {
     ProtoPirateApp* app = context;
     widget_reset(app->widget);
 }
+#endif //ENABLE_RECEIVER_SCENE

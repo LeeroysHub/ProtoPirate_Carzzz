@@ -1,5 +1,7 @@
 // scenes/protopirate_scene_receiver_info.c
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_RECEIVER_SCENE
+
 #include "../helpers/protopirate_storage.h"
 #include "proto_pirate_icons.h"
 
@@ -576,3 +578,4 @@ void protopirate_scene_receiver_info_on_exit(void* context) {
     ProtoPirateApp* app = context;
     widget_reset(app->widget);
 }
+#endif //ENABLE_RECEIVER_SCENE

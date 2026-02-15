@@ -4,6 +4,8 @@
 //#include "protopirate_scene.h"
 //#include <lib/subghz/blocks/math.h>
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_SET_TYPE_SCENE
+
 #include "../helpers/protopirate_storage.h"
 #define TAG "SubGhzSetType"
 
@@ -295,3 +297,4 @@ void protopirate_scene_set_type_on_exit(void* context) {
     furi_record_close(RECORD_STORAGE);
     return result;
 } */
+#endif //ENABLE_SET_TYPE_SCENE

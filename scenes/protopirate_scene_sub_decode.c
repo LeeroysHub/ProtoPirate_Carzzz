@@ -12,7 +12,11 @@
 #include <math.h>
 #include <lib/subghz/types.h>
 
+#ifdef BUILD_MAIN_APP
 #include "proto_pirate_icons.h"
+#else
+#include "proto_pirate_utils_icons.h"
+#endif
 
 #define TAG "ProtoPirateSubDecode"
 

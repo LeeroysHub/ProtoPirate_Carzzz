@@ -6,7 +6,11 @@
 #include <furi.h>
 #include <math.h>
 
+#ifdef BUILD_MAIN_APP
 #include "proto_pirate_icons.h"
+#else
+#include "proto_pirate_utils_icons.h"
+#endif
 
 #define FRAME_HEIGHT             12
 #define MAX_LEN_PX               112
