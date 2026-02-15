@@ -3,9 +3,15 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <defines.h>
 
+#ifdef BUILD_MAIN_APP
 #define PROTOPIRATE_SETTINGS_FILE APP_DATA_PATH("settings.txt")
 #define PROTOPIRATE_SETTINGS_DIR  APP_DATA_PATH()
+#else
+#define PROTOPIRATE_SETTINGS_FILE "/ext/apps_data/proto_pirate/settings.txt"
+#define PROTOPIRATE_SETTINGS_DIR  "/ext/apps_data/proto_pirate/"
+#endif
 
 typedef struct {
     uint32_t frequency;

@@ -111,7 +111,12 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     // Redraw header over mask
     canvas_set_color(canvas, ColorBlack);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, x_off, 10, "ProtoPirate v" FAP_VERSION);
+
+#ifdef BUILD_MAIN_APP
+    canvas_draw_str(canvas, 0, 10, "ProtoPirate v" FAP_VERSION);
+#else
+    canvas_draw_str(canvas, 0, 10, "ProtoPirate Utilities v" FAP_VERSION);
+#endif
 
     canvas_set_font(canvas, FontKeyboard);
     if(g_state.frame % 8 < 4) {
