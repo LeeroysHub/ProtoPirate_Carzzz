@@ -13,21 +13,15 @@ enum ProtoPirateSettingIndex {
     ProtoPirateSettingIndexLock,
 };
 
-#define HOPPING_COUNT 2
-const char* const hopping_text[HOPPING_COUNT] = {
-    "OFF",
-    "ON",
-};
-
-const uint32_t hopping_value[HOPPING_COUNT] = {
-    ProtoPirateHopperStateOFF,
-    ProtoPirateHopperStateRunning,
-};
-
 #define ON_OFF_COUNT 2
 const char* const on_off_text[ON_OFF_COUNT] = {
     "OFF",
     "ON",
+};
+
+const uint32_t hopping_value[ON_OFF_COUNT] = {
+    ProtoPirateHopperStateOFF,
+    ProtoPirateHopperStateRunning,
 };
 
 #define TIME_SEQ_COUNT 2
@@ -136,7 +130,7 @@ static void protopirate_scene_receiver_config_set_hopping_running(VariableItem* 
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    variable_item_set_current_value_text(item, hopping_text[index]);
+    variable_item_set_current_value_text(item, on_off_text[index]);
     if(hopping_value[index] == ProtoPirateHopperStateOFF) {
         char text_buf[10] = {0};
         snprintf(
@@ -248,7 +242,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     value_index = protopirate_scene_receiver_config_hopper_value_index(
         app->txrx->hopper_state, hopping_value, HOPPING_COUNT, app);
     variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, hopping_text[value_index]);
+    variable_item_set_current_value_text(item, on_off_text[value_index]);
 
     item = variable_item_list_add(
         app->variable_item_list,
