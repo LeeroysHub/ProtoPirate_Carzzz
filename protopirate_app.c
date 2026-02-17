@@ -69,6 +69,17 @@ ProtoPirateApp* protopirate_app_alloc() {
     // Open Dialogs record
     app->dialogs = furi_record_open(RECORD_DIALOGS);
 
+    //Initialise Car Model varables
+
+#ifdef BUILD_MAIN_APP
+    app->car_models_count = protopirate_model_get_count();
+    FURI_LOG_D(TAG, "There are %u models available", app->car_models_count);
+    app->selected_model = NULL;
+    app->freq_menu = NULL;
+    app->hop_menu = NULL;
+    app->preset_menu = NULL;
+#endif
+
     // Variable Item List
     app->variable_item_list = variable_item_list_alloc();
     view_dispatcher_add_view(
@@ -211,7 +222,6 @@ ProtoPirateApp* protopirate_app_alloc() {
     }
 
     FURI_LOG_D(TAG, "Initial state: radio_initialized=%d", app->radio_initialized);
-
     LOG_HEAP("App alloc complete (radio deferred)");
 
     return app;
@@ -387,6 +397,39 @@ void protopirate_radio_deinit(ProtoPirateApp* app) {
     LOG_HEAP("Radio deinit complete");
 }
 
+#ifdef BUILD_MAIN_APP
+void protopirate_car_model_free(ProtoPirateCarModel** selected_model) {
+    if(selected_model && *selected_model) {
+        ProtoPirateCarModel* model = *selected_model;
+
+        FURI_LOG_D(TAG, "Freeing selected_model");
+
+        if(model->name) {
+            furi_string_free(model->name);
+            model->name = NULL;
+        }
+
+        if(model->preset) {
+            if(model->preset->data) {
+                free(model->preset->data);
+                model->preset->data = NULL;
+            }
+
+            if(model->preset->name) {
+                furi_string_free(model->preset->name);
+                model->preset->name = NULL;
+            }
+
+            free(model->preset);
+            model->preset = NULL;
+        }
+
+        free(model);
+        *selected_model = NULL;
+    }
+}
+#endif
+
 void protopirate_app_free(ProtoPirateApp* app) {
     furi_check(app);
 
@@ -418,6 +461,12 @@ void protopirate_app_free(ProtoPirateApp* app) {
         ((settings.option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
         settings.hopping_enabled);
 
+    //Free the selected model, we wont save that.
+#ifdef BUILD_MAIN_APP
+    protopirate_car_model_free(&app->selected_model);
+#endif
+
+    //Save app settings
     protopirate_settings_save(&settings);
 
     // Deinitialize whichever is active - NULL checks inside handle all cases

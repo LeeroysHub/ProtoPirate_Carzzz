@@ -2,6 +2,7 @@
 #include "../protopirate_app_i.h"
 
 enum ProtoPirateSettingIndex {
+    ProtoPirateSettingIndexCarModel,
     ProtoPirateSettingIndexFrequency,
     ProtoPirateSettingIndexHopping,
     ProtoPirateSettingIndexModulation,
@@ -162,6 +163,82 @@ static void protopirate_scene_receiver_config_set_hopping_running(VariableItem* 
     app->txrx->hopper_state = hopping_value[index];
 }
 
+#ifdef BUILD_MAIN_APP
+static void protopirate_scene_receiver_config_set_model(VariableItem* item) {
+    ProtoPirateApp* app = variable_item_get_context(item);
+    uint8_t index = variable_item_get_current_value_index(item);
+
+    //Get a Car Model object, and dont forget to shut down on app free!
+    protopirate_model_get_by_index(app, &app->selected_model, index);
+
+    //Add he car model the list, with the correct selection and text.
+    variable_item_set_current_value_text(item, furi_string_get_cstr(app->selected_model->name));
+
+    //set the Preset, Frequency and Hopper off or restore.
+    if(!index) {
+        //Restore Original Preset.
+        protopirate_scene_receiver_config_set_frequency(app->freq_menu);
+        protopirate_scene_receiver_config_set_hopping_running(app->hop_menu);
+        if(app->selected_model->last_preset_index > -1) {
+            furi_string_set(
+                app->txrx->preset->name,
+                subghz_setting_get_preset_name(
+                    app->setting, app->selected_model->last_preset_index));
+
+            protopirate_preset_init(
+                app,
+                subghz_setting_get_preset_name(
+                    app->setting, app->selected_model->last_preset_index),
+                app->txrx->preset->frequency,
+                subghz_setting_get_preset_data(
+                    app->setting, app->selected_model->last_preset_index),
+                subghz_setting_get_preset_data_size(
+                    app->setting, app->selected_model->last_preset_index));
+
+            variable_item_set_current_value_text(
+                app->preset_menu,
+                subghz_setting_get_preset_name(
+                    app->setting, app->selected_model->last_preset_index));
+
+            app->selected_model->last_preset_index = -1;
+        } else {
+            protopirate_preset_init(
+                app,
+                subghz_setting_get_preset_name(app->setting, index),
+                app->txrx->preset->frequency,
+                subghz_setting_get_preset_data(app->setting, index),
+                subghz_setting_get_preset_data_size(app->setting, index));
+
+            variable_item_set_current_value_text(
+                app->preset_menu, subghz_setting_get_preset_name(app->setting, index));
+        }
+    } else {
+        variable_item_set_current_value_text(app->freq_menu, "Locked");
+        variable_item_set_current_value_text(app->hop_menu, "Locked");
+        app->txrx->hopper_state = ProtoPirateHopperStateOFF;
+        app->txrx->preset->frequency = app->selected_model->preset->frequency;
+
+        //Save Original Prseet.
+        if(app->selected_model->last_preset_index == -1)
+            app->selected_model->last_preset_index = subghz_setting_get_inx_preset_by_name(
+                app->setting, furi_string_get_cstr(app->txrx->preset->name));
+
+        protopirate_preset_init(
+            app,
+            furi_string_get_cstr(app->selected_model->preset->name),
+            app->selected_model->preset->frequency,
+            app->selected_model->preset->data,
+            app->selected_model->preset->data_size);
+    }
+
+    //Lock or Unlock the menus.
+    bool lock = (app->selected_model->index != 0);
+    variable_item_set_locked(app->freq_menu, lock, "Turn off\nCar Model\nto do that!");
+    variable_item_set_locked(app->hop_menu, lock, "Turn off\nCar Model\nto do that!");
+    variable_item_set_locked(app->preset_menu, lock, "Turn off\nCar Model\nto do that!");
+}
+#endif
+
 static void protopirate_scene_receiver_config_set_auto_save(VariableItem* item) {
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -213,6 +290,31 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     VariableItem* item;
     uint8_t value_index;
 
+//Get a Car Model object, and dont forget to shut down on app free!
+#ifdef BUILD_MAIN_APP
+    if(app->car_models_count) {
+        int16_t tmp = -1;
+        if(app->selected_model) {
+            tmp = app->selected_model->last_preset_index;
+            protopirate_model_get_by_index(app, &app->selected_model, app->selected_model->index);
+        } else {
+            protopirate_model_get_by_index(app, &app->selected_model, 0);
+        }
+
+        //Add he car model the list, with the correct selection and text.
+        item = variable_item_list_add(
+            app->variable_item_list,
+            "Car Model:",
+            app->car_models_count + 1, //Plus NONE
+            protopirate_scene_receiver_config_set_model,
+            app);
+        variable_item_set_current_value_index(item, app->selected_model->index);
+        variable_item_set_current_value_text(
+            item, furi_string_get_cstr(app->selected_model->name));
+        app->selected_model->last_preset_index = tmp;
+    }
+#endif
+    //Frequency Menu Item.
     item = variable_item_list_add(
         app->variable_item_list,
         "Frequency:",
@@ -224,6 +326,13 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     scene_manager_set_scene_state(
         app->scene_manager, ProtoPirateSceneReceiverConfig, (uint32_t)item);
     variable_item_set_current_value_index(item, value_index);
+#ifdef BUILD_MAIN_APP
+    variable_item_set_locked(
+        item,
+        app->selected_model && (app->selected_model->index),
+        "Turn off\nCar Model\nto do that!");
+    app->freq_menu = item;
+#endif
     char text_buf[10] = {0};
     snprintf(
         text_buf,
@@ -233,16 +342,24 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         (subghz_setting_get_frequency(app->setting, value_index) % 1000000) / 10000);
     variable_item_set_current_value_text(item, text_buf);
 
+    //Hopping Menu Item
     item = variable_item_list_add(
         app->variable_item_list,
         "Hopping:",
-        HOPPING_COUNT,
+        ON_OFF_COUNT,
         protopirate_scene_receiver_config_set_hopping_running,
         app);
     value_index = protopirate_scene_receiver_config_hopper_value_index(
-        app->txrx->hopper_state, hopping_value, HOPPING_COUNT, app);
+        app->txrx->hopper_state, hopping_value, ON_OFF_COUNT, app);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, on_off_text[value_index]);
+#ifdef BUILD_MAIN_APP
+    variable_item_set_locked(
+        item,
+        app->selected_model && (app->selected_model->index),
+        "Turn off\nCar Model\nto do that!");
+    app->hop_menu = item;
+#endif
 
     item = variable_item_list_add(
         app->variable_item_list,
@@ -255,6 +372,13 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(
         item, subghz_setting_get_preset_name(app->setting, value_index));
+#ifdef BUILD_MAIN_APP
+    variable_item_set_locked(
+        item,
+        app->selected_model && (app->selected_model->index),
+        "Turn off\nCar Model\nto do that!");
+    app->preset_menu = item;
+#endif
 
 #ifdef ENABLE_EMULATE_FEATURE
     // TX power option
@@ -314,6 +438,7 @@ bool protopirate_scene_receiver_config_on_event(void* context, SceneManagerEvent
 
 void protopirate_scene_receiver_config_on_exit(void* context) {
     ProtoPirateApp* app = context;
+
     variable_item_list_set_selected_item(app->variable_item_list, 0);
     variable_item_list_reset(app->variable_item_list);
 }

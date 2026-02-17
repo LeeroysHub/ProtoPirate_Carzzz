@@ -12,7 +12,7 @@ App(
     fap_icon="images/protopirate_10px.png",
     fap_category="Sub-GHz",
     fap_icon_assets="images",
-    fap_file_assets="keystore",
+    fap_file_assets="app_assets",
 )
 
 App(
@@ -28,5 +28,5 @@ App(
     fap_icon="images/protopirate_10px.png",
     fap_category="Sub-GHz",
     fap_icon_assets="images",
-    fap_file_assets="keystore",
+    fap_file_assets="app_assets",
 )
