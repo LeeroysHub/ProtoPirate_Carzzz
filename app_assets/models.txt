@@ -16,3 +16,11 @@ PresetName3: FuriHalSubGhzPresetOok650Async
 ModelName4: 315Mhz FM476
 Frequency4: 315000000
 PresetName4: FuriHalSubGhzPreset2FSKDev476Async
+
+ModelName5: Falcon, Ford (2002-2017) 
+Frequency5: 433920000
+PresetName5: FuriHalSubGhzPresetOok650Async
+
+ModelName6: Territory, Ford (2002-2017)
+Frequency6: 433920000
+PresetName6: FuriHalSubGhzPresetOok650Async
