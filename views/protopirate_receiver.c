@@ -213,30 +213,6 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
         protopirate_view_rssi_draw(canvas, model);
     }
 
-    //Draw To Unlock, Locked etc...
-    if(model->lock_count) {
-        canvas_draw_str(canvas, 44, 63, furi_string_get_cstr(model->frequency_str));
-        canvas_draw_str(canvas, 79, 63, furi_string_get_cstr(model->preset_str));
-        canvas_draw_str(canvas, 96, 63, furi_string_get_cstr(model->history_stat_str));
-        canvas_set_font(canvas, FontSecondary);
-        elements_bold_rounded_frame(canvas, 14, 8, 99, 48);
-        elements_multiline_text(canvas, 65, 26, "To unlock\npress:");
-        canvas_draw_icon(canvas, 65, 42, &I_Pin_back_arrow_10x8);
-        canvas_draw_icon(canvas, 80, 42, &I_Pin_back_arrow_10x8);
-        canvas_draw_icon(canvas, 95, 42, &I_Pin_back_arrow_10x8);
-        canvas_draw_icon(canvas, 16, 13, &I_WarningDolphin_45x42);
-        canvas_draw_dot(canvas, 17, 61);
-    } else {
-        if(model->lock == ProtoPirateLockOn) {
-            canvas_draw_icon(canvas, 64, 55, &I_Lock_7x8);
-            canvas_draw_str(canvas, 74, 62, "Locked");
-        } else {
-            canvas_draw_str(canvas, 44, 63, furi_string_get_cstr(model->frequency_str));
-            canvas_draw_str(canvas, 79, 63, furi_string_get_cstr(model->preset_str));
-            canvas_draw_str(canvas, 96, 63, furi_string_get_cstr(model->history_stat_str));
-        }
-    }
-
     //Draw the List, or the Radar/Dolphin View.
     if(item_count > 0) {
         // Draw received items list
@@ -398,6 +374,30 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             const char* auto_save_text = "Save";
             canvas_draw_str(
                 canvas, 110 - canvas_string_width(canvas, auto_save_text), 7, auto_save_text);
+        }
+    }
+
+    //Draw To Unlock, Locked etc...
+    if(model->lock_count) {
+        canvas_draw_str(canvas, 44, 63, furi_string_get_cstr(model->frequency_str));
+        canvas_draw_str(canvas, 79, 63, furi_string_get_cstr(model->preset_str));
+        canvas_draw_str(canvas, 96, 63, furi_string_get_cstr(model->history_stat_str));
+        canvas_set_font(canvas, FontSecondary);
+        elements_bold_rounded_frame(canvas, 14, 8, 99, 48);
+        elements_multiline_text(canvas, 65, 26, "To unlock\npress:");
+        canvas_draw_icon(canvas, 65, 42, &I_Pin_back_arrow_10x8);
+        canvas_draw_icon(canvas, 80, 42, &I_Pin_back_arrow_10x8);
+        canvas_draw_icon(canvas, 95, 42, &I_Pin_back_arrow_10x8);
+        canvas_draw_icon(canvas, 16, 13, &I_WarningDolphin_45x42);
+        canvas_draw_dot(canvas, 17, 61);
+    } else {
+        if(model->lock == ProtoPirateLockOn) {
+            canvas_draw_icon(canvas, 64, 55, &I_Lock_7x8);
+            canvas_draw_str(canvas, 74, 62, "Locked");
+        } else {
+            canvas_draw_str(canvas, 44, 63, furi_string_get_cstr(model->frequency_str));
+            canvas_draw_str(canvas, 79, 63, furi_string_get_cstr(model->preset_str));
+            canvas_draw_str(canvas, 96, 63, furi_string_get_cstr(model->history_stat_str));
         }
     }
 }
@@ -637,8 +637,7 @@ void protopirate_view_receiver_sync_menu_from_history(
     furi_check(line);
     for(uint16_t i = 0; i < count; i++) {
         protopirate_history_get_text_item_menu(history, line, i);
-        protopirate_view_receiver_add_item_to_menu(
-            receiver, furi_string_get_cstr(line), 0);
+        protopirate_view_receiver_add_item_to_menu(receiver, furi_string_get_cstr(line), 0);
     }
     furi_string_free(line);
 }
@@ -657,8 +656,7 @@ void protopirate_view_receiver_pop_first_menu_item(ProtoPirateReceiver* receiver
                 if(model->history_item > 0) {
                     model->history_item--;
                 }
-                size_t item_count =
-                    ProtoPirateReceiverMenuItemArray_size(model->history_item_arr);
+                size_t item_count = ProtoPirateReceiverMenuItemArray_size(model->history_item_arr);
                 if(model->list_offset > 0 && model->list_offset >= item_count) {
                     model->list_offset = item_count > 0 ? item_count - 1 : 0;
                 }
@@ -681,8 +679,7 @@ void protopirate_view_receiver_append_menu_row_from_history(
         return;
     }
     protopirate_history_get_text_item_menu(history, line, idx);
-    protopirate_view_receiver_add_item_to_menu(
-        receiver, furi_string_get_cstr(line), 0);
+    protopirate_view_receiver_add_item_to_menu(receiver, furi_string_get_cstr(line), 0);
     furi_string_free(line);
 }
 

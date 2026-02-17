@@ -1,36 +1,55 @@
 // protopirate_app_i.h
 #pragma once
-
+#include "defines.h"
 #include "helpers/protopirate_types.h"
-#include "helpers/protopirate_settings.h"
-#include "scenes/protopirate_scene.h"
-#include "views/protopirate_receiver.h"
-#include "views/protopirate_receiver_info.h"
-#include "protopirate_history.h"
-#include "helpers/radio_device_loader.h"
-
-#include <gui/gui.h>
-#include <gui/view_dispatcher.h>
-#include <gui/scene_manager.h>
-#include <gui/modules/submenu.h>
-#include <gui/modules/variable_item_list.h>
-#include <gui/modules/widget.h>
-#include <gui/modules/text_input.h>
-#include <notification/notification_messages.h>
 #include <lib/subghz/subghz_setting.h>
 #include <lib/subghz/subghz_worker.h>
 #include <lib/subghz/receiver.h>
 #include <lib/subghz/transmitter.h>
 #include <lib/subghz/devices/devices.h>
 #include <lib/subghz/subghz_file_encoder_worker.h>
+
+#include "views/protopirate_receiver.h"
+#include "views/protopirate_receiver_info.h"
+#include <gui/gui.h>
+#include <gui/view_dispatcher.h>
+#include <gui/scene_manager.h>
+#include <gui/modules/submenu.h>
+
+#ifdef USE_BUILT_IN_VARIABLE_ITEM_LIST
+#include "helpers/variable_item_list.h"
+#else
+#include <gui/modules/variable_item_list.h>
+#endif
+
+#include <gui/modules/widget.h>
+#include <gui/modules/text_input.h>
+#include <notification/notification_messages.h>
 #include <dialogs/dialogs.h>
 #include "defines.h"
 #include "protocols/psa.h"
+#include "scenes/protopirate_scene.h"
 
-#define PROTOPIRATE_KEYSTORE_DIR_NAME APP_ASSETS_PATH("encrypted")
+#include "protopirate_history.h"
+#include "helpers/radio_device_loader.h"
+typedef struct {
+    uint32_t frequency;
+    uint8_t preset_index;
+    uint8_t tx_power;
+    bool hopping_enabled;
+    uint8_t option_flags;
+} ProtoPirateSettings;
+
+#ifdef BUILD_MAIN_APP
+typedef struct {
+    uint16_t index;
+    FuriString* name;
+    SubGhzRadioPreset* preset;
+    int16_t last_preset_index;
+} ProtoPirateCarModel;
+#endif //BUILD_MAIN_APP
 
 typedef struct ProtoPirateApp ProtoPirateApp;
-
 typedef struct {
     SubGhzWorker* worker;
     SubGhzEnvironment* environment;
@@ -75,7 +94,19 @@ struct ProtoPirateApp {
     FuriString* save_protocol;
     uint16_t save_history_idx;
     bool save_from_saved_info;
+#ifdef BUILD_MAIN_APP
+    ProtoPirateCarModel* selected_model;
+    uint32_t car_models_count;
+    VariableItem* model_menu;
+    VariableItem* freq_menu;
+    VariableItem* hop_menu;
+    VariableItem* preset_menu;
+#endif // BUILD_MAIN_AP
 };
+
+#include "helpers/protopirate_settings.h"
+
+#define PROTOPIRATE_KEYSTORE_DIR_NAME APP_ASSETS_PATH("encrypted")
 
 typedef enum {
     ProtoPirateSetTypeFord_v0,
