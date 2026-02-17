@@ -212,12 +212,24 @@ static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
         app->txrx->hopper_state = ProtoPirateHopperStateRunning;
     }
 
-    const char* preset_name = furi_string_get_cstr(app->txrx->preset->name);
-    uint8_t* preset_data = subghz_setting_get_preset_data_by_name(app->setting, preset_name);
+    //Forward declare preset now we have a branch path..
+    const char* preset_name;
+    uint8_t* preset_data;
 
-    if(preset_data == NULL) {
-        FURI_LOG_E(TAG, "Failed to get preset data for %s, using AM650", preset_name);
-        preset_data = subghz_setting_get_preset_data_by_name(app->setting, "AM650");
+    //Have we got a model selected?
+    if(app->selected_model && app->selected_model->index && app->selected_model->preset &&
+       app->selected_model->preset->data_size) {
+        preset_name = furi_string_get_cstr(app->selected_model->preset->name);
+        preset_data = app->selected_model->preset->data;
+    } else {
+        // Get preset data
+        preset_name = furi_string_get_cstr(app->txrx->preset->name);
+        preset_data = subghz_setting_get_preset_data_by_name(app->setting, preset_name);
+
+        if(preset_data == NULL) {
+            FURI_LOG_E(TAG, "Failed to get preset data for %s, using AM650", preset_name);
+            preset_data = subghz_setting_get_preset_data_by_name(app->setting, "AM650");
+        }
     }
 
     protopirate_begin(app, preset_data);
