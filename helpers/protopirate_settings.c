@@ -383,7 +383,7 @@ bool protopirate_model_get_by_index(
         (*car_model)->preset->frequency = frequency;
     } else {
         (*car_model)->index = 0;
-        furi_string_set_str((*car_model)->name, "(None)");
+        furi_string_set_str((*car_model)->name, "< Select a Car Model >");
 
         if((*car_model)->preset) {
             if((*car_model)->preset->data) {
