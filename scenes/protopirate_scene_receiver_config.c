@@ -13,7 +13,9 @@ enum ProtoPirateSettingIndex {
 #endif
     ProtoPirateSettingIndexAutoSave,
     ProtoPirateSettingIndexDateTimeFilenames,
+#ifdef BUILD_MAIN_APP
     ProtoPirateSettingIndexLock,
+#endif
 };
 
 #define ON_OFF_COUNT 2
@@ -305,6 +307,7 @@ static void protopirate_scene_receiver_config_set_tx_power(VariableItem* item) {
 }
 #endif
 
+#ifdef BUILD_MAIN_APP
 static void
     protopirate_scene_receiver_config_var_list_enter_callback(void* context, uint32_t index) {
     furi_check(context);
@@ -324,6 +327,7 @@ static void
     }
     }
 }
+#endif
 
 void protopirate_scene_receiver_config_on_enter(void* context) {
     ProtoPirateApp* app = context;
@@ -453,10 +457,11 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         item, sequence_time_text[(app->option_flags & FLAG_DATETIME_FILENAMES) ? 1 : 0]);
 
     //Lock Keyboard option
+#ifdef BUILD_MAIN_APP
     variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
     variable_item_list_set_enter_callback(
         app->variable_item_list, protopirate_scene_receiver_config_var_list_enter_callback, app);
-
+#endif
     view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewVariableItemList);
 }
 
