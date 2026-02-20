@@ -482,6 +482,15 @@ bool protopirate_scene_receiver_config_on_event(void* context, SceneManagerEvent
 void protopirate_scene_receiver_config_on_exit(void* context) {
     ProtoPirateApp* app = context;
 
+    //Reset the list before exit.
     variable_item_list_set_selected_item(app->variable_item_list, 0);
     variable_item_list_reset(app->variable_item_list);
+
+//Get rid of dangling pointers
+#ifdef BUILD_MAIN_APP
+    app->model_menu = NULL;
+    app->freq_menu = NULL;
+    app->hop_menu = NULL;
+    app->preset_menu = NULL;
+#endif
 }

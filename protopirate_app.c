@@ -75,6 +75,7 @@ ProtoPirateApp* protopirate_app_alloc() {
     app->car_models_count = protopirate_model_get_count();
     FURI_LOG_D(TAG, "There are %u models available", app->car_models_count);
     app->selected_model = NULL;
+    app->model_menu = NULL;
     app->freq_menu = NULL;
     app->hop_menu = NULL;
     app->preset_menu = NULL;
