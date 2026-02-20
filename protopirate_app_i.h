@@ -91,6 +91,7 @@ struct ProtoPirateApp {
 #ifdef BUILD_MAIN_APP
     ProtoPirateCarModel* selected_model;
     uint32_t car_models_count;
+    VariableItem* model_menu;
     VariableItem* freq_menu;
     VariableItem* hop_menu;
     VariableItem* preset_menu;

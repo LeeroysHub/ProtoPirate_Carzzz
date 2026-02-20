@@ -167,15 +167,35 @@ static void protopirate_scene_receiver_config_set_hopping_running(VariableItem* 
 static void protopirate_scene_receiver_config_set_model(VariableItem* item) {
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
+    uint16_t model_index;
+
+    //Get current selection
+    model_index =
+        (app->selected_model && app->selected_model->index) ? app->selected_model->index : 0;
+
+    //Cycle the index.
+    if(index == 255) {
+        if(model_index > 0)
+            model_index--;
+        else
+            model_index = app->car_models_count;
+    } else if(index == 1) {
+        if(model_index < app->car_models_count)
+            model_index++;
+        else
+            model_index = 0;
+    }
 
     //Get a Car Model object, and dont forget to shut down on app free!
-    protopirate_model_get_by_index(app, &app->selected_model, index);
+    protopirate_model_get_by_index(app, &app->selected_model, model_index);
 
     //Add he car model the list, with the correct selection and text.
-    variable_item_set_current_value_text(item, furi_string_get_cstr(app->selected_model->name));
+    variable_item_set_item_label(item, furi_string_get_cstr(app->selected_model->name));
+    variable_item_set_current_value_text(item, "");
+    variable_item_set_current_value_index(item, 0);
 
     //set the Preset, Frequency and Hopper off or restore.
-    if(!index) {
+    if(!model_index) {
         //Restore Original Preset.
         protopirate_scene_receiver_config_set_frequency(app->freq_menu);
         protopirate_scene_receiver_config_set_hopping_running(app->hop_menu);
@@ -304,14 +324,15 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         //Add he car model the list, with the correct selection and text.
         item = variable_item_list_add(
             app->variable_item_list,
-            "Car Model:",
-            app->car_models_count + 1, //Plus NONE
+            furi_string_get_cstr(app->selected_model->name),
+            0, //Plus NONE
             protopirate_scene_receiver_config_set_model,
             app);
-        variable_item_set_current_value_index(item, app->selected_model->index);
-        variable_item_set_current_value_text(
-            item, furi_string_get_cstr(app->selected_model->name));
+        //variable_item_set_current_value_text(item, "<>");
+
+        //variable_item_set_current_value_index(item, app->selected_model->index);
         app->selected_model->last_preset_index = tmp;
+        app->model_menu = item;
     }
 #endif
     //Frequency Menu Item.
