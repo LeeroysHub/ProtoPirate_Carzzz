@@ -15,7 +15,13 @@
 #include <gui/view_dispatcher.h>
 #include <gui/scene_manager.h>
 #include <gui/modules/submenu.h>
+
+#ifdef USE_BUILT_IN_VARIABLE_ITEM_LIST
+#include "helpers/variable_item_list.h"
+#else
 #include <gui/modules/variable_item_list.h>
+#endif
+
 #include <gui/modules/widget.h>
 #include <gui/modules/text_input.h>
 #include <notification/notification_messages.h>
