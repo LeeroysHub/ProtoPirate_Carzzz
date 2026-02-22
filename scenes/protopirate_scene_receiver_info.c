@@ -557,6 +557,13 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                     FURI_LOG_I(TAG, "Saved temp for emulate");
                     if(app->loaded_file_path) furi_string_free(app->loaded_file_path);
                     app->loaded_file_path = furi_string_alloc_set_str(PROTOPIRATE_TEMP_FILE);
+
+                    //Allocate the About View.
+                    app->view_about = view_alloc();
+                    view_dispatcher_add_view(
+                        app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
+
+                    // Go to emulate scene
                     scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);
                 } else {
                     notification_message(app->notifications, &sequence_error);

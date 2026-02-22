@@ -116,8 +116,8 @@ ProtoPirateApp* protopirate_app_alloc() {
 #endif
 
     // About View
-    app->view_about = view_alloc();
-    view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
+    //app->view_about = view_alloc();
+    //view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
 
     LOG_HEAP("After basic views");
 
@@ -491,9 +491,9 @@ void protopirate_app_free(ProtoPirateApp* app) {
     variable_item_list_free(app->variable_item_list);
 
     // About View
-    FURI_LOG_D(TAG, "Removing about view");
-    view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
-    view_free(app->view_about);
+    //FURI_LOG_D(TAG, "Removing about view");
+    //view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+    //view_free(app->view_about);
 
     // File path
     if(app->file_path) {
