@@ -676,6 +676,9 @@ bool protopirate_scene_timing_tuner_on_event(void* context, SceneManagerEvent ev
     if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == 0) {
             scene_manager_previous_scene(app->scene_manager);
+            //Remove About View.
+            view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+            view_free(app->view_about);
             consumed = true;
         } else if(event.event == 1) {
             if(g_timing_ctx && g_timing_ctx->is_receiving) {

@@ -210,6 +210,10 @@ bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
 
     if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == SubmenuIndexProtoPirateAbout) {
+            //Allocate the About View.
+            app->view_about = view_alloc();
+            view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
+
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneAbout);
             consumed = true;
         }
@@ -225,12 +229,20 @@ bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
         }
 #ifdef ENABLE_SUB_DECODE_SCENE
         else if(event.event == SubmenuIndexProtoPirateSubDecode) {
+            //Allocate the About View.
+            app->view_about = view_alloc();
+            view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
+
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneSubDecode);
             consumed = true;
         }
 #endif
 #ifdef ENABLE_TIMING_TUNER_SCENE
         else if(event.event == SubmenuIndexProtoPirateTimingTuner) {
+            //Allocate the About View.
+            app->view_about = view_alloc();
+            view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
+
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneTimingTuner);
             consumed = true;
         }

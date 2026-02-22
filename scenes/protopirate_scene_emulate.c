@@ -898,6 +898,14 @@ void protopirate_scene_emulate_on_exit(void* context) {
     view_set_input_callback(app->view_about, NULL);
     view_set_context(app->view_about, NULL);
 
+    //Switch back to widget view.
+    view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewWidget);
+
+    //Remove About View.
+    view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+    view_free(app->view_about);
+
+    //Can Charge Battery Again
     furi_hal_power_suppress_charge_exit();
 }
 #endif

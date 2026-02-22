@@ -1366,6 +1366,11 @@ void protopirate_scene_sub_decode_on_exit(void* context) {
 
     view_set_draw_callback(app->view_about, NULL);
     view_set_input_callback(app->view_about, NULL);
+
+    //Remove About View.
+    view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+    view_free(app->view_about);
+
     widget_reset(app->widget);
 
     protopirate_view_receiver_reset_menu(app->protopirate_receiver);

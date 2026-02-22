@@ -283,6 +283,9 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
 #ifdef ENABLE_EMULATE_FEATURE
         if(event.event == ProtoPirateCustomEventSavedInfoEmulate && !is_emu_off) {
             FURI_LOG_I(TAG, "Emulate requested");
+            //Allocate the About View.
+            app->view_about = view_alloc();
+            view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);
             consumed = true;
         }

@@ -559,7 +559,14 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                 if(app->loaded_file_path) furi_string_free(app->loaded_file_path);
                 app->loaded_file_path = furi_string_alloc_set(hist_path);
                 furi_string_free(hist_path);
-                FURI_LOG_I(TAG, "Emulate from history file: %s", furi_string_get_cstr(app->loaded_file_path));
+                FURI_LOG_I(
+                    TAG,
+                    "Emulate from history file: %s",
+                    furi_string_get_cstr(app->loaded_file_path));
+                //Allocate the About View.
+                app->view_about = view_alloc();
+                view_dispatcher_add_view(
+                    app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
                 scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);
             } else {
                 furi_string_free(hist_path);
