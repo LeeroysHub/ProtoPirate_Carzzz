@@ -68,7 +68,7 @@ ProtoPirateApp* protopirate_app_alloc() {
     app->notifications = furi_record_open(RECORD_NOTIFICATION);
 
     // Open Dialogs record
-    app->dialogs = furi_record_open(RECORD_DIALOGS);
+    //app->dialogs = furi_record_open(RECORD_DIALOGS);
 
     //Initialise Car Model varables
 
@@ -553,9 +553,9 @@ void protopirate_app_free(ProtoPirateApp* app) {
     scene_manager_free(app->scene_manager);
 
     // Close Dialogs
-    FURI_LOG_D(TAG, "Closing dialogs record");
-    furi_record_close(RECORD_DIALOGS);
-    app->dialogs = NULL;
+    //FURI_LOG_D(TAG, "Closing dialogs record");
+    //furi_record_close(RECORD_DIALOGS);
+    //app->dialogs = NULL;
 
     // Notifications
     FURI_LOG_D(TAG, "Closing notifications record");
