@@ -52,6 +52,9 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
     FURI_LOG_I(TAG, "[1] Opening saved captures browser");
     FURI_LOG_I(TAG, "[1a] PROTOPIRATE_APP_FOLDER = %s", PROTOPIRATE_APP_FOLDER);
 
+    // Open Dialogs record
+    app->dialogs = furi_record_open(RECORD_DIALOGS);
+
     // Check and create folder
     FURI_LOG_D(TAG, "[2] Opening storage");
     Storage* storage = furi_record_open(RECORD_STORAGE);
@@ -144,6 +147,10 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
     }
 
     FURI_LOG_I(TAG, "[20] open_saved_captures complete");
+
+    //Close Dialogs now.
+    furi_record_close(RECORD_DIALOGS);
+    app->dialogs = NULL;
 }
 #endif //ENABLE_SAVED_SCENE
 
