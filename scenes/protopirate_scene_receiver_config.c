@@ -334,6 +334,13 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     VariableItem* item;
     uint8_t value_index;
 
+    // Variable Item List
+    app->variable_item_list = variable_item_list_alloc();
+    view_dispatcher_add_view(
+        app->view_dispatcher,
+        ProtoPirateViewVariableItemList,
+        variable_item_list_get_view(app->variable_item_list));
+
 //Get a Car Model object, and dont forget to shut down on app free!
 #ifdef BUILD_MAIN_APP
     int16_t tmp = -1;
@@ -483,8 +490,13 @@ void protopirate_scene_receiver_config_on_exit(void* context) {
     ProtoPirateApp* app = context;
 
     //Reset the list before exit.
-    variable_item_list_set_selected_item(app->variable_item_list, 0);
-    variable_item_list_reset(app->variable_item_list);
+    //variable_item_list_set_selected_item(app->variable_item_list, 0);
+    //variable_item_list_reset(app->variable_item_list);
+
+    view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewSubmenu);
+
+    view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewVariableItemList);
+    variable_item_list_free(app->variable_item_list);
 
 //Get rid of dangling pointers
 #ifdef BUILD_MAIN_APP
