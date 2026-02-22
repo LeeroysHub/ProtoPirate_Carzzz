@@ -83,11 +83,11 @@ ProtoPirateApp* protopirate_app_alloc() {
 #endif
 
     // Variable Item List
-    app->variable_item_list = variable_item_list_alloc();
-    view_dispatcher_add_view(
-        app->view_dispatcher,
-        ProtoPirateViewVariableItemList,
-        variable_item_list_get_view(app->variable_item_list));
+    //app->variable_item_list = variable_item_list_alloc();
+    // view_dispatcher_add_view(
+    //     app->view_dispatcher,
+    //     ProtoPirateViewVariableItemList,
+    //     variable_item_list_get_view(app->variable_item_list));
 
     // SubMenu
     app->submenu = submenu_alloc();
@@ -487,9 +487,9 @@ void protopirate_app_free(ProtoPirateApp* app) {
     submenu_free(app->submenu);
 
     // Variable Item List
-    FURI_LOG_D(TAG, "Removing variable_item_list view");
-    view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewVariableItemList);
-    variable_item_list_free(app->variable_item_list);
+    //FURI_LOG_D(TAG, "Removing variable_item_list view");
+    //view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewVariableItemList);
+    //variable_item_list_free(app->variable_item_list);
 
     // About View
     //FURI_LOG_D(TAG, "Removing about view");
