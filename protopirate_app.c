@@ -201,7 +201,23 @@ ProtoPirateApp* protopirate_app_alloc() {
         ((settings.option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
         settings.hopping_enabled);
 
+#ifdef BUILD_MAIN_APP
+    //Grab selected car model.
+    if(settings.car_model_index) {
+        protopirate_model_get_by_index(app, &app->selected_model, settings.car_model_index);
+        app->selected_model->last_preset_index = settings.preset_index;
+        protopirate_preset_init(
+            app,
+            furi_string_get_cstr(app->selected_model->preset->name),
+            app->selected_model->preset->frequency,
+            app->selected_model->preset->data,
+            app->selected_model->preset->data_size);
+    } else {
+        protopirate_preset_init(app, preset_name, frequency, preset_data, preset_data_size);
+    }
+#else
     protopirate_preset_init(app, preset_name, frequency, preset_data, preset_data_size);
+#endif
 
     // Apply hopping state from settings
     app->txrx->hopper_state = settings.hopping_enabled ? ProtoPirateHopperStateRunning :
@@ -214,7 +230,6 @@ ProtoPirateApp* protopirate_app_alloc() {
 
     // Mark as not initialized
     app->radio_initialized = false;
-
     if(!protopirate_radio_init(app)) {
         FURI_LOG_E(TAG, "Failed to initialize radio!");
         notification_message(app->notifications, &sequence_error);
@@ -443,6 +458,9 @@ void protopirate_app_free(ProtoPirateApp* app) {
     settings.option_flags = app->option_flags;
     settings.tx_power = app->tx_power;
     settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
+#ifdef BUILD_MAIN_APP
+    settings.car_model_index = (app->selected_model) ? app->selected_model->index : 0;
+#endif
 
     // Find current preset index
     settings.preset_index = 0;
