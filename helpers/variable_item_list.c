@@ -2,10 +2,14 @@
 #include <gui/elements.h>
 #include <gui/canvas.h>
 #include <furi.h>
-#include <assets_icons.h>
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_icons.h"
+#else
+#include "proto_pirate_utils_icons.h"
+#endif
 #include <m-array.h>
 #include <stdint.h>
-#include <momentum/settings.h>
+//#include <momentum/settings.h>
 
 struct VariableItem {
     FuriString* label;
@@ -125,15 +129,14 @@ static void variable_item_list_draw_callback(Canvas* canvas, void* _model) {
                     canvas_draw_str(canvas, value_pos_x, item_text_y, "<");
                 }
 
-                elements_scrollable_text_line_centered(
+                elements_scrollable_text_line(
                     canvas,
-                    (115 + value_pos_x) / 2 + 1,
+                    value_pos_x + 6,
                     item_text_y,
-                    37,
+                    109 - (value_pos_x),
                     item->current_value_text,
                     scroll_counter,
-                    false,
-                    true);
+                    false);
 
                 if(item->current_value_index < (item->values_count - 1)) {
                     canvas_draw_str(canvas, 115, item_text_y, ">");
@@ -147,9 +150,9 @@ static void variable_item_list_draw_callback(Canvas* canvas, void* _model) {
     elements_scrollbar(canvas, model->position, VariableItemArray_size(model->items));
 
     if(model->locked_message_visible) {
-        if(momentum_settings.popup_overlay) {
-            canvas_draw_overlay(canvas);
-        }
+        //if(momentum_settings.popup_overlay) {
+        //    canvas_draw_overlay(canvas);
+        //}
         canvas_set_color(canvas, ColorWhite);
         canvas_draw_box(canvas, 8, 10, 110, 48);
         canvas_set_color(canvas, ColorBlack);
@@ -167,7 +170,7 @@ static void variable_item_list_draw_callback(Canvas* canvas, void* _model) {
     }
 }
 
-void variable_item_list_set_selected_item(VariableItemList* variable_item_list, uint8_t index) {
+/* void variable_item_list_set_selected_item(VariableItemList* variable_item_list, uint8_t index) {
     furi_check(variable_item_list);
     with_view_model(
         variable_item_list->view,
@@ -198,17 +201,17 @@ void variable_item_list_set_selected_item(VariableItemList* variable_item_list, 
             }
         },
         true);
-}
+}*/
 
-uint8_t variable_item_list_get_selected_item_index(VariableItemList* variable_item_list) {
+/* uint8_t variable_item_list_get_selected_item_index(VariableItemList* variable_item_list) {
     furi_check(variable_item_list);
     VariableItemListModel* model = view_get_model(variable_item_list->view);
     uint8_t idx = model->position;
     view_commit_model(variable_item_list->view, false);
     return idx;
-}
+}*/
 
-void variable_item_list_set_header(VariableItemList* variable_item_list, const char* header) {
+/* void variable_item_list_set_header(VariableItemList* variable_item_list, const char* header) {
     furi_check(variable_item_list);
 
     with_view_model(
@@ -222,7 +225,7 @@ void variable_item_list_set_header(VariableItemList* variable_item_list, const c
             }
         },
         true);
-}
+}*/
 
 static bool variable_item_list_input_callback(InputEvent* event, void* context) {
     VariableItemList* variable_item_list = context;
@@ -508,7 +511,7 @@ void variable_item_list_free(VariableItemList* variable_item_list) {
     free(variable_item_list);
 }
 
-void variable_item_list_reset(VariableItemList* variable_item_list) {
+/*void variable_item_list_reset(VariableItemList* variable_item_list) {
     furi_check(variable_item_list);
 
     with_view_model(
@@ -526,7 +529,7 @@ void variable_item_list_reset(VariableItemList* variable_item_list) {
             furi_string_reset(model->header);
         },
         false);
-}
+}*/
 
 View* variable_item_list_get_view(VariableItemList* variable_item_list) {
     furi_check(variable_item_list);
@@ -600,10 +603,10 @@ void variable_item_set_current_value_index(VariableItem* item, uint8_t current_v
     item->current_value_index = current_value_index;
 }
 
-void variable_item_set_values_count(VariableItem* item, uint8_t values_count) {
+/*void variable_item_set_values_count(VariableItem* item, uint8_t values_count) {
     furi_check(item);
     item->values_count = values_count;
-}
+}*/
 
 void variable_item_set_item_label(VariableItem* item, const char* label) {
     furi_check(item);
