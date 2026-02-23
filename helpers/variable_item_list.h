@@ -42,7 +42,7 @@ void variable_item_list_free(VariableItemList* variable_item_list);
  *
  * @param      variable_item_list  VariableItemList instance
  */
-void variable_item_list_reset(VariableItemList* variable_item_list);
+//void variable_item_list_reset(VariableItemList* variable_item_list);
 
 /** Get VariableItemList View instance
  *
@@ -89,9 +89,9 @@ void variable_item_list_set_enter_callback(
     VariableItemListEnterCallback callback,
     void* context);
 
-void variable_item_list_set_selected_item(VariableItemList* variable_item_list, uint8_t index);
+//void variable_item_list_set_selected_item(VariableItemList* variable_item_list, uint8_t index);
 
-uint8_t variable_item_list_get_selected_item_index(VariableItemList* variable_item_list);
+//uint8_t variable_item_list_get_selected_item_index(VariableItemList* variable_item_list);
 
 /** Set optional header for variable item list
  * Must be called before adding items OR after adding items and before set_selected_item()
@@ -99,7 +99,7 @@ uint8_t variable_item_list_get_selected_item_index(VariableItemList* variable_it
  * @param      variable_item_list  VariableItemList instance
  * @param      header              header to set
  */
-void variable_item_list_set_header(VariableItemList* variable_item_list, const char* header);
+// void variable_item_list_set_header(VariableItemList* variable_item_list, const char* header);
 
 /** Set item current selected index
  *
@@ -113,7 +113,7 @@ void variable_item_set_current_value_index(VariableItem* item, uint8_t current_v
  * @param      item                 VariableItem* instance
  * @param      values_count         The new values count
  */
-void variable_item_set_values_count(VariableItem* item, uint8_t values_count);
+//void variable_item_set_values_count(VariableItem* item, uint8_t values_count);
 
 /** Set new label for item
  *
