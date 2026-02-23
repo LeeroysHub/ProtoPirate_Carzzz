@@ -38,6 +38,7 @@ typedef struct {
     uint8_t tx_power;
     bool hopping_enabled;
     uint8_t option_flags;
+    uint16_t car_model_index;
 } ProtoPirateSettings;
 
 #ifdef BUILD_MAIN_APP

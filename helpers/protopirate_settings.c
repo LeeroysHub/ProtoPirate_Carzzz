@@ -17,6 +17,7 @@ void protopirate_settings_set_defaults(ProtoPirateSettings* settings) {
     settings->tx_power = 0;
     settings->option_flags = 0;
     settings->hopping_enabled = false;
+    settings->car_model_index = 0;
 }
 
 void protopirate_settings_load(ProtoPirateSettings* settings) {
@@ -93,14 +94,23 @@ void protopirate_settings_load(ProtoPirateSettings* settings) {
         }
         settings->hopping_enabled = (hopping_temp == 1);
 
+#ifdef BUILD_MAIN_APP
+        // Read Selected Car Model
+        uint32_t car_model_index_temp = 0;
+        if(!flipper_format_read_uint32(ff, "CarModelIndex", &car_model_index_temp, 1)) {
+            car_model_index_temp = 0;
+        }
+        settings->car_model_index = car_model_index_temp;
+#endif
+
         FURI_LOG_I(
             TAG,
-            "Settings loaded: freq=%lu, preset=%u, auto_save=%d, hopping=%d",
+            "Settings loaded: freq=%lu, preset=%u, auto_save=%d, hopping=%d, car_model=%u",
             settings->frequency,
             settings->preset_index,
             ((settings->option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
-            settings->hopping_enabled);
-
+            settings->hopping_enabled,
+            settings->car_modeL_index);
     } while(false);
 
     flipper_format_free(ff);
@@ -154,6 +164,14 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
             FURI_LOG_E(TAG, "Failed to write hopping");
             break;
         }
+
+#ifdef BUILD_MAIN_APP
+        uint32_t car_model_index_temp = settings->car_model_index;
+        if(!flipper_format_write_uint32(ff, "CarModelIndex", &car_model_index_temp, 1)) {
+            FURI_LOG_E(TAG, "Failed to write car model");
+            break;
+        }
+#endif
 
         FURI_LOG_I(
             TAG,
