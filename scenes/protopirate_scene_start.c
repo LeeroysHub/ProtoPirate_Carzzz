@@ -17,13 +17,13 @@ typedef enum {
 #ifdef ENABLE_SAVED_SCENE
     SubmenuIndexProtoPirateSaved,
 #endif
-    SubmenuIndexProtoPirateReceiverConfig,
 #ifdef ENABLE_SUB_DECODE_SCENE
     SubmenuIndexProtoPirateSubDecode,
 #endif
 #ifdef ENABLE_TIMING_TUNER_SCENE
     SubmenuIndexProtoPirateTimingTuner,
 #endif
+    SubmenuIndexProtoPirateReceiverConfig,
     SubmenuIndexProtoPirateAbout,
 } SubmenuIndex;
 
@@ -174,12 +174,6 @@ void protopirate_scene_start_on_enter(void* context) {
         protopirate_scene_start_submenu_callback,
         app);
 #endif
-    submenu_add_item(
-        app->submenu,
-        "Configuration",
-        SubmenuIndexProtoPirateReceiverConfig,
-        protopirate_scene_start_submenu_callback,
-        app);
 #ifdef ENABLE_SUB_DECODE_SCENE
     submenu_add_item(
         app->submenu,
@@ -196,6 +190,19 @@ void protopirate_scene_start_on_enter(void* context) {
         protopirate_scene_start_submenu_callback,
         app);
 #endif
+
+    submenu_add_item(
+        app->submenu,
+        "Configuration",
+        SubmenuIndexProtoPirateReceiverConfig,
+        protopirate_scene_start_submenu_callback,
+        app);
+    submenu_add_item(
+        app->submenu,
+        "About",
+        SubmenuIndexProtoPirateAbout,
+        protopirate_scene_start_submenu_callback,
+        app);
 
     submenu_set_selected_item(
         app->submenu, scene_manager_get_scene_state(app->scene_manager, ProtoPirateSceneStart));
