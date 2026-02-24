@@ -17,9 +17,12 @@ static const SubGhzBlockConst subghz_protocol_ford_v0_const = {
     .min_count_bit_for_found = 64,
 };
 
-#define FORD_V0_PREAMBLE_PAIRS 4
+//My factory 2006 is 4, but longer distance (or lower power) a cuple more is better.
+#define FORD_V0_PREAMBLE_PAIRS 6
+//@006 NEEDS THIS. I LOWERED TO 350 AS PER USER REQUEST AND NOTHING ON 2006
 #define FORD_V0_GAP_US         3500
-#define FORD_V0_TOTAL_BURSTS   6
+//BUrst doesn't matter as we are repeating for a minimum time anyway.
+#define FORD_V0_TOTAL_BURSTS   3
 
 // =============================================================================
 // CRC MATRIX
