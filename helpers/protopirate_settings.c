@@ -11,6 +11,9 @@
 #define MODELS_FILE_HEADER    "ProtoPirate Car Models Database"
 #define MODELS_FILE_VERSION   1
 
+//For speed, so we start at a good counter.
+#define MODELS_MINIMUN_COUNT 150;
+
 void protopirate_settings_set_defaults(ProtoPirateSettings* settings) {
     settings->frequency = 433920000;
     settings->preset_index = 0;
@@ -440,39 +443,80 @@ uint16_t protopirate_model_get_count(void) {
     Storage* storage = furi_record_open(RECORD_STORAGE);
     FlipperFormat* ff = flipper_format_file_alloc(storage);
     FuriString* header = furi_string_alloc();
+    FuriString* tmp = furi_string_alloc();
     uint32_t version = 0;
     uint16_t count = 0;
-    FuriString* tmp = furi_string_alloc();
+    bool ok = true;
 
     if(!flipper_format_file_open_existing(ff, PROTOPIRATE_MODELS_FILE)) {
-        FURI_LOG_W(TAG, "Models file not found");
         goto cleanup;
     }
 
-    if(!flipper_format_read_header(ff, header, &version)) {
-        FURI_LOG_W(TAG, "Failed to read models header");
+    if(!flipper_format_read_header(ff, header, &version)) goto cleanup;
+    if(version != MODELS_FILE_VERSION || furi_string_cmp_str(header, MODELS_FILE_HEADER) != 0)
         goto cleanup;
-    }
 
-    if(version != MODELS_FILE_VERSION || furi_string_cmp_str(header, MODELS_FILE_HEADER) != 0) {
-        FURI_LOG_W(TAG, "Invalid models file header");
-        goto cleanup;
-    }
+    //Start at 1 if we have to search.
+    uint16_t low = 1;
+    uint16_t high = MODELS_MINIMUN_COUNT;
+    while(ok) {
+        char key[32];
+        snprintf(key, sizeof(key), "ModelName%u", high);
 
-    // Try ModelName1, ModelName2, ... until one fails
-    char key[32];
-    for(uint16_t i = 1; i < 32768; i++) {
-        snprintf(key, sizeof(key), "ModelName%u", i);
-
-        // Try reading the string into a temp buffer
-        bool ok = flipper_format_read_string(ff, key, tmp);
-
+        ok = flipper_format_read_string(ff, key, tmp);
         if(!ok) {
-            // First missing index → stop
-            count = i - 1;
+            if(low == 1) {
+                //We found NO models in the database at our MODELS_MINIMUN_COUNT value.
+                low = high = 1;
+            } else {
+                //1st Missing item ABOVE the counter. Now Search backwards for the true count.
+                break;
+            }
+        }
+
+        //IF we are on the 1st iteration, and we found the item at MODELS_MINIMUN_COUNT, check the 1 above.
+        //We may have a shortcut to counting them all.
+        if(low == 1) {
+            snprintf(key, sizeof(key), "ModelName%u", high + 1);
+            ok = flipper_format_read_string(ff, key, tmp);
+            if(!ok) {
+                ok = true;
+                low = high;
+                break;
+            }
+        }
+
+        //Double the Size of the partition
+        low = high;
+        high *= 2;
+
+        //Quit halfway point.
+        if(high > 32767) {
+            high = 65535;
             break;
         }
     }
+
+    //If we dont have the count yet, Binary Searcg the count now..
+    uint16_t left = low;
+    uint16_t right = high;
+    if(!ok) {
+        while(left <= right) {
+            uint16_t mid = left + ((right - left) / 2);
+
+            char key[32];
+            snprintf(key, sizeof(key), "ModelName%u", mid);
+            flipper_format_rewind(ff);
+            ok = flipper_format_read_string(ff, key, tmp);
+
+            if(ok) {
+                left = mid + 1; //We found an Item, go higher.
+            } else {
+                right = mid - 1; //No Item found, go lower.
+            }
+        }
+    }
+    count = right;
 
 cleanup:
     furi_string_free(tmp);

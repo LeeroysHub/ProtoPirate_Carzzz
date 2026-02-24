@@ -24,3 +24,579 @@ PresetName5: FuriHalSubGhzPresetOok650Async
 ModelName6: Ford Territory SX-SYII
 Frequency6: 433920000
 PresetName6: FuriHalSubGhzPresetOok650Async
+
+ModelName7: Ford Falcon BA-FGX
+Frequency7: 433920000
+PresetName7: FuriHalSubGhzPresetOok650Async
+
+ModelName8: Ford Territory SX-SYII
+Frequency8: 433920000
+PresetName8: FuriHalSubGhzPresetOok650Async
+
+ModelName9: Ford Falcon BA-FGX
+Frequency9: 433920000
+PresetName9: FuriHalSubGhzPresetOok650Async
+
+ModelName10: Ford Territory SX-SYII
+Frequency10: 433920000
+PresetName10: FuriHalSubGhzPresetOok650Async
+
+ModelName11: Holden Commodore VT-VZ
+Frequency11: 433920000
+PresetName11: FuriHalSubGhzPresetOok650Async
+
+ModelName12: Toyota Camry XV20-XV50
+Frequency12: 433920000
+PresetName12: FuriHalSubGhzPresetOok650Async
+
+ModelName13: Nissan Pulsar N14-N16
+Frequency13: 433920000
+PresetName13: FuriHalSubGhzPresetOok650Async
+
+ModelName14: Mitsubishi Magna TE-TW
+Frequency14: 433920000
+PresetName14: FuriHalSubGhzPresetOok650Async
+
+ModelName15: Subaru Liberty Gen2-Gen4
+Frequency15: 433920000
+PresetName15: FuriHalSubGhzPresetOok650Async
+
+ModelName16: Mazda 626 GF-GW
+Frequency16: 433920000
+PresetName16: FuriHalSubGhzPresetOok650Async
+
+ModelName17: Hyundai Excel X2-X3
+Frequency17: 433920000
+PresetName17: FuriHalSubGhzPresetOok650Async
+
+ModelName18: Kia Rio DC-JB
+Frequency18: 433920000
+PresetName18: FuriHalSubGhzPresetOok650Async
+
+ModelName19: Suzuki Swift SF-SG
+Frequency19: 433920000
+PresetName19: FuriHalSubGhzPresetOok650Async
+
+ModelName20: Ford Laser KH-KQ
+Frequency20: 433920000
+PresetName20: FuriHalSubGhzPresetOok650Async
+
+ModelName21: Honda Civic EK-ES
+Frequency21: 433920000
+PresetName21: FuriHalSubGhzPresetOok650Async
+
+ModelName22: Peugeot 206
+Frequency22: 433920000
+PresetName22: FuriHalSubGhzPresetOok650Async
+
+ModelName23: Renault Clio II
+Frequency23: 433920000
+PresetName23: FuriHalSubGhzPresetOok650Async
+
+ModelName24: VW Polo 6N-9N
+Frequency24: 433920000
+PresetName24: FuriHalSubGhzPresetOok650Async
+
+ModelName25: Audi A3 8L
+Frequency25: 433920000
+PresetName25: FuriHalSubGhzPresetOok650Async
+
+ModelName26: BMW 3-Series E36
+Frequency26: 433920000
+PresetName26: FuriHalSubGhzPresetOok650Async
+
+ModelName27: Mercedes C-Class W202
+Frequency27: 433920000
+PresetName27: FuriHalSubGhzPresetOok650Async
+
+ModelName28: Volvo S40 Mk1
+Frequency28: 433920000
+PresetName28: FuriHalSubGhzPresetOok650Async
+
+ModelName29: Saab 9-3 OG
+Frequency29: 433920000
+PresetName29: FuriHalSubGhzPresetOok650Async
+
+ModelName30: Skoda Octavia Mk1
+Frequency30: 433920000
+PresetName30: FuriHalSubGhzPresetOok650Async
+
+ModelName31: Toyota Hilux N70
+Frequency31: 433920000
+PresetName31: FuriHalSubGhzPresetOok650Async
+
+ModelName32: Toyota Hilux N80
+Frequency32: 433920000
+PresetName32: FuriHalSubGhzPresetOok650Async
+
+ModelName33: Toyota LandCruiser 80 Series
+Frequency33: 433920000
+PresetName33: FuriHalSubGhzPresetOok650Async
+
+ModelName34: Toyota LandCruiser 100 Series
+Frequency34: 433920000
+PresetName34: FuriHalSubGhzPresetOok650Async
+
+ModelName35: Toyota LandCruiser 200 Series
+Frequency35: 433920000
+PresetName35: FuriHalSubGhzPresetOok650Async
+
+ModelName36: Toyota LandCruiser 300 Series
+Frequency36: 433920000
+PresetName36: FuriHalSubGhzPresetOok650Async
+
+ModelName37: Toyota RAV4 XA20
+Frequency37: 433920000
+PresetName37: FuriHalSubGhzPresetOok650Async
+
+ModelName38: Toyota RAV4 XA30
+Frequency38: 433920000
+PresetName38: FuriHalSubGhzPresetOok650Async
+
+ModelName39: Toyota RAV4 XA40
+Frequency39: 433920000
+PresetName39: FuriHalSubGhzPresetOok650Async
+
+ModelName40: Toyota RAV4 XA50
+Frequency40: 433920000
+PresetName40: FuriHalSubGhzPresetOok650Async
+
+ModelName41: Honda Accord Euro CL9
+Frequency41: 433920000
+PresetName41: FuriHalSubGhzPresetOok650Async
+
+ModelName42: Honda Accord CU2
+Frequency42: 433920000
+PresetName42: FuriHalSubGhzPresetOok650Async
+
+ModelName43: Honda Jazz GE
+Frequency43: 433920000
+PresetName43: FuriHalSubGhzPresetOok650Async
+
+ModelName44: Honda Jazz GK
+Frequency44: 433920000
+PresetName44: FuriHalSubGhzPresetOok650Async
+
+ModelName45: Honda CR-V RD1
+Frequency45: 433920000
+PresetName45: FuriHalSubGhzPresetOok650Async
+
+ModelName46: Honda CR-V RE
+Frequency46: 433920000
+PresetName46: FuriHalSubGhzPresetOok650Async
+
+ModelName47: Honda CR-V RW
+Frequency47: 433920000
+PresetName47: FuriHalSubGhzPresetOok650Async
+
+ModelName48: Mazda 3 BK
+Frequency48: 433920000
+PresetName48: FuriHalSubGhzPresetOok650Async
+
+ModelName49: Mazda 3 BL
+Frequency49: 433920000
+PresetName49: FuriHalSubGhzPresetOok650Async
+
+ModelName50: XXX NUMNER 50 XXX
+Frequency50: 433920000
+PresetName50: FuriHalSubGhzPresetOok650Async
+
+ModelName51: Mazda 3 BN
+Frequency51: 433920000
+PresetName51: FuriHalSubGhzPresetOok650Async
+
+ModelName52: Mazda 6 GG
+Frequency52: 433920000
+PresetName52: FuriHalSubGhzPresetOok650Async
+
+ModelName53: Mazda 6 GH
+Frequency53: 433920000
+PresetName53: FuriHalSubGhzPresetOok650Async
+
+ModelName54: Mazda 6 GJ
+Frequency54: 433920000
+PresetName54: FuriHalSubGhzPresetOok650Async
+
+ModelName55: Mazda CX-5 KE
+Frequency55: 433920000
+PresetName55: FuriHalSubGhzPresetOok650Async
+
+ModelName56: Mazda CX-5 KF
+Frequency56: 433920000
+PresetName56: FuriHalSubGhzPresetOok650Async
+
+ModelName57: Subaru Forester SG
+Frequency57: 433920000
+PresetName57: FuriHalSubGhzPresetOok650Async
+
+ModelName58: Subaru Forester SH
+Frequency58: 433920000
+PresetName58: FuriHalSubGhzPresetOok650Async
+
+ModelName59: Subaru Forester SJ
+Frequency59: 433920000
+PresetName59: FuriHalSubGhzPresetOok650Async
+
+ModelName60: Subaru Forester SK
+Frequency60: 433920000
+PresetName60: FuriHalSubGhzPresetOok650Async
+
+ModelName61: Subaru Outback BP
+Frequency61: 433920000
+PresetName61: FuriHalSubGhzPresetOok650Async
+
+ModelName62: Subaru Outback BR
+Frequency62: 433920000
+PresetName62: FuriHalSubGhzPresetOok650Async
+
+ModelName63: Subaru Outback BS
+Frequency63: 433920000
+PresetName63: FuriHalSubGhzPresetOok650Async
+
+ModelName64: Subaru Outback BT
+Frequency64: 433920000
+PresetName64: FuriHalSubGhzPresetOok650Async
+
+ModelName65: Nissan Navara D22
+Frequency65: 433920000
+PresetName65: FuriHalSubGhzPresetOok650Async
+
+ModelName66: Nissan Navara D40
+Frequency66: 433920000
+PresetName66: FuriHalSubGhzPresetOok650Async
+
+ModelName67: Nissan Navara NP300
+Frequency67: 433920000
+PresetName67: FuriHalSubGhzPresetOok650Async
+
+ModelName68: Nissan Patrol GU
+Frequency68: 433920000
+PresetName68: FuriHalSubGhzPresetOok650Async
+
+ModelName69: Nissan Patrol Y62
+Frequency69: 433920000
+PresetName69: FuriHalSubGhzPresetOok650Async
+
+ModelName70: Nissan X-Trail T30
+Frequency70: 433920000
+PresetName70: FuriHalSubGhzPresetOok650Async
+
+ModelName71: Nissan X-Trail T31
+Frequency71: 433920000
+PresetName71: FuriHalSubGhzPresetOok650Async
+
+ModelName72: Nissan X-Trail T32
+Frequency72: 433920000
+PresetName72: FuriHalSubGhzPresetOok650Async
+
+ModelName73: Mitsubishi Triton ML
+Frequency73: 433920000
+PresetName73: FuriHalSubGhzPresetOok650Async
+
+ModelName74: Mitsubishi Triton MN
+Frequency74: 433920000
+PresetName74: FuriHalSubGhzPresetOok650Async
+
+ModelName75: Mitsubishi Triton MQ
+Frequency75: 433920000
+PresetName75: FuriHalSubGhzPresetOok650Async
+
+ModelName76: Mitsubishi Triton MR
+Frequency76: 433920000
+PresetName76: FuriHalSubGhzPresetOok650Async
+
+ModelName77: Mitsubishi Pajero NM
+Frequency77: 433920000
+PresetName77: FuriHalSubGhzPresetOok650Async
+
+ModelName78: Mitsubishi Pajero NS
+Frequency78: 433920000
+PresetName78: FuriHalSubGhzPresetOok650Async
+
+ModelName79: Mitsubishi Pajero NT
+Frequency79: 433920000
+PresetName79: FuriHalSubGhzPresetOok650Async
+
+ModelName80: Mitsubishi Pajero NX
+Frequency80: 433920000
+PresetName80: FuriHalSubGhzPresetOok650Async
+
+ModelName81: Hyundai i30 FD
+Frequency81: 433920000
+PresetName81: FuriHalSubGhzPresetOok650Async
+
+ModelName82: Hyundai i30 GD
+Frequency82: 433920000
+PresetName82: FuriHalSubGhzPresetOok650Async
+
+ModelName83: Hyundai i30 PD
+Frequency83: 433920000
+PresetName83: FuriHalSubGhzPresetOok650Async
+
+ModelName84: Hyundai Tucson JM
+Frequency84: 433920000
+PresetName84: FuriHalSubGhzPresetOok650Async
+
+ModelName85: Hyundai Tucson LM
+Frequency85: 433920000
+PresetName85: FuriHalSubGhzPresetOok650Async
+
+ModelName86: Hyundai Tucson TL
+Frequency86: 433920000
+PresetName86: FuriHalSubGhzPresetOok650Async
+
+ModelName87: Kia Sportage SL
+Frequency87: 433920000
+PresetName87: FuriHalSubGhzPresetOok650Async
+
+ModelName88: Kia Sportage QL
+Frequency88: 433920000
+PresetName88: FuriHalSubGhzPresetOok650Async
+
+ModelName89: Kia Sorento XM
+Frequency89: 433920000
+PresetName89: FuriHalSubGhzPresetOok650Async
+
+ModelName90: Kia Sorento UM
+Frequency90: 433920000
+PresetName90: FuriHalSubGhzPresetOok650Async
+
+ModelName91: VW Golf Mk4
+Frequency91: 433920000
+PresetName91: FuriHalSubGhzPresetOok650Async
+
+ModelName92: VW Golf Mk5
+Frequency92: 433920000
+PresetName92: FuriHalSubGhzPresetOok650Async
+
+ModelName93: VW Golf Mk6
+Frequency93: 433920000
+PresetName93: FuriHalSubGhzPresetOok650Async
+
+ModelName94: VW Golf Mk7
+Frequency94: 433920000
+PresetName94: FuriHalSubGhzPresetOok650Async
+
+ModelName95: VW Golf Mk8
+Frequency95: 433920000
+PresetName95: FuriHalSubGhzPresetOok650Async
+
+ModelName96: Audi A4 B5
+Frequency96: 433920000
+PresetName96: FuriHalSubGhzPresetOok650Async
+
+ModelName97: Audi A4 B6
+Frequency97: 433920000
+PresetName97: FuriHalSubGhzPresetOok650Async
+
+ModelName98: Audi A4 B7
+Frequency98: 433920000
+PresetName98: FuriHalSubGhzPresetOok650Async
+
+ModelName99: Audi A4 B8
+Frequency99: 433920000
+PresetName99: FuriHalSubGhzPresetOok650Async
+
+ModelName100: XXX NUMNER 100 XXX
+Frequency100: 433920000
+PresetName100: FuriHalSubGhzPresetOok650Async
+
+ModelName101: BMW 5-Series E39
+Frequency101: 433920000
+PresetName101: FuriHalSubGhzPresetOok650Async
+
+ModelName102: BMW 5-Series E60
+Frequency102: 433920000
+PresetName102: FuriHalSubGhzPresetOok650Async
+
+ModelName103: BMW 5-Series F10
+Frequency103: 433920000
+PresetName103: FuriHalSubGhzPresetOok650Async
+
+ModelName104: BMW X5 E53
+Frequency104: 433920000
+PresetName104: FuriHalSubGhzPresetOok650Async
+
+ModelName105: BMW X5 E70
+Frequency105: 433920000
+PresetName105: FuriHalSubGhzPresetOok650Async
+
+ModelName106: BMW X5 F15
+Frequency106: 433920000
+PresetName106: FuriHalSubGhzPresetOok650Async
+
+ModelName107: Mercedes E-Class W210
+Frequency107: 433920000
+PresetName107: FuriHalSubGhzPresetOok650Async
+
+ModelName108: Mercedes E-Class W211
+Frequency108: 433920000
+PresetName108: FuriHalSubGhzPresetOok650Async
+
+ModelName109: Mercedes E-Class W212
+Frequency109: 433920000
+PresetName109: FuriHalSubGhzPresetOok650Async
+
+ModelName110: Mercedes E-Class W213
+Frequency110: 433920000
+PresetName110: FuriHalSubGhzPresetOok650Async
+
+ModelName111: Mercedes ML W163
+Frequency111: 433920000
+PresetName111: FuriHalSubGhzPresetOok650Async
+
+ModelName112: Mercedes ML W164
+Frequency112: 433920000
+PresetName112: FuriHalSubGhzPresetOok650Async
+
+ModelName113: Mercedes ML W166
+Frequency113: 433920000
+PresetName113: FuriHalSubGhzPresetOok650Async
+
+ModelName114: Volvo XC90 Mk1
+Frequency114: 433920000
+PresetName114: FuriHalSubGhzPresetOok650Async
+
+ModelName115: Volvo XC90 Mk2
+Frequency115: 433920000
+PresetName115: FuriHalSubGhzPresetOok650Async
+
+ModelName116: Volvo V70 P2
+Frequency116: 433920000
+PresetName116: FuriHalSubGhzPresetOok650Async
+
+ModelName117: Volvo V70 P3
+Frequency117: 433920000
+PresetName117: FuriHalSubGhzPresetOok650Async
+
+ModelName118: Volvo S60 P2
+Frequency118: 433920000
+PresetName118: FuriHalSubGhzPresetOok650Async
+
+ModelName119: Volvo S60 P3
+Frequency119: 433920000
+PresetName119: FuriHalSubGhzPresetOok650Async
+
+ModelName120: Peugeot 307
+Frequency120: 433920000
+PresetName120: FuriHalSubGhzPresetOok650Async
+
+ModelName121: Peugeot 308 T7
+Frequency121: 433920000
+PresetName121: FuriHalSubGhzPresetOok650Async
+
+ModelName122: Peugeot 308 T9
+Frequency122: 433920000
+PresetName122: FuriHalSubGhzPresetOok650Async
+
+ModelName123: Citroen C4 Mk1
+Frequency123: 433920000
+PresetName123: FuriHalSubGhzPresetOok650Async
+
+ModelName124: Citroen C4 Mk2
+Frequency124: 433920000
+PresetName124: FuriHalSubGhzPresetOok650Async
+
+ModelName125: Citroen C5 Mk1
+Frequency125: 433920000
+PresetName125: FuriHalSubGhzPresetOok650Async
+
+ModelName126: Citroen C5 Mk2
+Frequency126: 433920000
+PresetName126: FuriHalSubGhzPresetOok650Async
+
+ModelName127: Renault Megane II
+Frequency127: 433920000
+PresetName127: FuriHalSubGhzPresetOok650Async
+
+ModelName128: Renault Megane III
+Frequency128: 433920000
+PresetName128: FuriHalSubGhzPresetOok650Async
+
+ModelName129: Renault Megane IV
+Frequency129: 433920000
+PresetName129: FuriHalSubGhzPresetOok650Async
+
+ModelName130: Renault Koleos I
+Frequency130: 433920000
+PresetName130: FuriHalSubGhzPresetOok650Async
+
+ModelName131: Renault Koleos II
+Frequency131: 433920000
+PresetName131: FuriHalSubGhzPresetOok650Async
+
+ModelName132: Fiat Punto Mk2
+Frequency132: 433920000
+PresetName132: FuriHalSubGhzPresetOok650Async
+
+ModelName133: Fiat Punto Mk3
+Frequency133: 433920000
+PresetName133: FuriHalSubGhzPresetOok650Async
+
+ModelName134: Fiat 500 312
+Frequency134: 433920000
+PresetName134: FuriHalSubGhzPresetOok650Async
+
+ModelName135: Fiat Panda Mk2
+Frequency135: 433920000
+PresetName135: FuriHalSubGhzPresetOok650Async
+
+ModelName136: Fiat Panda Mk3
+Frequency136: 433920000
+PresetName136: FuriHalSubGhzPresetOok650Async
+
+ModelName137: Alfa Romeo 147
+Frequency137: 433920000
+PresetName137: FuriHalSubGhzPresetOok650Async
+
+ModelName138: Alfa Romeo 156
+Frequency138: 433920000
+PresetName138: FuriHalSubGhzPresetOok650Async
+
+ModelName139: Alfa Romeo 159
+Frequency139: 433920000
+PresetName139: FuriHalSubGhzPresetOok650Async
+
+ModelName140: Alfa Romeo Giulietta
+Frequency140: 433920000
+PresetName140: FuriHalSubGhzPresetOok650Async
+
+ModelName141: Skoda Fabia Mk1
+Frequency141: 433920000
+PresetName141: FuriHalSubGhzPresetOok650Async
+
+ModelName142: Skoda Fabia Mk2
+Frequency142: 433920000
+PresetName142: FuriHalSubGhzPresetOok650Async
+
+ModelName143: Skoda Fabia Mk3
+Frequency143: 433920000
+PresetName143: FuriHalSubGhzPresetOok650Async
+
+ModelName144: Skoda Superb Mk1
+Frequency144: 433920000
+PresetName144: FuriHalSubGhzPresetOok650Async
+
+ModelName145: Skoda Superb Mk2
+Frequency145: 433920000
+PresetName145: FuriHalSubGhzPresetOok650Async
+
+ModelName146: Skoda Superb Mk3
+Frequency146: 433920000
+PresetName146: FuriHalSubGhzPresetOok650Async
+
+ModelName147: Opel Astra G
+Frequency147: 433920000
+PresetName147: FuriHalSubGhzPresetOok650Async
+
+ModelName148: Opel Astra H
+Frequency148: 433920000
+PresetName148: FuriHalSubGhzPresetOok650Async
+
+ModelName149: Opel Astra J
+Frequency149: 433920000
+PresetName149: FuriHalSubGhzPresetOok650Async
+
+ModelName150: XXX LAST ONE 150 XXX
+Frequency150: 433920000
+PresetName150: FuriHalSubGhzPresetOok650Async

@@ -211,49 +211,27 @@ static void protopirate_scene_receiver_config_set_model(VariableItem* item) {
         //Restore Original Preset.
         protopirate_scene_receiver_config_set_frequency(app->freq_menu);
         protopirate_scene_receiver_config_set_hopping_running(app->hop_menu);
-        if(app->selected_model->last_preset_index > -1) {
-            furi_string_set(
-                app->txrx->preset->name,
-                subghz_setting_get_preset_name(
-                    app->setting, app->selected_model->last_preset_index));
 
-            protopirate_preset_init(
-                app,
-                subghz_setting_get_preset_name(
-                    app->setting, app->selected_model->last_preset_index),
-                app->txrx->preset->frequency,
-                subghz_setting_get_preset_data(
-                    app->setting, app->selected_model->last_preset_index),
-                subghz_setting_get_preset_data_size(
-                    app->setting, app->selected_model->last_preset_index));
+        protopirate_preset_init(
+            app,
+            subghz_setting_get_preset_name(app->setting, app->selected_model->last_preset_index),
+            app->txrx->preset->frequency,
+            subghz_setting_get_preset_data(app->setting, app->selected_model->last_preset_index),
+            subghz_setting_get_preset_data_size(
+                app->setting, app->selected_model->last_preset_index));
 
-            variable_item_set_current_value_text(
-                app->preset_menu,
-                subghz_setting_get_preset_name(
-                    app->setting, app->selected_model->last_preset_index));
-
-            app->selected_model->last_preset_index = -1;
-        } else {
-            protopirate_preset_init(
-                app,
-                subghz_setting_get_preset_name(app->setting, 0),
-                app->txrx->preset->frequency,
-                subghz_setting_get_preset_data(app->setting, 0),
-                subghz_setting_get_preset_data_size(app->setting, 0));
-
-            variable_item_set_current_value_text(
-                app->preset_menu, subghz_setting_get_preset_name(app->setting, 0));
-        }
+        variable_item_set_current_value_text(
+            app->preset_menu,
+            subghz_setting_get_preset_name(app->setting, app->selected_model->last_preset_index));
     } else {
         variable_item_set_current_value_text(app->freq_menu, "Locked");
         variable_item_set_current_value_text(app->hop_menu, "Locked");
         app->txrx->hopper_state = ProtoPirateHopperStateOFF;
         app->txrx->preset->frequency = app->selected_model->preset->frequency;
 
-        //Save Original Prseet.
-        if(app->selected_model->last_preset_index == -1)
-            app->selected_model->last_preset_index = subghz_setting_get_inx_preset_by_name(
-                app->setting, furi_string_get_cstr(app->txrx->preset->name));
+        //Save Original Preset.
+        app->selected_model->last_preset_index = subghz_setting_get_inx_preset_by_name(
+            app->setting, furi_string_get_cstr(app->txrx->preset->name));
 
         protopirate_preset_init(
             app,
@@ -343,9 +321,10 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
 
 //Get a Car Model object, and dont forget to shut down on app free!
 #ifdef BUILD_MAIN_APP
-    int16_t tmp = -1;
+    //Get the number of models if we dont have it yet.
+    if(app->car_models_count > 65535) app->car_models_count = protopirate_model_get_count();
+
     if(app->selected_model) {
-        tmp = app->selected_model->last_preset_index;
         protopirate_model_get_by_index(app, &app->selected_model, app->selected_model->index);
     } else {
         protopirate_model_get_by_index(app, &app->selected_model, 0);
@@ -360,7 +339,6 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         app);
 
     //variable_item_set_current_value_in
-    app->selected_model->last_preset_index = tmp;
     app->model_menu = item;
 #endif
     //Frequency Menu Item.
@@ -421,6 +399,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(
         item, subghz_setting_get_preset_name(app->setting, value_index));
+
 #ifdef BUILD_MAIN_APP
     variable_item_set_locked(
         item,
