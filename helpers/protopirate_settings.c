@@ -12,7 +12,7 @@
 #define MODELS_FILE_VERSION   1
 
 //For speed, so we start at a good counter.
-#define MODELS_MINIMUN_COUNT 150;
+#define MODELS_MINIMUN_COUNT 6;
 
 void protopirate_settings_set_defaults(ProtoPirateSettings* settings) {
     settings->frequency = 433920000;
