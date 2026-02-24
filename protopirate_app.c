@@ -73,8 +73,7 @@ ProtoPirateApp* protopirate_app_alloc() {
     //Initialise Car Model varables
 
 #ifdef BUILD_MAIN_APP
-    app->car_models_count = protopirate_model_get_count();
-    FURI_LOG_D(TAG, "There are %u models available", app->car_models_count);
+    app->car_models_count = 65536;
     app->selected_model = NULL;
     app->model_menu = NULL;
     app->freq_menu = NULL;
@@ -461,15 +460,19 @@ void protopirate_app_free(ProtoPirateApp* app) {
     settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
 #ifdef BUILD_MAIN_APP
     settings.car_model_index = (app->selected_model) ? app->selected_model->index : 0;
-#endif
-
     // Find current preset index
-    settings.preset_index = 0;
-    const char* current_preset = furi_string_get_cstr(app->txrx->preset->name);
-    for(uint8_t i = 0; i < subghz_setting_get_preset_count(app->setting); i++) {
-        if(strcmp(subghz_setting_get_preset_name(app->setting, i), current_preset) == 0) {
-            settings.preset_index = i;
-            break;
+    if(app->selected_model && app->selected_model->last_preset_index) {
+        settings.preset_index = app->selected_model->last_preset_index;
+    } else
+#endif
+    {
+        settings.preset_index = 0;
+        const char* current_preset = furi_string_get_cstr(app->txrx->preset->name);
+        for(uint8_t i = 0; i < subghz_setting_get_preset_count(app->setting); i++) {
+            if(strcmp(subghz_setting_get_preset_name(app->setting, i), current_preset) == 0) {
+                settings.preset_index = i;
+                break;
+            }
         }
     }
 
@@ -481,7 +484,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
         ((settings.option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
         settings.hopping_enabled);
 
-    //Free the selected model, we wont save that.
+//Free the selected model, we wont save that.
 #ifdef BUILD_MAIN_APP
     protopirate_car_model_free(&app->selected_model);
 #endif
