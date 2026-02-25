@@ -9,7 +9,14 @@
 #define SETTINGS_FILE_HEADER  "ProtoPirate Settings"
 #define SETTINGS_FILE_VERSION 1
 #define MODELS_FILE_HEADER    "ProtoPirate Car Models Database"
-#define MODELS_FILE_VERSION   1
+
+//Models File Format.
+#define MODELS_FILE_VERSION             2
+#define MODELS_FIELD_MODEL_COUNT        "ModelCount"
+#define MODELS_FIELD_MODEL_NAME         "ModelName"
+#define MODELS_FIELD_FREQUENCY          "Frequency"
+#define MODELS_FIELD_PRESET_NAME        "PresetName"
+#define MODELS_FIELD_CUSTOM_PRESET_DATA "CustomPresetData"
 
 //For speed, so we start at a good counter.
 #define MODELS_MINIMUN_COUNT 6;
@@ -195,16 +202,20 @@ bool protopirate_model_get_by_index(
     ProtoPirateApp* app,
     ProtoPirateCarModel** car_model,
     uint16_t index) {
+    //Temp variables
+    uint32_t version = 0;
+    uint32_t frequency;
+    uint8_t* preset_data = NULL;
+    uint32_t preset_data_size = 0;
+    bool error = true;
+    bool custom_preset = false;
+
+    //Objects that need allocating.
     Storage* storage = furi_record_open(RECORD_STORAGE);
     FlipperFormat* ff = flipper_format_file_alloc(storage);
     FuriString* preset_name = furi_string_alloc();
     FuriString* model_name = furi_string_alloc();
-    uint32_t frequency;
-    uint8_t* preset_data = NULL;
-    uint32_t preset_data_size = 0;
-
-    bool error = true;
-    bool custom_preset = false;
+    FuriString* header = furi_string_alloc();
 
     //Allocate RAM for the Car Model into.
     if(!*car_model) {
@@ -220,44 +231,37 @@ bool protopirate_model_get_by_index(
         //Leave as same as error (none)
         break;
     default: {
+        //Open Models File, check the Header, check Version
         if(!flipper_format_file_open_existing(ff, PROTOPIRATE_MODELS_FILE)) {
-            FURI_LOG_I(TAG, "Models file not found");
+            FURI_LOG_I(TAG, "models.txt file not found");
             break;
-        }
-
-        FuriString* header = furi_string_alloc();
-        uint32_t version = 0;
-
-        if(!flipper_format_read_header(ff, header, &version)) {
-            FURI_LOG_W(TAG, "Failed to read settings header");
-            furi_string_free(header);
+        } else if(!flipper_format_read_header(ff, header, &version)) {
+            FURI_LOG_W(TAG, "Failed to read models.txt header");
             break;
-        }
-
-        if(version != MODELS_FILE_VERSION) {
+        } else if(furi_string_cmp_str(header, MODELS_FILE_HEADER) != 0) {
+            FURI_LOG_W(TAG, "Invalid models.txt file header");
+            break;
+        } else if(version != MODELS_FILE_VERSION) {
             FURI_LOG_W(TAG, "Unsupported models.txt version %lu", (unsigned long)version);
-            furi_string_free(header);
             break;
         }
 
-        if(furi_string_cmp_str(header, MODELS_FILE_HEADER) != 0) {
-            FURI_LOG_W(TAG, "Invalid settings file header");
-            furi_string_free(header);
-            break;
-        }
-
-        furi_string_free(header);
-
+        //Fields we add the number to for searching the file.
         char model_name_index[16]; //Frequency65535 + NULL
         char frequency_index[16]; //Frequency65535 + NULL
         char preset_name_index[18]; //PresetName65535 + NULL
-        char preset_data_index[23]; //PresetData65535 + NULL
+        char preset_data_index[23]; //CustomPresetData65535 + NULL
 
         //Build the values we need to grab.
-        snprintf(model_name_index, sizeof(model_name_index), "ModelName%u", index);
-        snprintf(frequency_index, sizeof(frequency_index), "Frequency%u", index);
-        snprintf(preset_name_index, sizeof(preset_name_index), "PresetName%u", index);
-        snprintf(preset_data_index, sizeof(preset_data_index), "CustomPresetData%u", index);
+        snprintf(model_name_index, sizeof(model_name_index), MODELS_FIELD_MODEL_NAME "%u", index);
+        snprintf(frequency_index, sizeof(frequency_index), MODELS_FIELD_FREQUENCY "%u", index);
+        snprintf(
+            preset_name_index, sizeof(preset_name_index), MODELS_FIELD_PRESET_NAME "%u", index);
+        snprintf(
+            preset_data_index,
+            sizeof(preset_data_index),
+            MODELS_FIELD_CUSTOM_PRESET_DATA "%u",
+            index);
 
         //Read the Model Name.
         if(!flipper_format_read_string(ff, model_name_index, model_name)) {
@@ -272,6 +276,7 @@ bool protopirate_model_get_by_index(
             break;
         }
 
+        //Read the Modulation Preset.
         if(!flipper_format_read_string(ff, preset_name_index, preset_name)) {
             //Set the Custom preset name.
             furi_string_set_str(preset_name, "Custom");
@@ -433,6 +438,7 @@ bool protopirate_model_get_by_index(
 
     //Close up and return.
     flipper_format_free(ff);
+    furi_string_free(header);
     furi_string_free(model_name);
     furi_string_free(preset_name);
     furi_record_close(RECORD_STORAGE);
@@ -440,89 +446,31 @@ bool protopirate_model_get_by_index(
 }
 
 uint16_t protopirate_model_get_count(void) {
+    uint32_t version = 0;
+    uint32_t model_count = 0;
+
+    //Set up storage, init temp variables
     Storage* storage = furi_record_open(RECORD_STORAGE);
     FlipperFormat* ff = flipper_format_file_alloc(storage);
     FuriString* header = furi_string_alloc();
-    FuriString* tmp = furi_string_alloc();
-    uint32_t version = 0;
-    uint16_t count = 0;
-    bool ok = true;
 
+    //Open file, read header, check version, and grab the model count.
     if(!flipper_format_file_open_existing(ff, PROTOPIRATE_MODELS_FILE)) {
-        goto cleanup;
+        FURI_LOG_W(TAG, "Failed to open " PROTOPIRATE_MODELS_FILE);
+    } else if(!flipper_format_read_header(ff, header, &version)) {
+        FURI_LOG_W(TAG, "Failed to read models file header.");
+    } else if(version != MODELS_FILE_VERSION || furi_string_cmp_str(header, MODELS_FILE_HEADER) != 0) {
+        FURI_LOG_W(TAG, "Models file version is invalid.");
+    } else if(!flipper_format_read_uint32(ff, MODELS_FIELD_MODEL_COUNT, &model_count, 1)) {
+        FURI_LOG_W(TAG, "Failed to read " MODELS_FIELD_MODEL_COUNT ".");
     }
 
-    if(!flipper_format_read_header(ff, header, &version)) goto cleanup;
-    if(version != MODELS_FILE_VERSION || furi_string_cmp_str(header, MODELS_FILE_HEADER) != 0)
-        goto cleanup;
-
-    //Start at 1 if we have to search.
-    uint16_t low = 1;
-    uint16_t high = MODELS_MINIMUN_COUNT;
-    while(ok) {
-        char key[32];
-        snprintf(key, sizeof(key), "ModelName%u", high);
-
-        ok = flipper_format_read_string(ff, key, tmp);
-        if(!ok) {
-            if(low == 1) {
-                //We found NO models in the database at our MODELS_MINIMUN_COUNT value.
-                low = high = 1;
-            } else {
-                //1st Missing item ABOVE the counter. Now Search backwards for the true count.
-                break;
-            }
-        }
-
-        //IF we are on the 1st iteration, and we found the item at MODELS_MINIMUN_COUNT, check the 1 above.
-        //We may have a shortcut to counting them all.
-        if(low == 1) {
-            snprintf(key, sizeof(key), "ModelName%u", high + 1);
-            ok = flipper_format_read_string(ff, key, tmp);
-            if(!ok) {
-                ok = true;
-                low = high;
-                break;
-            }
-        }
-
-        //Double the Size of the partition
-        low = high;
-        high *= 2;
-
-        //Quit halfway point.
-        if(high > 32767) {
-            high = 65535;
-            break;
-        }
-    }
-
-    //If we dont have the count yet, Binary Searcg the count now..
-    uint16_t left = low;
-    uint16_t right = high;
-    if(!ok) {
-        while(left <= right) {
-            uint16_t mid = left + ((right - left) / 2);
-
-            char key[32];
-            snprintf(key, sizeof(key), "ModelName%u", mid);
-            flipper_format_rewind(ff);
-            ok = flipper_format_read_string(ff, key, tmp);
-
-            if(ok) {
-                left = mid + 1; //We found an Item, go higher.
-            } else {
-                right = mid - 1; //No Item found, go lower.
-            }
-        }
-    }
-    count = right;
-
-cleanup:
-    furi_string_free(tmp);
+    //Free temp variables, close storage.
     furi_string_free(header);
     flipper_format_free(ff);
     furi_record_close(RECORD_STORAGE);
-    return count;
+
+    //Finished, return the count or 0 if error.
+    return (uint16_t)model_count;
 }
 #endif //BUILD_MAIN_APP

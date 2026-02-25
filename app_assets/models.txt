@@ -1,5 +1,7 @@
 Filetype: ProtoPirate Car Models Database
-Version: 1
+Version: 2
+
+ModelCount: 6
 
 ModelName1: 433.92 Mhz AM650
 Frequency1: 433920000
