@@ -46,6 +46,8 @@ typedef struct {
     uint8_t lock_count;
     uint8_t animation_frame;
     bool sub_decode_mode;
+    IconAnimation* icon_int_ant;
+    IconAnimation* icon_ext_ant;
 } ProtoPirateReceiverModel;
 
 static void protopirate_view_rssi_draw(Canvas* canvas, ProtoPirateReceiverModel* model) {
@@ -255,20 +257,19 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             elements_scrollbar_pos(canvas, 128, 0, 49, scroll_pos, scrollable_total);
         }
     } else {
-        canvas_draw_icon(
-            canvas, 0, 0, model->external_radio ? &I_Fishing_123x52 : &I_Scanning_123x52);
+        canvas_draw_icon(canvas, 0, 0, &I_Scanning_short_96x52);
         canvas_set_font(canvas, FontPrimary);
         canvas_draw_str(canvas, 63, 46, "Scanning...");
         canvas_set_font(canvas, FontSecondary);
 
         // Draw EXT/INT indicator in upper right corner
-        canvas_set_font(canvas, FontSecondary);
         if(model->external_radio) {
-            canvas_draw_str_aligned(canvas, 127, 0, AlignRight, AlignTop, "Ext");
+            canvas_draw_icon_animation(canvas, 109, 0, model->icon_ext_ant);
         } else {
-            canvas_draw_str_aligned(canvas, 127, 0, AlignRight, AlignTop, "Int");
+            canvas_draw_icon_animation(canvas, 109, 0, model->icon_int_ant);
         }
 
+        canvas_set_font(canvas, FontSecondary);
         //Draw the Auto-save Indicator
         if(model->auto_save) {
             const char* auto_save_text = "Save";
@@ -469,6 +470,12 @@ ProtoPirateReceiver* protopirate_view_receiver_alloc(bool auto_save) {
             model->auto_save = auto_save;
             model->animation_frame = 0;
             model->sub_decode_mode = false;
+            model->icon_int_ant = icon_animation_alloc(&A_SubGhz_Internal_ant);
+            view_tie_icon_animation(receiver->view, model->icon_int_ant);
+            model->icon_ext_ant = icon_animation_alloc(&A_SubGhz_External_ant);
+            view_tie_icon_animation(receiver->view, model->icon_ext_ant);
+            icon_animation_start(model->icon_int_ant);
+            icon_animation_start(model->icon_ext_ant);
         },
         true);
 
@@ -493,6 +500,8 @@ void protopirate_view_receiver_free(ProtoPirateReceiver* receiver) {
             furi_string_free(model->preset_str);
             furi_string_free(model->history_stat_str);
             furi_string_free(model->draw_scratch);
+            icon_animation_stop(model->icon_int_ant);
+            icon_animation_stop(model->icon_ext_ant);
         },
         false);
 
