@@ -199,7 +199,7 @@ static void protopirate_decode_draw_callback(Canvas* canvas, void* context) {
     if(ctx->state == DecodeStateShowSuccess) {
         // Success screen
         canvas_set_font(canvas, FontPrimary);
-        canvas_draw_str_aligned(canvas, 64, 6, AlignCenter, AlignTop, "DECODED!");
+        canvas_draw_str_aligned(canvas, 64, 6, AlignCenter, AlignTop, "Decoded!");
 
         // Checkmark animation
         int check_progress = ctx->result_display_counter * 3;
@@ -301,86 +301,24 @@ static void protopirate_decode_draw_callback(Canvas* canvas, void* context) {
 
     // Normal decoding animation
 
-    // Title with occasional glitch
+    // Title.
     canvas_set_font(canvas, FontPrimary);
-    int glitch = (frame % 47 == 0) ? 1 : 0;
-    canvas_draw_str_aligned(canvas, 64 + glitch, 0, AlignCenter, AlignTop, "Decoding");
-
-    // Waveform visualization - original style with sinf
-    int wave_y = 22;
-    int wave_height = 14;
-
-    for(int x = 0; x < 128; x++) {
-        float phase = (float)(x + frame * 4) * 0.12f;
-        float phase2 = (float)(x - frame * 2) * 0.08f;
-        int y_offset = (int)(sinf(phase) * wave_height / 2 + sinf(phase2) * wave_height / 4);
-
-        // Add some noise variation
-        if((x * 7 + frame) % 13 == 0) {
-            y_offset += ((frame * x) % 5) - 2;
-        }
-
-        canvas_draw_dot(canvas, x, wave_y + y_offset);
-
-        // Thicker line
-        if((x + frame) % 3 != 0) {
-            canvas_draw_dot(canvas, x, wave_y + y_offset + 1);
-        }
-    }
-
-    // Scanning beam effect
-    int scan_x = (frame * 5) % 148 - 10;
-    for(int dx = 0; dx < 8; dx++) {
-        int sx = scan_x + dx;
-        if(sx >= 0 && sx < 128) {
-            int intensity = 8 - dx;
-            for(int y = wave_y - wave_height / 2 - 1; y <= wave_y + wave_height / 2 + 1; y++) {
-                if(dx < intensity / 2) {
-                    canvas_draw_dot(canvas, sx, y);
-                }
-            }
-        }
-    }
-
-    // Progress bar frame
-    int progress_y = 38;
-    canvas_draw_rframe(canvas, 8, progress_y, 112, 10, 2);
-
-    // Calculate progress
-    int progress = 0;
-    if(ctx->state == DecodeStateStartingWorker) {
-        progress = 20 + (frame % 10);
-    } else if(ctx->state == DecodeStateDecodingRaw) {
-        // Show animated progress while decoding - gradually increase
-        progress = 30 + (frame % 50);
-    } else if(ctx->state == DecodeStateOpenFile || ctx->state == DecodeStateReadHeader) {
-        progress = 5 + (frame % 10);
-    }
-    if(progress > 100) progress = 100;
-
-    // Animated progress fill with diagonal stripes
-    int fill_width = (progress * 108) / 100;
-    for(int x = 0; x < fill_width; x++) {
-        for(int y = 0; y < 6; y++) {
-            if(((x - (int)frame + y) & 3) < 2) {
-                canvas_draw_dot(canvas, 10 + x, progress_y + 2 + y);
-            }
-        }
-    }
-
-    // Status text
+    canvas_draw_str_aligned(canvas, 70, 20, AlignLeft, AlignCenter, "Decoding");
     canvas_set_font(canvas, FontSecondary);
+    canvas_draw_str_aligned(canvas, 70, 35, AlignLeft, AlignCenter, "Please wait...");
+    canvas_draw_icon(canvas, 0, 0, &I_DolphinWait_59x54);
+
     const char* status_text = "Starting...";
 
     switch(ctx->state) {
     case DecodeStateOpenFile:
-        status_text = "Opening file...";
+        status_text = "Opening...";
         break;
     case DecodeStateReadHeader:
-        status_text = "Reading header...";
+        status_text = "Reading header....";
         break;
     case DecodeStateStartingWorker:
-        status_text = "Counting timings...";
+        status_text = "Count timings...";
         break;
     case DecodeStateDecodingRaw: {
         static char match_text[32];
@@ -393,34 +331,14 @@ static void protopirate_decode_draw_callback(Canvas* canvas, void* context) {
                 ctx->match_count > 1 ? "es" : "");
             status_text = match_text;
         } else {
-            status_text = "Decoding signal...";
+            status_text = "Decoding signals...";
         }
         break;
     }
     default:
         break;
     }
-    canvas_draw_str_aligned(canvas, 64, 52, AlignCenter, AlignTop, status_text);
-
-    // Binary rain effect on sides
-    canvas_set_font(canvas, FontKeyboard);
-    for(int i = 0; i < 5; i++) {
-        int y_left = ((frame * 2 + i * 13) % 70) - 5;
-        int y_right = ((frame * 2 + i * 17 + 35) % 70) - 5;
-        char bit_l = '0' + ((frame + i) & 1);
-        char bit_r = '0' + ((frame + i + 1) & 1);
-        char str_l[2] = {bit_l, 0};
-        char str_r[2] = {bit_r, 0};
-
-        if(y_left >= 0 && y_left < 64) canvas_draw_str(canvas, 1, y_left, str_l);
-        if(y_right >= 0 && y_right < 64) canvas_draw_str(canvas, 123, y_right, str_r);
-    }
-
-    // Corner spinners (slower)
-    const char* spin = "|/-\\";
-    char spinner[2] = {spin[(frame / 4) & 3], 0};
-    canvas_draw_str(canvas, 1, 62, spinner);
-    canvas_draw_str(canvas, 123, 62, spinner);
+    canvas_draw_str_aligned(canvas, 70, 54, AlignCenter, AlignTop, status_text);
 }
 
 static bool protopirate_decode_input_callback(InputEvent* event, void* context) {
