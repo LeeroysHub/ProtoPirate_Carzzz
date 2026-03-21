@@ -162,7 +162,7 @@ static const char* mazda_v0_get_button_name(uint8_t button) {
     case 0x02:
         return "Unlock";
     case 0x04:
-        return "Trunk";
+        return "Boot";
     case 0x08:
         return "Remote";
     default:
