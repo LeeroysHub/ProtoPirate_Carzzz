@@ -103,7 +103,7 @@ static const char* kia_v7_get_button_name(uint8_t button) {
         return "Unlock";
     case 0x03:
     case 0x08:
-        return "Trunk";
+        return "Boot";
     default:
         return "??";
     }
