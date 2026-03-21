@@ -79,7 +79,7 @@ static const char* mazda_get_btn_name(uint8_t btn) {
     case 0x20:
         return "Unlock";
     case 0x40:
-        return "Trunk";
+        return "Boot";
     default:
         return "Unknown";
     }
