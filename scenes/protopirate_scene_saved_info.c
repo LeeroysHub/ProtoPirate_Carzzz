@@ -255,7 +255,7 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
                 //Show the "Are you Sure" dialog.
                 app->dialogs = furi_record_open(RECORD_DIALOGS);
                 DialogMessage* message = dialog_message_alloc();
-                dialog_message_set_buttons(message, "Delete", NULL, "Keep");
+                dialog_message_set_buttons(message, "Keep", NULL, "Delete");
                 dialog_message_set_icon(message, &I_WarningDolphin_45x42, 0, 12);
                 dialog_message_set_header(
                     message, "Confirm Delete Action", 64, 0, AlignCenter, AlignTop);
@@ -272,7 +272,7 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
                 app->dialogs = NULL;
 
                 //Delete if the user said yes.
-                if(dialog_result == DialogMessageButtonLeft) {
+                if(dialog_result == DialogMessageButtonRight) {
                     notification_message(app->notifications, &sequence_semi_success);
                     protopirate_storage_delete_file(furi_string_get_cstr(app->loaded_file_path));
                     scene_manager_previous_scene(app->scene_manager);
