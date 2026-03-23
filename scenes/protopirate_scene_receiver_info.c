@@ -351,6 +351,10 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
             app->psa_bf_state->cancel = 1;
             consumed = true;
         }
+
+        if(app->save_protocol) {
+            furi_string_free(app->save_protocol);
+        }
         return consumed;
     }
 
@@ -434,9 +438,9 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
         if(event.event == ProtoPirateCustomEventReceiverInfoSave) {
             FlipperFormat* ff =
                 protopirate_history_get_raw_data(app->txrx->history, app->txrx->idx_menu_chosen);
-            FuriString* filename_str = furi_string_alloc();
 
             if(ff) {
+                FuriString* filename_str = furi_string_alloc();
                 if(app->option_flags & FLAG_DATETIME_FILENAMES) {
                     //Get the date and time to save.
                     DateTime date_time;
@@ -510,8 +514,8 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                     false); // don't clear default text
 
                 view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewTextInput);
+                furi_string_free(filename_str);
             }
-            furi_string_free(filename_str);
             consumed = true;
         }
 

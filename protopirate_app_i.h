@@ -96,13 +96,14 @@ struct ProtoPirateApp {
     uint16_t save_history_idx;
     bool save_from_saved_info;
 #ifdef BUILD_MAIN_APP
+    //Car Models Database
     ProtoPirateCarModel* selected_model;
     uint32_t car_models_count;
     VariableItem* model_menu;
     VariableItem* freq_menu;
     VariableItem* hop_menu;
     VariableItem* preset_menu;
-#endif // BUILD_MAIN_AP
+#endif // BUILD_MAIN_APP
 };
 
 #include "helpers/protopirate_settings.h"
