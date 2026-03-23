@@ -80,6 +80,14 @@ ProtoPirateApp* protopirate_app_alloc() {
     app->hop_menu = NULL;
     app->preset_menu = NULL;
 #endif
+    // Text Input
+    app->text_input = text_input_alloc();
+    view_dispatcher_add_view(
+        app->view_dispatcher, ProtoPirateViewTextInput, text_input_get_view(app->text_input));
+    app->save_protocol = NULL;
+    app->save_from_saved_info = false;
+    app->save_history_idx = 0;
+    memset(app->save_filename, 0, sizeof(app->save_filename));
 
     // Variable Item List
     //app->variable_item_list = variable_item_list_alloc();
@@ -97,15 +105,6 @@ ProtoPirateApp* protopirate_app_alloc() {
     app->widget = widget_alloc();
     view_dispatcher_add_view(
         app->view_dispatcher, ProtoPirateViewWidget, widget_get_view(app->widget));
-
-    // Text Input
-    app->text_input = text_input_alloc();
-    view_dispatcher_add_view(
-        app->view_dispatcher, ProtoPirateViewTextInput, text_input_get_view(app->text_input));
-    app->save_protocol = NULL;
-    app->save_from_saved_info = false;
-    app->save_history_idx = 0;
-    memset(app->save_filename, 0, sizeof(app->save_filename));
 
     // File Browser path
     app->file_path = furi_string_alloc();
@@ -513,9 +512,11 @@ void protopirate_app_free(ProtoPirateApp* app) {
     //variable_item_list_free(app->variable_item_list);
 
     // About View
-    //FURI_LOG_D(TAG, "Removing about view");
-    //view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
-    //view_free(app->view_about);
+    //if(app->view_about) {
+    //    FURI_LOG_D(TAG, "Removing about view");
+    //    view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+    //    view_free(app->view_about);
+    //}
 
     // File path
     if(app->file_path) {
