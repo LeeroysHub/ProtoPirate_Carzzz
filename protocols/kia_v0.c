@@ -13,7 +13,8 @@ static const SubGhzBlockConst subghz_protocol_kia_const = {
 // Multi-burst configuration
 #define KIA_TOTAL_BURSTS       2
 #define KIA_INTER_BURST_GAP_US 25000
-#define KIA_HEADER_PULSES      64
+#define KIA_PREAMBLE_PAIRS     64
+#define KIA_BIT_COUNT          59
 
 struct SubGhzProtocolDecoderKIA {
     SubGhzProtocolDecoderBase base;
@@ -140,7 +141,9 @@ void* subghz_protocol_encoder_kia_alloc(SubGhzEnvironment* environment) {
     instance->button = 0;
     instance->counter = 0;
 
-    instance->encoder.size_upload = (KIA_HEADER_PULSES + 2 + 118 + 1) * KIA_TOTAL_BURSTS + (KIA_TOTAL_BURSTS - 1);
+    instance->encoder.size_upload =
+        (KIA_PREAMBLE_PAIRS + 2 + (KIA_BIT_COUNT * 2) + 1) * KIA_TOTAL_BURSTS +
+        (KIA_TOTAL_BURSTS - 1);
     instance->encoder.upload = malloc(instance->encoder.size_upload * sizeof(LevelDuration));
     instance->encoder.repeat =
         10; // High repeat count for continuous transmission while button is held
@@ -203,7 +206,7 @@ static void subghz_protocol_encoder_kia_get_upload(SubGhzProtocolEncoderKIA* ins
             instance->encoder.upload[index++] = level_duration_make(false, KIA_INTER_BURST_GAP_US);
         }
 
-        for(int i = 0; i < KIA_HEADER_PULSES; i++) {
+        for(int i = 0; i < KIA_PREAMBLE_PAIRS; i++) {
             bool is_high = (i % 2) == 0;
             instance->encoder.upload[index++] =
                 level_duration_make(is_high, subghz_protocol_kia_const.te_short);
@@ -215,8 +218,8 @@ static void subghz_protocol_encoder_kia_get_upload(SubGhzProtocolEncoderKIA* ins
         instance->encoder.upload[index++] =
             level_duration_make(false, subghz_protocol_kia_const.te_long);
 
-        for(uint8_t bit_num = 0; bit_num < 59; bit_num++) {
-            uint64_t bit_mask = 1ULL << (58 - bit_num);
+        for(uint8_t bit_num = 0; bit_num < KIA_BIT_COUNT; bit_num++) {
+            uint64_t bit_mask = 1ULL << ((KIA_BIT_COUNT - 1) - bit_num);
             uint8_t current_bit = (instance->generic.data & bit_mask) ? 1 : 0;
 
             uint32_t duration = current_bit ? subghz_protocol_kia_const.te_long :

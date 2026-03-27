@@ -6,7 +6,7 @@
 
 #define KIA_V1_TOTAL_BURSTS       3
 #define KIA_V1_INTER_BURST_GAP_US 25000
-#define KIA_V1_HEADER_PULSES      90
+#define KIA_V1_PREAMBLE_PAIRS     90
 
 static const SubGhzBlockConst kia_protocol_v1_const = {
     .te_short = 800,
@@ -175,7 +175,7 @@ static void kia_protocol_encoder_v1_get_upload(SubGhzProtocolEncoderKiaV1* insta
                 level_duration_make(false, KIA_V1_INTER_BURST_GAP_US);
         }
 
-        for(int i = 0; i < KIA_V1_HEADER_PULSES; i++) {
+        for(int i = 0; i < KIA_V1_PREAMBLE_PAIRS; i++) {
             instance->encoder.upload[index++] =
                 level_duration_make(false, (uint32_t)kia_protocol_v1_const.te_long);
             instance->encoder.upload[index++] =
