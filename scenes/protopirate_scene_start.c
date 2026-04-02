@@ -39,6 +39,8 @@ static void protopirate_scene_start_submenu_callback(void* context, uint32_t ind
 // Handle "Saved Remotes" directly here, not via custom event
 #ifdef ENABLE_SAVED_SCENE
     if(index == SubmenuIndexProtoPirateSaved) {
+        scene_manager_set_scene_state(
+            app->scene_manager, ProtoPirateSceneStart, SubmenuIndexProtoPirateSaved);
         protopirate_scene_start_open_saved_captures(app);
     } else
 #endif
@@ -123,8 +125,11 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
     FURI_LOG_I(TAG, "[14] === CALLING dialog_file_browser_show ===");
     FURI_LOG_D(TAG, "[14a] dialogs=%p, file_path=%p", (void*)app->dialogs, (void*)app->file_path);
 
-    bool file_selected =
-        dialog_file_browser_show(app->dialogs, app->file_path, app->file_path, &browser_options);
+    bool file_selected = dialog_file_browser_show(
+        app->dialogs,
+        app->file_path,
+        (app->loaded_file_path) ? app->loaded_file_path : app->file_path,
+        &browser_options);
 
     FURI_LOG_I(TAG, "[15] === RETURNED from dialog_file_browser_show ===");
     FURI_LOG_D(TAG, "[15a] file_selected = %d", file_selected);
@@ -144,6 +149,7 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
         scene_manager_next_scene(app->scene_manager, ProtoPirateSceneSavedInfo);
     } else {
         FURI_LOG_I(TAG, "[16] File browser cancelled or empty");
+        scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneStart, 0);
     }
 
     FURI_LOG_I(TAG, "[20] open_saved_captures complete");
@@ -208,6 +214,12 @@ void protopirate_scene_start_on_enter(void* context) {
         app->submenu, scene_manager_get_scene_state(app->scene_manager, ProtoPirateSceneStart));
 
     view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewSubmenu);
+
+#ifdef ENABLE_SAVED_SCENE
+    if(scene_manager_get_scene_state(app->scene_manager, ProtoPirateSceneStart) ==
+       SubmenuIndexProtoPirateSaved)
+        protopirate_scene_start_open_saved_captures(app);
+#endif
 }
 
 bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
