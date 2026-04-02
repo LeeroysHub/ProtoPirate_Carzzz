@@ -352,9 +352,6 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
             consumed = true;
         }
 
-        if(app->save_protocol) {
-            furi_string_free(app->save_protocol);
-        }
         return consumed;
     }
 
@@ -465,7 +462,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
 
                 //Add the protocol
                 furi_string_cat(filename_str, protocol);
-                //furi_string_free(protocol);
+                furi_string_free(protocol);
 
                 // Clean protocol name for filename
                 furi_string_replace_all(filename_str, "/", "_");
@@ -497,8 +494,6 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                 furi_string_free(auto_path);
 
                 // Store context for when text input confirms
-                if(app->save_protocol) furi_string_free(app->save_protocol);
-                app->save_protocol = protocol; // transfer ownership
                 app->save_history_idx = app->txrx->idx_menu_chosen;
                 app->save_from_saved_info = false;
 
@@ -539,12 +534,6 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                     FURI_LOG_E(TAG, "Save failed");
                 }
                 furi_string_free(save_path);
-            }
-
-            // Clean up save protocol string
-            if(app->save_protocol) {
-                furi_string_free(app->save_protocol);
-                app->save_protocol = NULL;
             }
 
             // Return to the receiver info widget
