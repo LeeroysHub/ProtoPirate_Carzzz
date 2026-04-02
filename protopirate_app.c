@@ -84,7 +84,6 @@ ProtoPirateApp* protopirate_app_alloc() {
     app->text_input = text_input_alloc();
     view_dispatcher_add_view(
         app->view_dispatcher, ProtoPirateViewTextInput, text_input_get_view(app->text_input));
-    app->save_protocol = NULL;
     app->save_from_saved_info = false;
     app->save_history_idx = 0;
     memset(app->save_filename, 0, sizeof(app->save_filename));
@@ -533,10 +532,6 @@ void protopirate_app_free(ProtoPirateApp* app) {
     FURI_LOG_D(TAG, "Removing text_input view");
     view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewTextInput);
     text_input_free(app->text_input);
-    if(app->save_protocol) {
-        furi_string_free(app->save_protocol);
-        app->save_protocol = NULL;
-    }
 
     // Receiver
     FURI_LOG_D(TAG, "Removing receiver view");
