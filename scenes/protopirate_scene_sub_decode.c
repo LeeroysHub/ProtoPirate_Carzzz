@@ -341,7 +341,7 @@ static void protopirate_decode_draw_callback(Canvas* canvas, void* context) {
 }
 
 static bool protopirate_decode_input_callback(InputEvent* event, void* context) {
-    ProtoPirateApp* app = context;
+    UNUSED(context);
 
     if(event->type == InputTypeShort && event->key == InputKeyBack) {
         if(g_decode_ctx && g_decode_ctx->state != DecodeStateIdle &&
@@ -355,9 +355,6 @@ static bool protopirate_decode_input_callback(InputEvent* event, void* context) 
             g_decode_ctx->state = DecodeStateShowFailure;
             g_decode_ctx->result_display_counter = 0;
             furi_string_set(g_decode_ctx->result, "Cancelled by user");
-        }
-        if(app->save_protocol) {
-            furi_string_free(app->save_protocol);
         }
         return true;
     }
@@ -564,7 +561,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 
                 //Add the protocol
                 furi_string_cat(filename_str, protocol);
-                //furi_string_free(protocol);
+                furi_string_free(protocol);
 
                 // Clean protocol name for filename
                 furi_string_replace_all(filename_str, "/", "_");
@@ -596,8 +593,6 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 furi_string_free(auto_path);
 
                 // Store context for when text input confirms
-                if(app->save_protocol) furi_string_free(app->save_protocol);
-                app->save_protocol = protocol; // transfer ownership
                 app->save_history_idx = app->txrx->idx_menu_chosen;
                 app->save_from_saved_info = false;
 
@@ -642,12 +637,6 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                     FURI_LOG_E(TAG, "Save failed");
                 }
                 furi_string_free(save_path);
-            }
-
-            // Clean up save protocol string
-            if(app->save_protocol) {
-                furi_string_free(app->save_protocol);
-                app->save_protocol = NULL;
             }
 
             // Return to the receiver info widget
@@ -1295,10 +1284,6 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
             view_dispatcher_send_custom_event(
                 app->view_dispatcher, ProtoPirateCustomEventSubDecodeUpdate);
             consumed = true;
-        }
-
-        if(app->save_protocol) {
-            furi_string_free(app->save_protocol);
         }
 
         // If in history view, back is handled by ViewReceiverBack event
