@@ -5,7 +5,7 @@
 //#define BUILD_MAIN_APP
 
 #ifdef BUILD_MAIN_APP
-#define ENABLE_EMULATE_FEATURE
+//#define ENABLE_EMULATE_FEATURE
 #define ENABLE_RECEIVER_SCENE
 #define ENABLE_SAVED_SCENE
 //#define ENABLE_SET_TYPE_SCENE
@@ -16,7 +16,7 @@
 
 //The in-built variable_item_list has the Left/Right event mod
 //We can remove the module if FW ever getes the changes...
-//#define USE_BUILT_IN_VARIABLE_ITEM_LIST
+#define USE_BUILT_IN_VARIABLE_ITEM_LIST
 
 #define REMOVE_LOGS
 
