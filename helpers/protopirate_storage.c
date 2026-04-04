@@ -324,7 +324,6 @@ static bool protopirate_storage_write_capture_data(
     PROTOPIRATE_COPY_U32_OPTIONAL("Encrypted");
     PROTOPIRATE_COPY_U32_OPTIONAL("Decrypted");
     PROTOPIRATE_COPY_U32_OPTIONAL("KIAVersion");
-    PROTOPIRATE_COPY_U32_OPTIONAL("Checksum");
 
     /* Manufacture */
     PROTOPIRATE_COPY_STRING_OPTIONAL("Manufacture");
@@ -335,9 +334,7 @@ cleanup:
     return status;
 }
 
-bool protopirate_storage_save_capture_to_path(
-    FlipperFormat* flipper_format,
-    const char* full_path) {
+bool protopirate_storage_save_capture_to_path(FlipperFormat* flipper_format, const char* full_path) {
     furi_check(flipper_format);
     furi_check(full_path);
 
