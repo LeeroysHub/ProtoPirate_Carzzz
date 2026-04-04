@@ -92,7 +92,6 @@ struct ProtoPirateApp {
     PsaBfState* psa_bf_state;
     FuriThread* psa_bf_thread;
     char save_filename[64];
-    uint16_t save_history_idx;
     bool save_from_saved_info;
 #ifdef BUILD_MAIN_APP
     //Car Models Database

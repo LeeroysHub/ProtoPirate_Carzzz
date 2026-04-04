@@ -675,7 +675,6 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 furi_string_free(auto_path);
 
                 // Store context for when text input confirms
-                app->save_history_idx = app->txrx->idx_menu_chosen;
                 app->save_from_saved_info = false;
 
                 // Configure and show text input
@@ -702,7 +701,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
         } else if(event.event == ProtoPirateCustomEventSubDecodeSaveConfirm) {
             // User confirmed the filename in text input
             FlipperFormat* ff =
-                protopirate_history_get_raw_data(app->txrx->history, app->save_history_idx);
+                protopirate_history_get_raw_data(app->txrx->history, ctx->selected_history_index);
             if(ff) {
                 // Build full path: folder/filename.psf
                 FuriString* save_path = furi_string_alloc_printf(
