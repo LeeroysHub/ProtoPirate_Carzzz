@@ -84,7 +84,6 @@ ProtoPirateApp* protopirate_app_alloc() {
     view_dispatcher_add_view(
         app->view_dispatcher, ProtoPirateViewTextInput, text_input_get_view(app->text_input));
     app->save_from_saved_info = false;
-    app->save_history_idx = 0;
     memset(app->save_filename, 0, sizeof(app->save_filename));
 
     // Variable Item List
