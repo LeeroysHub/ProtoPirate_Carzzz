@@ -158,13 +158,13 @@ static uint8_t mazda_v0_calculate_checksum(uint32_t serial, uint8_t button, uint
 static const char* mazda_v0_get_button_name(uint8_t button) {
     switch(button) {
     case 0x01:
-        return "Lock";
+        return "LOCK";
     case 0x02:
-        return "Unlock";
+        return "UNLOCK";
     case 0x04:
-        return "Boot";
+        return "BOOT";
     case 0x08:
-        return "Remote";
+        return "REMOTE";
     default:
         return "??";
     }

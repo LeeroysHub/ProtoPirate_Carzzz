@@ -109,13 +109,13 @@ static void fiat_marelli_rebuild_raw_data(SubGhzProtocolDecoderFiatMarelli* inst
 static const char* fiat_marelli_button_name(uint8_t btn) {
     switch(btn) {
     case 0x7:
-        return "Lock";
+        return "LOCK";
     case 0xB:
-        return "Unlock";
+        return "UNLOCK";
     case 0xD:
-        return "Boot";
+        return "BOOT";
     default:
-        return "Unknown";
+        return "UNKNOWN";
     }
 }
 
