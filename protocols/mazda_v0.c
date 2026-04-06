@@ -75,13 +75,13 @@ static void mazda_parse_data(SubGhzBlockGeneric* generic) {
 static const char* mazda_get_btn_name(uint8_t btn) {
     switch(btn) {
     case 0x10:
-        return "Lock";
+        return "LOCK";
     case 0x20:
-        return "Unlock";
+        return "UNLOCK";
     case 0x40:
-        return "Boot";
+        return "BOOT";
     default:
-        return "Unknown";
+        return "UNKNOWN";
     }
 }
 

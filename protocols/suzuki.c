@@ -60,15 +60,15 @@ static void suzuki_add_bit(SubGhzProtocolDecoderSuzuki* instance, uint8_t bit) {
 static const char* suzuki_get_button_name(uint8_t btn) {
     switch(btn) {
     case 1:
-        return "Panic";
+        return "PANIC";
     case 2:
-        return "Boot";
+        return "BOOT";
     case 3:
-        return "Lock";
+        return "LOCK";
     case 4:
-        return "Unlock";
+        return "UNLOCK";
     default:
-        return "Unknown";
+        return "UNKNOWN";
     }
 }
 

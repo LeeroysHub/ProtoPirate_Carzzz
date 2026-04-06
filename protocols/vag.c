@@ -133,19 +133,19 @@ static const uint32_t vag_tea_key_schedule[] = {0x0B46502D, 0x5E253718, 0x2BF93A
 static const char* vag_button_name(uint8_t btn) {
     switch(btn) {
     case 0x1:
-        return "Unlock";
+        return "UNLOCK";
     case 0x2:
-        return "Lock";
+        return "LOCK";
     case 0x4:
-        return "Boot";
+        return "BOOT";
     case 0x10:
-        return "Unlock";
+        return "UNLOCK";
     case 0x20:
-        return "Lock";
+        return "LOCK";
     case 0x40:
-        return "Boot";
+        return "BOOT";
     default:
-        return "Unkn";
+        return "UNKNOWN";
     }
 }
 
