@@ -384,22 +384,22 @@ static const char* kia_v0_button_name(uint8_t button, uint8_t type) {
     if(type == KIA_V0_TYPE_SUZUKI) {
         switch(button) {
         case 0x03:
-            return "Lock";
+            return "LOCK";
         case 0x04:
-            return "Unlock";
+            return "UNLOCK";
         case 0x02:
-            return "Trunk";
+            return "BOOT";
         default:
             return "??";
         }
     }
     switch(button) {
     case 0x01:
-        return "Lock";
+        return "LOCK";
     case 0x02:
-        return "Unlock";
+        return "UNLOCK";
     case 0x03:
-        return "Trunk";
+        return "TRUNK";
     default:
         return "??";
     }

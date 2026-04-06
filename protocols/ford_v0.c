@@ -933,14 +933,22 @@ void subghz_protocol_decoder_ford_v0_get_string(void* context, FuriString* outpu
     bool crc_ok = ford_v0_verify_crc(instance->key1, instance->key2);
 
     const char* button_name = "??";
-    if(instance->button == 0x01)
-        button_name = "Panic";
-    else if(instance->button == 0x02)
-        button_name = "Lock";
-    else if(instance->button == 0x04)
-        button_name = "Unlock";
-    else if(instance->button == 0x08)
-        button_name = "Boot";
+    switch(instance->button) {
+    case 0x01:
+        button_name = "PANIC";
+        break;
+    case 0x02:
+        button_name = "LOCK";
+        break;
+    case 0x04:
+        button_name = "UNLOCK";
+        break;
+    case 0x08:
+        button_name = "BOOT";
+        break;
+    default:
+        button_name = "UNKNOWN";
+    }
 
     furi_string_cat_printf(
         output,
@@ -966,3 +974,4 @@ void subghz_protocol_decoder_ford_v0_get_string(void* context, FuriString* outpu
         button_name,
         instance->key2 & 0xFF);
 }
+//Show the button name in the Saved Info
