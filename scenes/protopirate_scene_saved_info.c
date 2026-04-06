@@ -41,6 +41,7 @@ void protopirate_scene_saved_info_on_enter(void* context) {
     FlipperFormat* ff = NULL;
     FuriString* info_str = NULL;
     FuriString* temp_str = NULL;
+    FuriString* protocol_str = NULL;
     bool success = false;
 
     FURI_LOG_I(TAG, "=== ENTER START ===");
@@ -61,6 +62,7 @@ void protopirate_scene_saved_info_on_enter(void* context) {
     // Allocate strings first (no I/O)
     info_str = furi_string_alloc();
     temp_str = furi_string_alloc();
+    protocol_str = furi_string_alloc();
     if(!info_str || !temp_str) {
         FURI_LOG_E(TAG, "String alloc failed");
         widget_add_string_element(
@@ -111,8 +113,8 @@ void protopirate_scene_saved_info_on_enter(void* context) {
     is_emu_off = false;
 
     flipper_format_rewind(ff);
-    if(flipper_format_read_string(ff, "Protocol", temp_str)) {
-        furi_string_cat_printf(info_str, "Protocol: %s\n", furi_string_get_cstr(temp_str));
+    if(flipper_format_read_string(ff, "Protocol", protocol_str)) {
+        furi_string_cat_printf(info_str, "Protocol: %s\n", furi_string_get_cstr(protocol_str));
     }
     if(furi_string_cmp_str(temp_str, "Scher-Khan") == 0) {
         is_emu_off = true;
@@ -140,7 +142,145 @@ void protopirate_scene_saved_info_on_enter(void* context) {
 
     flipper_format_rewind(ff);
     if(flipper_format_read_uint32(ff, "Btn", &temp_data, 1)) {
-        furi_string_cat_printf(info_str, "Button: %02X\n", (uint8_t)temp_data);
+        const char* button_name = "??";
+        uint8_t protocol_found = 0;
+
+        if(strstr(furi_string_get_cstr(protocol_str), "Ford")) {
+            //Set the button name for Ford
+            switch(temp_data) {
+            case 0x01:
+                button_name = "PANIC";
+                break;
+            case 0x02:
+                button_name = "LOCK";
+                break;
+            case 0x04:
+                button_name = "UNLOCK";
+                break;
+            case 0x08:
+                button_name = "BOOT";
+                break;
+            default:
+                button_name = "UNKNOWN";
+                break;
+            }
+            protocol_found = 1;
+        } else if(strstr(furi_string_get_cstr(protocol_str), "Kia V7")) {
+            //Kia V7 Has slightly different mapping to the rest of kia
+            switch(temp_data) {
+            case 0x1:
+                button_name = "LOCK";
+                break;
+            case 0x2:
+                button_name = "UNLOCK";
+                break;
+            case 0x8:
+                button_name = "BOOT";
+                break;
+            default:
+                button_name = "UNKNOWN";
+                break;
+            }
+            protocol_found = 1;
+        } else if(strstr(furi_string_get_cstr(protocol_str), "Kia")) {
+            //All Other older KIA protocols
+            switch(temp_data) {
+            case 0x1:
+                button_name = "LOCK";
+                break;
+            case 0x2:
+                button_name = "UNLOCK";
+                break;
+            case 0x3:
+                button_name = "BOOT";
+                break;
+            default:
+                button_name = "UNKNOWN";
+                break;
+            }
+            protocol_found = 1;
+        } else if(strstr(furi_string_get_cstr(protocol_str), "VAG")) {
+            //Set the button name for VAG
+            switch(temp_data) {
+            case 0x1:
+                button_name = "UNLOCK";
+                break;
+            case 0x2:
+                button_name = "LOCK";
+                break;
+            case 0x4:
+                button_name = "BOOT";
+                break;
+            case 0x10:
+                button_name = "UNLOCK";
+                break;
+            case 0x20:
+                button_name = "LOCK";
+                break;
+            case 0x40:
+                button_name = "BOOT";
+                break;
+            default:
+                button_name = "UNKNOWN";
+            }
+            protocol_found = 1;
+        } else if(strstr(furi_string_get_cstr(protocol_str), "Suzuki")) {
+            //Set the button name for Suzuki
+            switch(temp_data) {
+            case 1:
+                button_name = "PANIC";
+                break;
+            case 2:
+                button_name = "BOOT";
+                break;
+            case 3:
+                button_name = "LOCK";
+                break;
+            case 4:
+                button_name = "UNLOCK";
+                break;
+            default:
+                button_name = "UNKNOWN";
+                break;
+            }
+            protocol_found = 1;
+        } else if(strstr(furi_string_get_cstr(protocol_str), "Mazda")) {
+            //Set the button name for Mazda
+            switch(temp_data) {
+            case 0x01:
+                button_name = "LOCK";
+                break;
+            case 0x02:
+                button_name = "UNLOCK";
+                break;
+            case 0x04:
+                button_name = "BOOT";
+                break;
+            case 0x08:
+                button_name = "REMOTE";
+                break;
+            default:
+                button_name = "UNKNOWN";
+            }
+            protocol_found = 1;
+        }
+
+        //Show the button name in the Saved Info ( if we have it )
+        if(protocol_found)
+            furi_string_cat_printf(
+                info_str,
+                "Button: "
+                "%02X - %s\n",
+                (uint8_t)temp_data,
+                button_name);
+        else {
+            //Dont show the button name in the Saved Info
+            furi_string_cat_printf(
+                info_str,
+                "Button: "
+                "%02X\n",
+                (uint8_t)temp_data);
+        }
     }
 
     flipper_format_rewind(ff);
@@ -235,7 +375,7 @@ cleanup:
     // Free strings
     if(temp_str) furi_string_free(temp_str);
     if(info_str) furi_string_free(info_str);
-
+    if(protocol_str) furi_string_free(protocol_str);
     FURI_LOG_I(TAG, "Cleanup done");
 
 switch_view:
