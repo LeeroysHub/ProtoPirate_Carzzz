@@ -100,6 +100,58 @@ static void emulate_context_free(void) {
     emulate_context = NULL;
 }
 
+static bool emulate_context_try_init_transmitter(ProtoPirateApp* app, EmulateContext* ctx) {
+    if(ctx->transmitter) {
+        return true;
+    }
+    if(!ctx->flipper_format || !ctx->protocol_name) {
+        return false;
+    }
+
+    const char* proto_name = furi_string_get_cstr(ctx->protocol_name);
+    const char* registry_name = proto_name;
+    if(strcmp(proto_name, "Kia V3") == 0) {
+        registry_name = "Kia V3/V4";
+        FURI_LOG_I(TAG, "Protocol name KiaV3 fixed to Kia V3/V4 for registry");
+    } else if(strcmp(proto_name, "Kia V4") == 0) {
+        registry_name = "Kia V3/V4";
+        FURI_LOG_I(TAG, "Protocol name KiaV4 fixed to Kia V3/V4 for registry");
+    }
+
+    const SubGhzProtocol* protocol = NULL;
+    for(size_t i = 0; i < protopirate_protocol_registry.size; i++) {
+        if(strcmp(protopirate_protocol_registry.items[i]->name, registry_name) == 0) {
+            protocol = protopirate_protocol_registry.items[i];
+            FURI_LOG_I(TAG, "Found protocol %s in registry at index %zu", registry_name, i);
+            break;
+        }
+    }
+
+    if(!protocol || !protocol->encoder || !protocol->encoder->alloc) {
+        FURI_LOG_E(TAG, "Protocol %s has no encoder or not in registry", registry_name);
+        return false;
+    }
+
+    ctx->transmitter = subghz_transmitter_alloc_init(app->txrx->environment, registry_name);
+    if(!ctx->transmitter) {
+        FURI_LOG_E(TAG, "Failed to allocate transmitter for %s", registry_name);
+        return false;
+    }
+
+    flipper_format_rewind(ctx->flipper_format);
+    SubGhzProtocolStatus status =
+        subghz_transmitter_deserialize(ctx->transmitter, ctx->flipper_format);
+    if(status != SubGhzProtocolStatusOk) {
+        FURI_LOG_E(TAG, "Failed to deserialize transmitter, status: %d", status);
+        subghz_transmitter_free(ctx->transmitter);
+        ctx->transmitter = NULL;
+        return false;
+    }
+
+    FURI_LOG_I(TAG, "Transmitter ready (lazy init)");
+    return true;
+}
+
 static uint8_t protopirate_get_button_for_protocol(
     const char* protocol,
     InputKey key,
@@ -456,6 +508,12 @@ void protopirate_scene_emulate_on_enter(void* context) {
         emulate_context_free();
     }
 
+    if(app->txrx && app->txrx->history) {
+        protopirate_history_release_scratch(app->txrx->history);
+    }
+
+    protopirate_rx_stack_suspend_for_tx(app);
+
     // Create emulate context
     emulate_context = malloc(sizeof(EmulateContext));
     if(!emulate_context) {
@@ -572,60 +630,6 @@ void protopirate_scene_emulate_on_enter(void* context) {
             emulate_context->current_counter = emulate_context->original_counter;
         }
 
-        // Set up transmitter based on protocol
-        const char* proto_name = furi_string_get_cstr(emulate_context->protocol_name);
-        FURI_LOG_I(TAG, "Setting up transmitter for protocol: %s", proto_name);
-
-        if(strcmp(proto_name, "Kia V3") == 0) {
-            proto_name = "Kia V3/V4";
-            FURI_LOG_I(TAG, "Protocol name KiaV3 fixed to Kia V3/V4 for registry");
-        } else if(strcmp(proto_name, "Kia V4") == 0) {
-            proto_name = "Kia V3/V4";
-            FURI_LOG_I(TAG, "Protocol name KiaV4 fixed to Kia V3/V4 for registry");
-        }
-
-        // Find the protocol in the registry
-        const SubGhzProtocol* protocol = NULL;
-        for(size_t i = 0; i < protopirate_protocol_registry.size; i++) {
-            if(strcmp(protopirate_protocol_registry.items[i]->name, proto_name) == 0) {
-                protocol = protopirate_protocol_registry.items[i];
-                FURI_LOG_I(TAG, "Found protocol %s in registry at index %zu", proto_name, i);
-                break;
-            }
-        }
-
-        if(protocol) {
-            if(protocol->encoder && protocol->encoder->alloc) {
-                FURI_LOG_I(TAG, "Protocol has encoder support");
-
-                // Try to create transmitter
-                emulate_context->transmitter =
-                    subghz_transmitter_alloc_init(app->txrx->environment, proto_name);
-
-                if(emulate_context->transmitter) {
-                    FURI_LOG_I(TAG, "Transmitter allocated successfully");
-
-                    // Deserialize for transmission
-                    flipper_format_rewind(emulate_context->flipper_format);
-                    SubGhzProtocolStatus status = subghz_transmitter_deserialize(
-                        emulate_context->transmitter, emulate_context->flipper_format);
-
-                    if(status != SubGhzProtocolStatusOk) {
-                        FURI_LOG_E(TAG, "Failed to deserialize transmitter, status: %d", status);
-                        subghz_transmitter_free(emulate_context->transmitter);
-                        emulate_context->transmitter = NULL;
-                    } else {
-                        FURI_LOG_I(TAG, "Transmitter deserialized successfully");
-                    }
-                } else {
-                    FURI_LOG_E(TAG, "Failed to allocate transmitter for %s", proto_name);
-                }
-            } else {
-                FURI_LOG_E(TAG, "Protocol %s has no encoder", proto_name);
-            }
-        } else {
-            FURI_LOG_E(TAG, "Protocol %s not found in registry", proto_name);
-        }
     } else {
         FURI_LOG_E(TAG, "No file path set");
         emulate_context_free();
@@ -661,8 +665,13 @@ bool protopirate_scene_emulate_on_event(void* context, SceneManagerEvent event) 
     if(event.type == SceneManagerEventTypeCustom) {
         switch(event.event) {
         case ProtoPirateCustomEventEmulateTransmit:
-            if(emulate_context && emulate_context->transmitter &&
-               emulate_context->flipper_format) {
+            if(emulate_context && emulate_context->flipper_format) {
+                if(!emulate_context_try_init_transmitter(app, emulate_context)) {
+                    FURI_LOG_E(TAG, "No transmitter available");
+                    notification_message(app->notifications, &sequence_error);
+                    consumed = true;
+                    break;
+                }
                 // Stop any ongoing transmission FIRST
                 if(app->txrx->txrx_state == ProtoPirateTxRxStateTx) {
                     FURI_LOG_W(TAG, "Previous transmission still active, stopping it");
@@ -792,9 +801,6 @@ bool protopirate_scene_emulate_on_event(void* context, SceneManagerEvent event) 
 
                 if(free_custom_data)
                     free(preset_data); //We have used the preset, I alloced it I have to free.
-            } else {
-                FURI_LOG_E(TAG, "No transmitter available");
-                notification_message(app->notifications, &sequence_error);
             }
             consumed = true;
             break;
