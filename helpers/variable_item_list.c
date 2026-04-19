@@ -2,11 +2,17 @@
 #include <gui/elements.h>
 #include <gui/canvas.h>
 #include <furi.h>
-#ifdef BUILD_MAIN_APP
+
+#ifdef BUILD_REMOTE_APP
 #include "proto_pirate_icons.h"
+#else
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_read_icons.h"
 #else
 #include "proto_pirate_utils_icons.h"
 #endif
+#endif
+
 #include <m-array.h>
 #include <stdint.h>
 //#include <momentum/settings.h>

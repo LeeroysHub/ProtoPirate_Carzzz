@@ -2,15 +2,21 @@
 #include "../protopirate_app_i.h"
 #include "../helpers/protopirate_storage.h"
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_REMOTE_APP
 #include "proto_pirate_icons.h"
 #else
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_read_icons.h"
+#else
 #include "proto_pirate_utils_icons.h"
+#endif
 #endif
 
 #define TAG "ProtoPirateSceneStart"
 
 typedef enum {
+    SubmenuIndexProtoPirate_NO_ZERO,
+
 #ifdef ENABLE_RECEIVER_SCENE
     SubmenuIndexProtoPirateReceiver,
 #endif
@@ -90,11 +96,9 @@ static void protopirate_scene_start_open_saved_captures(ProtoPirateApp* app) {
 
     // Set starting path
     FURI_LOG_D(TAG, "[8] Setting file_path");
-#ifdef BUILD_MAIN_APP
-    furi_string_set(app->file_path, PROTOPIRATE_APP_FOLDER);
-#else
-    furi_string_set(app->file_path, "/ext/apps_data/proto_pirate/");
-#endif
+
+    furi_string_set(app->file_path, "/ext/apps_data/proto_pirate/saved/");
+
     FURI_LOG_D(TAG, "[9] file_path set to: %s", furi_string_get_cstr(app->file_path));
 
     // Configure file browser
@@ -172,7 +176,7 @@ void protopirate_scene_start_on_enter(void* context) {
         protopirate_scene_start_submenu_callback,
         app);
 #endif
-#ifdef ENABLE_RECEIVER_SCENE
+#ifdef ENABLE_SAVED_SCENE
     submenu_add_item(
         app->submenu,
         "Saved Captures",

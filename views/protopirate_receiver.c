@@ -1,16 +1,20 @@
 // views/protopirate_receiver.c
 #include "protopirate_receiver.h"
-#include "../protopirate_history.h"
+//#include "../protopirate_history.h"
 #include "../protopirate_app_i.h"
-#include <input/input.h>
+//#include <input/input.h>
 #include <gui/elements.h>
-#include <furi.h>
-#include <math.h>
+//#include <furi.h>
+//#include <math.h>
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_REMOTE_APP
 #include "proto_pirate_icons.h"
 #else
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_read_icons.h"
+#else
 #include "proto_pirate_utils_icons.h"
+#endif
 #endif
 
 #define FRAME_HEIGHT             12
@@ -223,9 +227,9 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             ProtoPirateReceiverMenuItem* item =
                 ProtoPirateReceiverMenuItemArray_get(model->history_item_arr, idx);
 
-            furi_string_set(model->draw_scratch, item->item_str);
+            //furi_string_set(model->draw_scratch, item->item_str);
             elements_string_fit_width(
-                canvas, model->draw_scratch, scrollbar ? MAX_LEN_PX - 6 : MAX_LEN_PX);
+                canvas, item->item_str, scrollbar ? MAX_LEN_PX - 6 : MAX_LEN_PX);
 
             if(model->history_item == idx) {
                 protopirate_view_receiver_draw_frame(canvas, i, scrollbar);
@@ -234,7 +238,7 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             }
 
             canvas_draw_str(
-                canvas, 4, 9 + (i * FRAME_HEIGHT), furi_string_get_cstr(model->draw_scratch));
+                canvas, 4, 9 + (i * FRAME_HEIGHT), furi_string_get_cstr(item->item_str));
         }
 
         //Draw scrollbar if needed

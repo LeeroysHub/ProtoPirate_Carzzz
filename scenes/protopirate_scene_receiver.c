@@ -5,10 +5,14 @@
 #include "views/protopirate_receiver.h"
 #include <notification/notification_messages.h>
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_REMOTE_APP
 #include "proto_pirate_icons.h"
 #else
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_read_icons.h"
+#else
 #include "proto_pirate_utils_icons.h"
+#endif
 #endif
 
 #define TAG "ProtoPirateSceneRx"

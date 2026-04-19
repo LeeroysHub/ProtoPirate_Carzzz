@@ -106,12 +106,7 @@ ProtoPirateApp* protopirate_app_alloc() {
 
     // File Browser path
     app->file_path = furi_string_alloc();
-#ifdef BUILD_MAIN_APP
-    furi_string_set(app->file_path, PROTOPIRATE_APP_FOLDER);
-#else
     furi_string_set(app->file_path, "/ext/apps_data/proto_pirate/");
-#endif
-
     // About View
     //app->view_about = view_alloc();
     //view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
