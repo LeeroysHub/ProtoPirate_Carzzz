@@ -113,11 +113,14 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     // Redraw header over mask
     canvas_set_color(canvas, ColorBlack);
     canvas_set_font(canvas, FontPrimary);
-
+#ifdef BUILD_REMOTE_APP
+    canvas_draw_str(canvas, 0, 10, "Carzzz Remote v" FAP_VERSION);
+#else
 #ifdef BUILD_MAIN_APP
-    canvas_draw_str(canvas, 0, 10, "Carzzz v" FAP_VERSION);
+    canvas_draw_str(canvas, 0, 10, "Carzzz Clone v" FAP_VERSION);
 #else
     canvas_draw_str(canvas, 0, 10, "Carzzz Utilities v" FAP_VERSION);
+#endif
 #endif
 
     canvas_set_font(canvas, FontKeyboard);

@@ -1,7 +1,24 @@
 App(
     appid="proto_pirate",
+    cdefines=["BUILD_REMOTE_APP"],
+    name="Carz Remote",
+    apptype=FlipperAppType.EXTERNAL,
+    targets=["f7"],
+    entry_point="protopirate_app",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    fap_description="Emulates car key fob signals from Sub-GHz",
+    fap_version="2.9",
+    fap_icon="images/protopirate_10px.png",
+    fap_category="Sub-GHz",
+    fap_icon_assets="images",
+    fap_file_assets="app_assets",
+)
+
+App(
+    appid="proto_pirate_read",
     cdefines=["BUILD_MAIN_APP"],
-    name="Carzzz",
+    name="Carz Clone",
     apptype=FlipperAppType.EXTERNAL,
     targets=["f7"],
     entry_point="protopirate_app",
@@ -15,9 +32,10 @@ App(
     fap_file_assets="app_assets",
 )
 
+
 App(
     appid="proto_pirate_utils",
-    name="Carzzz Utilities",
+    name="Carz Utilities",
     apptype=FlipperAppType.EXTERNAL,
     targets=["f7"],
     entry_point="protopirate_app",

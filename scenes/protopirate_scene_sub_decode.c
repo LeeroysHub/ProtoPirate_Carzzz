@@ -4,18 +4,22 @@
 #include "../helpers/protopirate_storage.h"
 #include "../helpers/radio_device_loader.h"
 #include "../helpers/raw_file_reader.h"
-#include "../protopirate_history.h"
+//#include "../protopirate_history.h"
 #include "core/core_defines.h"
 #include "core/record.h"
 #include "storage/storage.h"
 #include <dialogs/dialogs.h>
-#include <math.h>
+//#include <math.h>
 #include <lib/subghz/types.h>
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_REMOTE_APP
 #include "proto_pirate_icons.h"
 #else
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_read_icons.h"
+#else
 #include "proto_pirate_utils_icons.h"
+#endif
 #endif
 
 #define TAG "ProtoPirateSubDecode"
@@ -774,7 +778,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
             }
         }
 
-        FURI_LOG_D(TAG, "Tick: state=%d, frame=%u", ctx->state, ctx->animation_frame);
+        //FURI_LOG_D(TAG, "Tick: state=%d, frame=%u", ctx->state, ctx->animation_frame);
 
         switch(ctx->state) {
         case DecodeStateOpenFile: {
@@ -1212,10 +1216,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 // Get full text for body
                 furi_string_reset(text);
                 protopirate_history_get_text_item_detail(
-                    ctx->history,
-                    ctx->selected_history_index,
-                    text,
-                    app->txrx->environment);
+                    ctx->history, ctx->selected_history_index, text, app->txrx->environment);
                 widget_add_text_scroll_element(
                     app->widget, 0, 0, 128, 50, furi_string_get_cstr(text));
 

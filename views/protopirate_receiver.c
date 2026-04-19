@@ -1,16 +1,20 @@
 // views/protopirate_receiver.c
 #include "protopirate_receiver.h"
-#include "../protopirate_history.h"
+//#include "../protopirate_history.h"
 #include "../protopirate_app_i.h"
-#include <input/input.h>
+//#include <input/input.h>
 #include <gui/elements.h>
-#include <furi.h>
-#include <math.h>
+//#include <furi.h>
+//#include <math.h>
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_REMOTE_APP
 #include "proto_pirate_icons.h"
 #else
+#ifdef BUILD_MAIN_APP
+#include "proto_pirate_read_icons.h"
+#else
 #include "proto_pirate_utils_icons.h"
+#endif
 #endif
 
 #define FRAME_HEIGHT             12
@@ -40,11 +44,11 @@ typedef struct {
     FuriString* frequency_str;
     FuriString* preset_str;
     FuriString* history_stat_str;
-    FuriString* draw_scratch;
+    //FuriString* draw_scratch;
     bool external_radio;
     ProtoPirateLock lock;
     uint8_t lock_count;
-    uint8_t animation_frame;
+    //uint8_t animation_frame;
     bool sub_decode_mode;
     IconAnimation* icon_int_ant;
     IconAnimation* icon_ext_ant;
@@ -200,8 +204,8 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
     canvas_set_font(canvas, FontSecondary);
 
     // Increment animation frame
-    static uint8_t animation_frame = 0;
-    animation_frame = (animation_frame + 1) % 96;
+    //static uint8_t animation_frame = 0;
+    //animation_frame = (animation_frame + 1) % 96;
 
     size_t item_count = ProtoPirateReceiverMenuItemArray_size(model->history_item_arr);
     bool scrollbar = item_count > MENU_ITEMS;
@@ -220,17 +224,17 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
         size_t shift_position = model->list_offset;
 
         //Only allocate buffer when needed (moved from above)
-        FuriString* str_buff;
-        str_buff = furi_string_alloc();
+        //FuriString* str_buff;
+        //str_buff = furi_string_alloc();
 
         for(size_t i = 0; i < MIN(item_count, MENU_ITEMS); i++) {
             size_t idx = shift_position + i;
             ProtoPirateReceiverMenuItem* item =
                 ProtoPirateReceiverMenuItemArray_get(model->history_item_arr, idx);
 
-            furi_string_set(model->draw_scratch, item->item_str);
+            //furi_string_set(model->draw_scratch, item->item_str);
             elements_string_fit_width(
-                canvas, model->draw_scratch, scrollbar ? MAX_LEN_PX - 6 : MAX_LEN_PX);
+                canvas, item->item_str, scrollbar ? MAX_LEN_PX - 6 : MAX_LEN_PX);
 
             if(model->history_item == idx) {
                 protopirate_view_receiver_draw_frame(canvas, i, scrollbar);
@@ -239,11 +243,11 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             }
 
             canvas_draw_str(
-                canvas, 4, 9 + (i * FRAME_HEIGHT), furi_string_get_cstr(model->draw_scratch));
+                canvas, 4, 9 + (i * FRAME_HEIGHT), furi_string_get_cstr(item->item_str));
         }
 
         //Free the buffer string (This was my memory leak).
-        furi_string_free(str_buff);
+        //furi_string_free(str_buff);
 
         //Draw scrollbar if needed
         if(scrollbar) {
@@ -459,8 +463,8 @@ ProtoPirateReceiver* protopirate_view_receiver_alloc(bool auto_save) {
             model->frequency_str = furi_string_alloc();
             model->preset_str = furi_string_alloc();
             model->history_stat_str = furi_string_alloc();
-            model->draw_scratch = furi_string_alloc();
-            furi_check(model->draw_scratch);
+            //model->draw_scratch = furi_string_alloc();
+            //furi_check(model->draw_scratch);
             model->list_offset = 0;
             model->history_item = 0;
             model->rssi = -127.0f;
@@ -468,7 +472,7 @@ ProtoPirateReceiver* protopirate_view_receiver_alloc(bool auto_save) {
             model->lock = ProtoPirateLockOff;
             model->lock_count = 0;
             model->auto_save = auto_save;
-            model->animation_frame = 0;
+            //model->animation_frame = 0;
             model->sub_decode_mode = false;
             model->icon_int_ant = icon_animation_alloc(&A_SubGhz_Internal_ant);
             view_tie_icon_animation(receiver->view, model->icon_int_ant);
@@ -499,7 +503,7 @@ void protopirate_view_receiver_free(ProtoPirateReceiver* receiver) {
             furi_string_free(model->frequency_str);
             furi_string_free(model->preset_str);
             furi_string_free(model->history_stat_str);
-            furi_string_free(model->draw_scratch);
+            //furi_string_free(model->draw_scratch);
             icon_animation_stop(model->icon_int_ant);
             icon_animation_stop(model->icon_ext_ant);
         },

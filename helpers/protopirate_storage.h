@@ -6,11 +6,7 @@
 #include <flipper_format/flipper_format.h>
 #include <defines.h>
 
-#ifdef BUILD_MAIN_APP
-#define PROTOPIRATE_APP_FOLDER APP_DATA_PATH("saved")
-#else
 #define PROTOPIRATE_APP_FOLDER "/ext/apps_data/proto_pirate/saved"
-#endif
 
 #define PROTOPIRATE_APP_EXTENSION    ".psf"
 #define PROTOPIRATE_APP_FILE_VERSION 1
@@ -93,9 +89,7 @@ bool protopirate_storage_save_capture(
     bool datetime_filenames);
 
 // Save a capture to a specific file path (user-chosen name)
-bool protopirate_storage_save_capture_to_path(
-    FlipperFormat* flipper_format,
-    const char* full_path);
+bool protopirate_storage_save_capture_to_path(FlipperFormat* flipper_format, const char* full_path);
 
 // Save to temp file for emulation
 bool protopirate_storage_save_temp(FlipperFormat* flipper_format);
@@ -131,4 +125,3 @@ bool protopirate_storage_save_history_capture(
     FlipperFormat* flipper_format,
     uint32_t seq,
     FuriString* out_path);
-    
