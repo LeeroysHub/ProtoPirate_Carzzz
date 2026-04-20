@@ -112,6 +112,7 @@ void protopirate_view_receiver_info_free(ProtoPirateReceiverInfo* receiver_info)
 
     view_free(receiver_info->view);
     free(receiver_info);
+    receiver_info = NULL;
 }
 
 View* protopirate_view_receiver_info_get_view(ProtoPirateReceiverInfo* receiver_info) {

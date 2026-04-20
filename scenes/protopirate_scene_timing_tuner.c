@@ -677,8 +677,11 @@ bool protopirate_scene_timing_tuner_on_event(void* context, SceneManagerEvent ev
         if(event.event == 0) {
             scene_manager_previous_scene(app->scene_manager);
             //Remove About View.
-            view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
-            view_free(app->view_about);
+            if(app->view_about) {
+                view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+                view_free(app->view_about);
+                app->view_about = NULL;
+            }
             consumed = true;
         } else if(event.event == 1) {
             if(g_timing_ctx && g_timing_ctx->is_receiving) {
@@ -725,6 +728,13 @@ void protopirate_scene_timing_tuner_on_exit(void* context) {
 
     view_set_draw_callback(app->view_about, NULL);
     view_set_input_callback(app->view_about, NULL);
+
+    //Remove About View.
+    if(app->view_about) {
+        view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
+        view_free(app->view_about);
+        app->view_about = NULL;
+    }
 
     if(g_timing_ctx) {
         free(g_timing_ctx);
