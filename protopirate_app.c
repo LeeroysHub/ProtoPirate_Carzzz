@@ -72,7 +72,7 @@ ProtoPirateApp* protopirate_app_alloc() {
 
     //Initialise Car Model varables
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     app->car_models_count = 65536;
     app->selected_model = NULL;
     app->model_menu = NULL;
@@ -193,7 +193,7 @@ ProtoPirateApp* protopirate_app_alloc() {
         ((settings.option_flags & FLAG_AUTO_SAVE) == FLAG_AUTO_SAVE),
         settings.hopping_enabled);
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     //Grab selected car model.
     if(settings.car_model_index) {
         protopirate_model_get_by_index(app, &app->selected_model, settings.car_model_index);
@@ -405,7 +405,7 @@ void protopirate_radio_deinit(ProtoPirateApp* app) {
     LOG_HEAP("Radio deinit complete");
 }
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 void protopirate_car_model_free(ProtoPirateCarModel** selected_model) {
     if(selected_model && *selected_model) {
         ProtoPirateCarModel* model = *selected_model;
@@ -450,7 +450,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
     settings.option_flags = app->option_flags;
     settings.tx_power = app->tx_power;
     settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     settings.car_model_index = (app->selected_model) ? app->selected_model->index : 0;
     // Find current preset index
     if(app->selected_model && app->selected_model->last_preset_index) {
@@ -477,7 +477,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
         settings.hopping_enabled);
 
 //Free the selected model, we wont save that.
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     protopirate_car_model_free(&app->selected_model);
 #endif
 
@@ -582,6 +582,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
 }
 
 int32_t protopirate_app(char* p) {
+    //Allocate the APP now.
     ProtoPirateApp* protopirate_app = protopirate_app_alloc();
     if(!protopirate_app) {
         // logging is already done in protopirate_app_alloc()
@@ -589,39 +590,65 @@ int32_t protopirate_app(char* p) {
         return -1;
     }
 
-#ifdef ENABLE_SAVED_SCENE
-    // Handle Command line PSF that may have been passed to us
-    bool load_saved = (p && strlen(p));
-    if(load_saved) protopirate_app->loaded_file_path = furi_string_alloc_set(p);
-    scene_manager_next_scene(
-        protopirate_app->scene_manager,
-        (load_saved) ? ProtoPirateSceneSavedInfo : ProtoPirateSceneStart);
-#else
-    UNUSED(p);
-    scene_manager_next_scene(protopirate_app->scene_manager, ProtoPirateSceneStart);
-#endif
+    uint8_t using_external_features = 0;
+#if defined(ENABLE_SUB_DECODE_SCENE) || defined(ENABLE_TIMING_TUNER_SCENE)
+    if(p && strlen(p)) {
+        if(strstr(p, "SubDecode")) {
+            //Allocate the About View.
+            protopirate_app->view_about = view_alloc();
+            view_dispatcher_add_view(
+                protopirate_app->view_dispatcher,
+                ProtoPirateViewAbout,
+                protopirate_app->view_about);
 
-#ifdef ENABLE_EMULATE_FEATURE
-    //We now jump straight to emulate scene from Browser. If the user wanted the key to look at, just click back.
-    //Makes it faster in my use case
-#ifdef ENABLE_SAVED_SCENE
-    if(load_saved) {
-        view_dispatcher_send_custom_event(
-            protopirate_app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
-        notification_message(protopirate_app->notifications, &sequence_success);
+            scene_manager_next_scene(protopirate_app->scene_manager, ProtoPirateSceneSubDecode);
+            using_external_features = 1;
+        } else if(strstr(p, "TimingTuner")) {
+            //Allocate the About View.
+            protopirate_app->view_about = view_alloc();
+            view_dispatcher_add_view(
+                protopirate_app->view_dispatcher,
+                ProtoPirateViewAbout,
+                protopirate_app->view_about);
+
+            scene_manager_next_scene(protopirate_app->scene_manager, ProtoPirateSceneTimingTuner);
+            using_external_features = 1;
+        }
     }
 #endif
+
+    if(!using_external_features) {
+#if defined(ENABLE_SAVED_SCENE)
+        // Handle Command line PSF that may have been passed to us
+        bool load_saved = (p && strlen(p));
+        if(load_saved) protopirate_app->loaded_file_path = furi_string_alloc_set(p);
+        scene_manager_next_scene(
+            protopirate_app->scene_manager,
+            (load_saved) ? ProtoPirateSceneSavedInfo : ProtoPirateSceneStart);
 #else
-    //We now jump straight to emulate scene from Browser. If the user wanted the key to look at, just click back.
-    //Makes it faster in my use case
-#ifdef ENABLE_SAVED_SCENE
-    if(load_saved) {
-        view_dispatcher_send_custom_event(
-            protopirate_app->view_dispatcher, ProtoPirateCustomEventReceiverInfoSave);
-    }
-#endif
+        UNUSED(p);
+        scene_manager_next_scene(protopirate_app->scene_manager, ProtoPirateSceneStart);
 #endif
 
+        //We now jump straight to emulate scene from Browser. If the user wanted the key to look at, just click back.
+        //Makes it faster in my use case
+#ifdef ENABLE_SAVED_SCENE
+        if(load_saved) {
+            view_dispatcher_send_custom_event(
+                protopirate_app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
+            notification_message(protopirate_app->notifications, &sequence_success);
+        }
+#else
+        //We now jump straight to emulate scene from Browser. If the user wanted the key to look at, just click back.
+        //Makes it faster in my use case
+#ifdef ENABLE_SAVED_SCENE
+        if(load_saved) {
+            view_dispatcher_send_custom_event(
+                protopirate_app->view_dispatcher, ProtoPirateCustomEventReceiverInfoSave);
+        }
+#endif
+#endif
+    }
     view_dispatcher_run(protopirate_app->view_dispatcher);
 
     protopirate_app_free(protopirate_app);

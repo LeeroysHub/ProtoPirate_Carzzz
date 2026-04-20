@@ -7,10 +7,10 @@
 //#include <furi.h>
 //#include <math.h>
 
-#ifdef BUILD_REMOTE_APP
+#ifdef BUILD_EMULATE_APP
 #include "proto_pirate_icons.h"
 #else
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 #include "proto_pirate_read_icons.h"
 #else
 #include "proto_pirate_utils_icons.h"

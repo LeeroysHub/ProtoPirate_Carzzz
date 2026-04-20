@@ -17,7 +17,7 @@ void protopirate_settings_load(ProtoPirateSettings* settings);
 void protopirate_settings_save(ProtoPirateSettings* settings);
 void protopirate_settings_set_defaults(ProtoPirateSettings* settings);
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 bool protopirate_model_get_by_index(
     ProtoPirateApp* app,
     ProtoPirateCarModel** car_model,

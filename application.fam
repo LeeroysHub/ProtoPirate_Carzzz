@@ -1,6 +1,6 @@
 App(
     appid="proto_pirate",
-    cdefines=["BUILD_REMOTE_APP"],
+    cdefines=["BUILD_EMULATE_APP"],
     name="ProtoPirate Remote",
     apptype=FlipperAppType.EXTERNAL,
     targets=["f7"],
@@ -17,7 +17,7 @@ App(
 
 App(
     appid="proto_pirate_read",
-    cdefines=["BUILD_MAIN_APP"],
+    cdefines=["BUILD_RECEIVER_APP"],
     name="ProtoPirate Reader",
     apptype=FlipperAppType.EXTERNAL,
     targets=["f7"],
@@ -31,7 +31,6 @@ App(
     fap_icon_assets="images",
     fap_file_assets="app_assets",
 )
-
 
 App(
     appid="proto_pirate_utils",

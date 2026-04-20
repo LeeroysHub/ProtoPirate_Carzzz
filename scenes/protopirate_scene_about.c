@@ -111,10 +111,10 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     // Redraw header over mask
     canvas_set_color(canvas, ColorBlack);
     canvas_set_font(canvas, FontPrimary);
-#ifdef BUILD_REMOTE_APP
+#ifdef BUILD_EMULATE_APP
     canvas_draw_str(canvas, 0, 10, "ProtoPirate Remote v" FAP_VERSION);
 #else
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     canvas_draw_str(canvas, 0, 10, "ProtoPirate Reader v" FAP_VERSION);
 #else
     canvas_draw_str(canvas, 0, 10, "ProtoPirate Utilities v" FAP_VERSION);
