@@ -2,10 +2,14 @@
 #include "../protopirate_app_i.h"
 #include "../helpers/protopirate_storage.h"
 
-#ifdef BUILD_REMOTE_APP
+#if defined(ENABLE_SUB_DECODE_EXTERNAL) || defined(ENABLE_TIMING_TUNER_EXTERNAL)
+#include <loader/loader.h>
+#endif
+
+#ifdef BUILD_EMULATE_APP
 #include "proto_pirate_icons.h"
 #else
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 #include "proto_pirate_read_icons.h"
 #else
 #include "proto_pirate_utils_icons.h"
@@ -23,10 +27,10 @@ typedef enum {
 #ifdef ENABLE_SAVED_SCENE
     SubmenuIndexProtoPirateSaved,
 #endif
-#ifdef ENABLE_SUB_DECODE_SCENE
+#if defined(ENABLE_SUB_DECODE_SCENE) || defined(ENABLE_SUB_DECODE_EXTERNAL)
     SubmenuIndexProtoPirateSubDecode,
 #endif
-#ifdef ENABLE_TIMING_TUNER_SCENE
+#if defined(ENABLE_TIMING_TUNER_SCENE) || defined(ENABLE_TIMING_TUNER_EXTERNAL)
     SubmenuIndexProtoPirateTimingTuner,
 #endif
 #ifdef ENABLE_SET_TYPE_SCENE
@@ -187,7 +191,7 @@ void protopirate_scene_start_on_enter(void* context) {
         protopirate_scene_start_submenu_callback,
         app);
 #endif
-#ifdef ENABLE_SUB_DECODE_SCENE
+#if defined(ENABLE_SUB_DECODE_SCENE) || defined(ENABLE_SUB_DECODE_EXTERNAL)
     submenu_add_item(
         app->submenu,
         "Sub Decode",
@@ -195,7 +199,7 @@ void protopirate_scene_start_on_enter(void* context) {
         protopirate_scene_start_submenu_callback,
         app);
 #endif
-#ifdef ENABLE_TIMING_TUNER_SCENE
+#if defined(ENABLE_TIMING_TUNER_SCENE) || defined(ENABLE_TIMING_TUNER_EXTERNAL)
     submenu_add_item(
         app->submenu,
         "Timing Tuner",
@@ -270,6 +274,21 @@ bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
             consumed = true;
         }
 #endif
+#ifdef ENABLE_SUB_DECODE_EXTERNAL
+        else if(event.event == SubmenuIndexProtoPirateSubDecode) {
+            Loader* loader = furi_record_open(RECORD_LOADER);
+            loader_enqueue_launch(
+                loader,
+                EXT_PATH("apps/Sub-GHz/proto_pirate_utils.fap"),
+                "SubDecode",
+                LoaderDeferredLaunchFlagNone);
+            furi_record_close(RECORD_LOADER);
+            loader = NULL;
+            consumed = true;
+            scene_manager_stop(app->scene_manager);
+            view_dispatcher_stop(app->view_dispatcher);
+        }
+#endif
 #ifdef ENABLE_TIMING_TUNER_SCENE
         else if(event.event == SubmenuIndexProtoPirateTimingTuner) {
             //Allocate the About View.
@@ -278,6 +297,21 @@ bool protopirate_scene_start_on_event(void* context, SceneManagerEvent event) {
 
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneTimingTuner);
             consumed = true;
+        }
+#endif
+#ifdef ENABLE_TIMING_TUNER_EXTERNAL
+        else if(event.event == SubmenuIndexProtoPirateTimingTuner) {
+            Loader* loader = furi_record_open(RECORD_LOADER);
+            loader_enqueue_launch(
+                loader,
+                EXT_PATH("apps/Sub-GHz/proto_pirate_utils.fap"),
+                "TimingTuner",
+                LoaderDeferredLaunchFlagNone);
+            furi_record_close(RECORD_LOADER);
+            loader = NULL;
+            consumed = true;
+            scene_manager_stop(app->scene_manager);
+            view_dispatcher_stop(app->view_dispatcher);
         }
 #endif
 #ifdef ENABLE_SET_TYPE_SCENE

@@ -41,14 +41,14 @@ typedef struct {
     uint16_t car_model_index;
 } ProtoPirateSettings;
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 typedef struct {
     uint16_t index;
     FuriString* name;
     SubGhzRadioPreset* preset;
     int16_t last_preset_index;
 } ProtoPirateCarModel;
-#endif //BUILD_MAIN_APP
+#endif //BUILD_RECEIVER_APP
 
 typedef struct ProtoPirateApp ProtoPirateApp;
 typedef struct {
@@ -93,7 +93,7 @@ struct ProtoPirateApp {
     FuriThread* psa_bf_thread;
     char save_filename[64];
     bool save_from_saved_info;
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     //Car Models Database
     ProtoPirateCarModel* selected_model;
     uint32_t car_models_count;
@@ -101,7 +101,7 @@ struct ProtoPirateApp {
     VariableItem* freq_menu;
     VariableItem* hop_menu;
     VariableItem* preset_menu;
-#endif // BUILD_MAIN_APP
+#endif // BUILD_RECEIVER_APP
 };
 
 #include "helpers/protopirate_settings.h"

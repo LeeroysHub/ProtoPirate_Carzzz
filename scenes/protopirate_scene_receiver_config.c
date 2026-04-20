@@ -2,7 +2,7 @@
 #include "../protopirate_app_i.h"
 
 enum ProtoPirateSettingIndex {
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     ProtoPirateSettingIndexCarModel,
 #endif
     ProtoPirateSettingIndexFrequency,
@@ -13,7 +13,7 @@ enum ProtoPirateSettingIndex {
 #endif
     ProtoPirateSettingIndexAutoSave,
     ProtoPirateSettingIndexDateTimeFilenames,
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     ProtoPirateSettingIndexLock,
 #endif
 };
@@ -167,7 +167,7 @@ static void protopirate_scene_receiver_config_set_hopping_running(VariableItem* 
     app->txrx->hopper_state = hopping_value[index];
 }
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 static void protopirate_scene_receiver_config_set_model(VariableItem* item) {
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t direction = variable_item_get_current_value_index(item);
@@ -285,7 +285,7 @@ static void protopirate_scene_receiver_config_set_tx_power(VariableItem* item) {
 }
 #endif
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 static void
     protopirate_scene_receiver_config_var_list_enter_callback(void* context, uint32_t index) {
     furi_check(context);
@@ -320,7 +320,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         variable_item_list_get_view(app->variable_item_list));
 
 //Get a Car Model object, and dont forget to shut down on app free!
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     //Get the number of models if we dont have it yet.
     if(app->car_models_count > 65535) app->car_models_count = protopirate_model_get_count();
 
@@ -353,7 +353,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     scene_manager_set_scene_state(
         app->scene_manager, ProtoPirateSceneReceiverConfig, (uint32_t)item);
     variable_item_set_current_value_index(item, value_index);
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     variable_item_set_locked(
         item,
         app->selected_model && (app->selected_model->index),
@@ -380,7 +380,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         app->txrx->hopper_state, hopping_value, ON_OFF_COUNT, app);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, on_off_text[value_index]);
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     variable_item_set_locked(
         item,
         app->selected_model && (app->selected_model->index),
@@ -400,7 +400,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     variable_item_set_current_value_text(
         item, subghz_setting_get_preset_name(app->setting, value_index));
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     variable_item_set_locked(
         item,
         app->selected_model && (app->selected_model->index),
@@ -443,7 +443,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         item, sequence_time_text[(app->option_flags & FLAG_DATETIME_FILENAMES) ? 1 : 0]);
 
     //Lock Keyboard option
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
     variable_item_list_set_enter_callback(
         app->variable_item_list, protopirate_scene_receiver_config_var_list_enter_callback, app);
@@ -478,7 +478,7 @@ void protopirate_scene_receiver_config_on_exit(void* context) {
     variable_item_list_free(app->variable_item_list);
 
 //Get rid of dangling pointers
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
     app->model_menu = NULL;
     app->freq_menu = NULL;
     app->hop_menu = NULL;

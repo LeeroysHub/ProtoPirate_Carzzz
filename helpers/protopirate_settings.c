@@ -104,7 +104,7 @@ void protopirate_settings_load(ProtoPirateSettings* settings) {
         }
         settings->hopping_enabled = (hopping_temp == 1);
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
         // Read Selected Car Model
         uint32_t car_model_index_temp = 0;
         if(!flipper_format_read_uint32(ff, "CarModelIndex", &car_model_index_temp, 1)) {
@@ -175,7 +175,7 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
             break;
         }
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
         uint32_t car_model_index_temp = settings->car_model_index;
         if(!flipper_format_write_uint32(ff, "CarModelIndex", &car_model_index_temp, 1)) {
             FURI_LOG_E(TAG, "Failed to write car model");
@@ -197,7 +197,7 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
     furi_record_close(RECORD_STORAGE);
 }
 
-#ifdef BUILD_MAIN_APP
+#ifdef BUILD_RECEIVER_APP
 bool protopirate_model_get_by_index(
     ProtoPirateApp* app,
     ProtoPirateCarModel** car_model,
@@ -473,4 +473,4 @@ uint16_t protopirate_model_get_count(void) {
     //Finished, return the count or 0 if error.
     return (uint16_t)model_count;
 }
-#endif //BUILD_MAIN_APP
+#endif //BUILD_RECEIVER_APP
