@@ -603,6 +603,7 @@ void protopirate_view_receiver_free(ProtoPirateReceiver* receiver) {
 
     view_free(receiver->view);
     free(receiver);
+    receiver = NULL;
 }
 
 void protopirate_view_receiver_reset_menu(ProtoPirateReceiver* receiver) {

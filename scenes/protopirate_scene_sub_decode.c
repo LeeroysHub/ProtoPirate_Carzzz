@@ -1427,6 +1427,7 @@ void protopirate_scene_sub_decode_on_exit(void* context) {
     //Remove About View.
     view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewAbout);
     view_free(app->view_about);
+    app->view_about = NULL;
 
     widget_reset(app->widget);
 

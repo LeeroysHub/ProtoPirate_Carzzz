@@ -515,6 +515,7 @@ void variable_item_list_free(VariableItemList* variable_item_list) {
     furi_timer_free(variable_item_list->locked_timer);
     view_free(variable_item_list->view);
     free(variable_item_list);
+    variable_item_list = NULL;
 }
 
 /*void variable_item_list_reset(VariableItemList* variable_item_list) {
