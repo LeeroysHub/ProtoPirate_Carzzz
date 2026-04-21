@@ -78,37 +78,11 @@ struct SubGhzProtocolDecoderFiatMarelli {
     uint32_t te_detected;
 };
 
-static const char* fiat_marelli_state_name(uint8_t state) {
-    switch(state) {
-    case FiatMarelliDecoderStepReset:
-        return "Reset";
-    case FiatMarelliDecoderStepPreamble:
-        return "Preamble";
-    case FiatMarelliDecoderStepSync:
-        return "Sync";
-    case FiatMarelliDecoderStepData:
-        return "Data";
-    default:
-        return "Unknown";
-    }
-}
-
 static void fiat_marelli_set_state(
     SubGhzProtocolDecoderFiatMarelli* instance,
     FiatMarelliDecoderStep new_state,
     const char* reason) {
-    bool noisy_transition = (instance->decoder_state == FiatMarelliDecoderStepReset &&
-                             new_state == FiatMarelliDecoderStepPreamble) ||
-                            (instance->decoder_state == FiatMarelliDecoderStepPreamble &&
-                             new_state == FiatMarelliDecoderStepReset);
-    if(instance->decoder_state != new_state && !noisy_transition) {
-        FURI_LOG_D(
-            TAG,
-            "State %s -> %s (%s)",
-            fiat_marelli_state_name(instance->decoder_state),
-            fiat_marelli_state_name(new_state),
-            reason);
-    }
+    UNUSED(reason);
     instance->decoder_state = new_state;
 }
 
@@ -183,11 +157,6 @@ static bool fiat_marelli_try_recover_tail_bits(SubGhzProtocolDecoderFiatMarelli*
         fiat_marelli_set_raw_bit(instance->raw_data, instance->bit_count + i, bit);
     }
 
-    FURI_LOG_D(
-        TAG,
-        "Recovered %u tail bit(s) via CRC (variant=%u)",
-        (unsigned)missing_bits,
-        (unsigned)matched_variant);
     fiat_marelli_rebuild_data_words_from_raw(instance);
     return true;
 }
@@ -347,22 +316,9 @@ void subghz_protocol_decoder_fiat_marelli_feed(void* context, bool level, uint32
                 uint32_t gap_threshold = instance->te_detected * FIAT_MARELLI_GAP_TE_MULT;
 
                 if(duration > gap_threshold) {
-                    FURI_LOG_D(
-                        TAG,
-                        "Preamble OK: pulses=%u te=%lu gap=%lu",
-                        (unsigned)instance->preamble_count,
-                        (unsigned long)instance->te_detected,
-                        (unsigned long)duration);
                     fiat_marelli_set_state(instance, FiatMarelliDecoderStepSync, "gap detected");
                     instance->te_last = duration;
                 } else {
-                    FURI_LOG_D(
-                        TAG,
-                        "Reject: gap too short after preamble (pulses=%u te=%lu gap=%lu need>%lu)",
-                        (unsigned)instance->preamble_count,
-                        (unsigned long)instance->te_detected,
-                        (unsigned long)duration,
-                        (unsigned long)gap_threshold);
                     fiat_marelli_set_state(instance, FiatMarelliDecoderStepReset, "gap too short");
                 }
             } else {
@@ -381,20 +337,8 @@ void subghz_protocol_decoder_fiat_marelli_feed(void* context, bool level, uint32
 
         if(level && duration >= sync_min && duration <= sync_max) {
             fiat_marelli_prepare_data(instance);
-            FURI_LOG_D(
-                TAG,
-                "Sync OK: duration=%lu expected=[%lu..%lu]",
-                (unsigned long)duration,
-                (unsigned long)sync_min,
-                (unsigned long)sync_max);
             instance->te_last = duration;
         } else {
-            FURI_LOG_D(
-                TAG,
-                "Reject: sync timing mismatch (duration=%lu expected=[%lu..%lu])",
-                (unsigned long)duration,
-                (unsigned long)sync_min,
-                (unsigned long)sync_max);
             fiat_marelli_set_state(instance, FiatMarelliDecoderStepReset, "sync timing mismatch");
         }
         break;
@@ -442,12 +386,6 @@ void subghz_protocol_decoder_fiat_marelli_feed(void* context, bool level, uint32
         } else if(instance->bit_count >= (FIAT_MARELLI_MAX_DATA_BITS - 2)) {
             frame_complete = true;
         } else {
-            FURI_LOG_D(
-                TAG,
-                "Reject: invalid Manchester timing (bit=%u duration=%lu te=%lu)",
-                (unsigned)instance->bit_count,
-                (unsigned long)duration,
-                (unsigned long)te_short);
             fiat_marelli_set_state(
                 instance, FiatMarelliDecoderStepReset, "invalid manchester timing");
         }
@@ -456,11 +394,6 @@ void subghz_protocol_decoder_fiat_marelli_feed(void* context, bool level, uint32
             instance->generic.data_count_bit = instance->bit_count;
 
             if(!fiat_marelli_try_recover_tail_bits(instance)) {
-                FURI_LOG_D(
-                    TAG,
-                    "Reject: incomplete frame (bits=%u, unable to recover to %u bits)",
-                    (unsigned)instance->bit_count,
-                    (unsigned)FIAT_MARELLI_MAX_DATA_BITS);
                 fiat_marelli_set_state(instance, FiatMarelliDecoderStepReset, "frame complete");
                 instance->te_last = duration;
                 break;
@@ -471,14 +404,6 @@ void subghz_protocol_decoder_fiat_marelli_feed(void* context, bool level, uint32
             if(instance->bit_count >= FIAT_MARELLI_MAX_DATA_BITS) {
                 uint8_t calc = fiat_marelli_crc8(instance->raw_data, 12);
                 crc_ok = (calc == instance->raw_data[12]);
-                if(!crc_ok) {
-                    FURI_LOG_D(
-                        TAG,
-                        "Reject: CRC fail (calc=%02X rx=%02X bits=%u)",
-                        calc,
-                        instance->raw_data[12],
-                        (unsigned)instance->bit_count);
-                }
             }
 
             if(crc_ok) {
@@ -493,8 +418,6 @@ void subghz_protocol_decoder_fiat_marelli_feed(void* context, bool level, uint32
                 if(instance->base.callback) {
                     instance->base.callback(&instance->base, instance->base.context);
                 }
-            } else {
-                FURI_LOG_D(TAG, "Frame rejected (%u bits, CRC FAIL)", instance->bit_count);
             }
 
             fiat_marelli_set_state(instance, FiatMarelliDecoderStepReset, "frame complete");
