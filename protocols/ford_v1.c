@@ -117,7 +117,7 @@ static const char* ford_v1_get_button_name(uint8_t btn) {
     case 2:
         return "UNLOCK";
     case 4:
-        return "TRUNK";
+        return "BOOT";
     case 8:
         return "PANIC";
     default:

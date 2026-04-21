@@ -149,7 +149,7 @@ void protopirate_scene_saved_info_on_enter(void* context) {
         const char* button_name = "??";
         uint8_t protocol_found = 0;
 
-        if(strstr(furi_string_get_cstr(protocol_str), "Ford")) {
+        if(strstr(furi_string_get_cstr(protocol_str), "Ford V0")) {
             //Set the button name for Ford
             switch(temp_data) {
             case 0x01:
@@ -163,6 +163,28 @@ void protopirate_scene_saved_info_on_enter(void* context) {
                 break;
             case 0x08:
                 button_name = "BOOT";
+                break;
+            default:
+                button_name = "UNKNOWN";
+                break;
+            }
+            protocol_found = 1;
+        } else if(strstr(furi_string_get_cstr(protocol_str), "Ford V1")) {
+            switch(temp_data) {
+            case 0:
+                button_name = "SYNC";
+                break;
+            case 1:
+                button_name = "LOCK";
+                break;
+            case 2:
+                button_name = "UNLOCK";
+                break;
+            case 4:
+                button_name = "BOOT";
+                break;
+            case 8:
+                button_name = "PANIC";
                 break;
             default:
                 button_name = "UNKNOWN";
