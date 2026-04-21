@@ -245,9 +245,15 @@ const ProtoPirateProtocolTiming* protopirate_get_protocol_timing(const char* pro
             }
         }
 
-        // Match Ford
-        if(strstr(protocol_name, "Ford") != NULL &&
-           strstr(protocol_timings[i].name, "Ford") != NULL) {
+        // Match Ford V0
+        if(strstr(protocol_name, "Ford V0") != NULL &&
+           strstr(protocol_timings[i].name, "Ford V0") != NULL) {
+            return &protocol_timings[i];
+        }
+
+        // Match Ford V1
+        if(strstr(protocol_name, "Ford V1") != NULL &&
+           strstr(protocol_timings[i].name, "Ford V1") != NULL) {
             return &protocol_timings[i];
         }
 

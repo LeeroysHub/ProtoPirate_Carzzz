@@ -306,6 +306,7 @@ static uint8_t protopirate_get_button_for_protocol(
             case InputKeyLeft:
                 return 0x8; // Panic
             case InputKeyRight:
+                return 0x0; // SYNC
             default:
                 return original;
             }
