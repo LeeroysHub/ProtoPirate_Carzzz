@@ -24,6 +24,8 @@ bool protopirate_history_add_to_history(
     ProtoPirateHistory* instance,
     void* context,
     SubGhzRadioPreset* preset);
+
+void protopirate_history_delete_item(ProtoPirateHistory* instance, uint16_t idx);
 void protopirate_history_get_text_item_menu(
     ProtoPirateHistory* instance,
     FuriString* output,
@@ -42,7 +44,4 @@ void protopirate_history_commit_loaded(ProtoPirateHistory* instance);
 
 void protopirate_history_release_scratch(ProtoPirateHistory* instance);
 
-void protopirate_history_set_item_str(
-    ProtoPirateHistory* instance,
-    uint16_t idx,
-    const char* str);
+void protopirate_history_set_item_str(ProtoPirateHistory* instance, uint16_t idx, const char* str);

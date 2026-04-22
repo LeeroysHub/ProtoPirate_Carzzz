@@ -347,7 +347,18 @@ bool protopirate_scene_receiver_on_event(void* context, SceneManagerEvent event)
         }
             consumed = true;
             break;
-
+        case ProtoPirateCustomEventViewReceiverDeleteItem: {
+            uint16_t idx = protopirate_view_receiver_get_idx_menu(app->protopirate_receiver);
+            if(idx < protopirate_history_get_item(app->txrx->history)) {
+                protopirate_history_delete_item(app->txrx->history, idx);
+                protopirate_view_receiver_delete_item(app->protopirate_receiver, idx);
+                protopirate_scene_receiver_update_statusbar(app);
+                app->txrx->idx_menu_chosen =
+                    protopirate_view_receiver_get_idx_menu(app->protopirate_receiver);
+            }
+            consumed = true;
+            break;
+        }
         case ProtoPirateCustomEventViewReceiverConfig:
             scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneReceiver, 1);
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneReceiverConfig);
