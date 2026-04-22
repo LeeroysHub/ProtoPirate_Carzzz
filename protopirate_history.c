@@ -213,6 +213,33 @@ bool protopirate_history_add_to_history(
     return true;
 }
 
+void protopirate_history_delete_item(ProtoPirateHistory* instance, uint16_t idx) {
+    furi_check(instance);
+
+    size_t item_count = ProtoPirateHistoryItemArray_size(instance->data);
+    if(idx >= item_count) {
+        return;
+    }
+
+    if(instance->loaded_ff) {
+        if(instance->loaded_idx == (int16_t)idx) {
+            protopirate_history_release_scratch(instance);
+        } else if(instance->loaded_idx > (int16_t)idx) {
+            instance->loaded_idx--;
+        }
+    }
+
+    ProtoPirateHistoryItem* item = ProtoPirateHistoryItemArray_get(instance->data, idx);
+    protopirate_history_item_free(item, true);
+    ProtoPirateHistoryItemArray_pop_at(NULL, instance->data, idx);
+
+    FURI_LOG_I(
+        TAG,
+        "Deleted history item %u (size: %zu)",
+        idx,
+        ProtoPirateHistoryItemArray_size(instance->data));
+}
+
 void protopirate_history_get_text_item_menu(
     ProtoPirateHistory* instance,
     FuriString* output,
