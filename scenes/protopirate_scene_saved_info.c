@@ -4,6 +4,10 @@
 
 #include "../helpers/protopirate_storage.h"
 
+#if defined(ENABLE_EMULATE_EXTERNAL)
+#include <loader/loader.h>
+#endif
+
 #ifdef BUILD_EMULATE_APP
 #include "proto_pirate_icons.h"
 #else
@@ -25,7 +29,7 @@ static void protopirate_scene_saved_info_widget_callback(
     ProtoPirateApp* app = context;
 
     if((result == GuiButtonTypeRight) && (type == InputTypeShort)) {
-#ifdef ENABLE_EMULATE_FEATURE
+#if defined(ENABLE_EMULATE_FEATURE) || defined(ENABLE_EMULATE_EXTERNAL)
         if(!is_emu_off) {
             view_dispatcher_send_custom_event(
                 app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
@@ -380,7 +384,7 @@ cleanup:
         FURI_LOG_I(TAG, "Adding scroll element");
         widget_add_text_scroll_element(app->widget, 0, 0, 128, 50, furi_string_get_cstr(info_str));
 
-#ifdef ENABLE_EMULATE_FEATURE
+#if defined(ENABLE_EMULATE_FEATURE) || defined(ENABLE_EMULATE_EXTERNAL)
         if(!is_emu_off) {
             widget_add_button_element(
                 app->widget,
@@ -453,6 +457,23 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
             app->view_about = view_alloc();
             view_dispatcher_add_view(app->view_dispatcher, ProtoPirateViewAbout, app->view_about);
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);
+            consumed = true;
+        }
+#endif
+#ifdef ENABLE_EMULATE_EXTERNAL
+        if(event.event == ProtoPirateCustomEventSavedInfoEmulate && !is_emu_off) {
+            Loader* loader = furi_record_open(RECORD_LOADER);
+            loader_enqueue_launch(
+                loader,
+                EXT_PATH("apps/Sub-GHz/proto_pirate.fap"),
+                furi_string_get_cstr(app->loaded_file_path),
+                LoaderDeferredLaunchFlagNone);
+            furi_record_close(RECORD_LOADER);
+            loader = NULL;
+            consumed = true;
+            scene_manager_stop(app->scene_manager);
+            view_dispatcher_stop(app->view_dispatcher);
+
             consumed = true;
         }
 #endif
