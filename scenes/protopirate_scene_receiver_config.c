@@ -8,9 +8,7 @@ enum ProtoPirateSettingIndex {
     ProtoPirateSettingIndexFrequency,
     ProtoPirateSettingIndexHopping,
     ProtoPirateSettingIndexModulation,
-#ifdef ENABLE_EMULATE_FEATURE
     ProtoPirateSettingIndexTXPower,
-#endif
     ProtoPirateSettingIndexAutoSave,
     ProtoPirateSettingIndexDateTimeFilenames,
 #ifdef BUILD_RECEIVER_APP
@@ -35,7 +33,6 @@ const char* const sequence_time_text[ON_OFF_COUNT] = {
     "Time",
 };
 
-#ifdef ENABLE_EMULATE_FEATURE
 #define TX_POWER_COUNT 9
 const char* const tx_power_text[TX_POWER_COUNT] = {
     "Preset",
@@ -48,7 +45,6 @@ const char* const tx_power_text[TX_POWER_COUNT] = {
     "-20dBm",
     "-30dBm",
 };
-#endif
 
 uint8_t protopirate_scene_receiver_config_next_frequency(const uint32_t value, void* context) {
     furi_check(context);
@@ -275,7 +271,6 @@ static void protopirate_scene_receiver_config_set_datetime_filenames(VariableIte
     variable_item_set_current_value_text(item, sequence_time_text[index]);
 }
 
-#ifdef ENABLE_EMULATE_FEATURE
 static void protopirate_scene_receiver_config_set_tx_power(VariableItem* item) {
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -283,7 +278,6 @@ static void protopirate_scene_receiver_config_set_tx_power(VariableItem* item) {
     app->tx_power = index;
     variable_item_set_current_value_text(item, tx_power_text[index]);
 }
-#endif
 
 #ifdef BUILD_RECEIVER_APP
 static void
@@ -408,7 +402,6 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
     app->preset_menu = item;
 #endif
 
-#ifdef ENABLE_EMULATE_FEATURE
     // TX power option
     item = variable_item_list_add(
         app->variable_item_list,
@@ -418,7 +411,7 @@ void protopirate_scene_receiver_config_on_enter(void* context) {
         app);
     variable_item_set_current_value_index(item, app->tx_power);
     variable_item_set_current_value_text(item, tx_power_text[app->tx_power]);
-#endif
+
     // Auto-save option
     item = variable_item_list_add(
         app->variable_item_list,
