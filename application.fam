@@ -42,7 +42,7 @@ if not _ENABLE_EMULATE:
 
 App(
     appid="proto_pirate",
-    name="ProtoPirate",
+    name="Carzzz",
     apptype=FlipperAppType.EXTERNAL,
     targets=["f7"],
     entry_point="protopirate_app",
