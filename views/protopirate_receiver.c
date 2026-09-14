@@ -36,49 +36,14 @@ typedef struct {
     uint8_t lock_count;
     uint8_t animation_frame;
     uint8_t sub_decode_progress;
-    bool dolphin_view;
     bool sub_decode_mode;
+    IconAnimation* icon_int_ant;
+    IconAnimation* icon_ext_ant;
 } ProtoPirateReceiverModel;
-
-typedef struct {
-    int8_t x;
-    int8_t y;
-} RadarPoint;
-
-static const RadarPoint radar_points[] = {
-    {32, 0},
-    {30, 12},
-    {23, 23},
-    {12, 30},
-    {0, 32},
-    {-12, 30},
-    {-23, 23},
-    {-30, 12},
-    {-32, 0},
-    {-30, -12},
-    {-23, -23},
-    {-12, -30},
-    {0, -32},
-    {12, -30},
-    {23, -23},
-    {30, -12},
-};
 
 static size_t protopirate_view_receiver_item_count(ProtoPirateReceiverModel* model) {
     furi_check(model);
     return model->history ? protopirate_history_get_item(model->history) : 0U;
-}
-
-static void protopirate_view_radar_point(
-    uint8_t center_x,
-    uint8_t center_y,
-    uint8_t radius,
-    uint8_t idx,
-    int32_t* x,
-    int32_t* y) {
-    const RadarPoint* p = &radar_points[idx & 0x0F];
-    *x = center_x + ((int32_t)radius * p->x) / 32;
-    *y = center_y + ((int32_t)radius * p->y) / 32;
 }
 
 static void protopirate_view_rssi_draw(Canvas* canvas, ProtoPirateReceiverModel* model) {
@@ -243,8 +208,8 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
     canvas_set_font(canvas, FontSecondary);
 
     // Increment animation frame
-    static uint8_t animation_frame = 0;
-    animation_frame = (animation_frame + 1) % 96;
+    //static uint8_t animation_frame = 0;
+    //animation_frame = (animation_frame + 1) % 96;
 
     size_t item_count = protopirate_view_receiver_item_count(model);
     bool scrollbar = item_count > MENU_ITEMS;
@@ -259,7 +224,7 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
         protopirate_view_receiver_draw_progress_badge(canvas, model->sub_decode_progress);
     }
 
-    //Draw the List, or the Radar/Dolphin View.
+    //Draw the List, or the Dolphin View.
     if(item_count > 0) {
         // Draw received items list
         size_t shift_position = model->list_offset;
@@ -292,81 +257,22 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             elements_scrollbar_pos(canvas, 128, 0, 49, scroll_pos, scrollable_total);
         }
     } else {
-        //Are we in Radar View or FLipper View Mode?
-        if(!model->sub_decode_mode && !model->dolphin_view) {
-            const uint8_t center_x = 64;
-            const uint8_t center_y = 22;
-            for(uint8_t wave = 0; wave < 3; wave++) {
-                uint8_t base_radius = ((animation_frame + wave * 32) % 96) / 3;
-                if(base_radius < 28) {
-                    uint8_t dot_count = base_radius < 10 ? 16 : (base_radius < 20 ? 8 : 4);
-                    uint8_t step = COUNT_OF(radar_points) / dot_count;
-                    for(uint8_t i = 0; i < dot_count; i++) {
-                        int32_t x;
-                        int32_t y;
-                        protopirate_view_radar_point(
-                            center_x, center_y, base_radius, i * step + wave * 2, &x, &y);
-                        if(x > 0 && x < 128 && y > 0 && y < 48) {
-                            canvas_draw_dot(canvas, x, y);
-                            if(base_radius < 5) canvas_draw_dot(canvas, x + 1, y);
-                        }
-                    }
-                }
-            }
-
-            for(uint8_t i = 0; i < COUNT_OF(radar_points); i += 2) {
-                int32_t x;
-                int32_t y;
-                protopirate_view_radar_point(center_x, center_y, 15, i, &x, &y);
-                canvas_draw_dot(canvas, x, y);
-            }
-
-            uint8_t sweep_idx = animation_frame / 6;
-            for(int8_t i = -1; i <= 1; i++) {
-                int32_t x;
-                int32_t y;
-                protopirate_view_radar_point(
-                    center_x, center_y, i ? 20 : 22, sweep_idx + i, &x, &y);
-                canvas_draw_line(canvas, center_x, center_y, x, y);
-            }
-            for(uint8_t i = 1; i <= 8; i++) {
-                int32_t x;
-                int32_t y;
-                protopirate_view_radar_point(
-                    center_x, center_y, 22 - i * 2, sweep_idx - i, &x, &y);
-                if(i < 3 || !(i & 1)) canvas_draw_dot(canvas, x, y);
-            }
-
-            int pulse = (animation_frame % 32);
-            if(pulse < 16) {
-                canvas_draw_disc(canvas, center_x, center_y, 2);
-            } else {
-                canvas_draw_circle(canvas, center_x, center_y, 2);
-            }
-            if(pulse < 8 || (pulse > 16 && pulse < 24)) {
-                canvas_draw_dot(canvas, center_x, center_y);
-            }
-        } else {
-            canvas_draw_icon(
-                canvas,
-                0,
-                0,
-                model->external_radio ? &I_PP_scanning_ext_123x52 : &I_PP_scanning_123x52);
-            //canvas_set_font(canvas, FontPrimary);
-            //canvas_draw_str(canvas, 63, 46, "Scanning...");
-            //canvas_set_font(canvas, FontSecondary);
-            //canvas_draw_str(canvas, 44, 10, model->external_radio ? "Ext" : "Int");       //FOR EXACT FLIPPER CLONE
-        }
-
+        canvas_draw_icon(
+            canvas, 0, 0, model->external_radio ? &I_Fishing_123x52 : &I_Scanning_123x52);
+        canvas_set_font(canvas, FontPrimary);
+        canvas_draw_str(canvas, 63, 46, "Scanning...");
         canvas_set_font(canvas, FontSecondary);
+
+        //canvas_set_font(canvas, FontSecondary);
         if(model->sub_decode_mode) {
             canvas_draw_str_aligned(
                 canvas, 127, 0, AlignRight, AlignTop, furi_string_get_cstr(model->preset_str));
         } else {
+            // Draw EXT/INT indicator in upper right corner
             if(model->external_radio) {
-                canvas_draw_str_aligned(canvas, 127, 0, AlignRight, AlignTop, "Ext");
+                canvas_draw_icon_animation(canvas, 109, 0, model->icon_ext_ant);
             } else {
-                canvas_draw_str_aligned(canvas, 127, 0, AlignRight, AlignTop, "Int");
+                canvas_draw_icon_animation(canvas, 109, 0, model->icon_int_ant);
             }
         }
 
@@ -374,11 +280,11 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
         if(!model->sub_decode_mode && model->auto_save) {
             const char* auto_save_text = "Save";
             canvas_draw_str(
-                canvas, 110 - canvas_string_width(canvas, auto_save_text), 7, auto_save_text);
+                canvas, 105 - canvas_string_width(canvas, auto_save_text), 7, auto_save_text);
         }
     }
 
-    //Draw the unlock instructions last, so they appear on top...
+    //Draw To Unlock, Locked etc...
     if(model->lock_count) {
         if(model->sub_decode_mode) {
             canvas_draw_str(canvas, 44, 63, furi_string_get_cstr(model->frequency_str));
@@ -513,7 +419,7 @@ bool protopirate_view_receiver_input(InputEvent* event, void* context) {
             break;
         case InputKeyOk:
             bool do_ok_cb = false;
-            bool do_toggle = false;
+
             /* Read-only: do not redraw */
             with_view_model(
                 receiver->view,
@@ -523,19 +429,9 @@ bool protopirate_view_receiver_input(InputEvent* event, void* context) {
 
                     if(item_count > 0) {
                         do_ok_cb = true;
-                    } else if(!sub_decode_mode && event->type == InputTypeLong) {
-                        do_toggle = true;
                     }
                 },
                 false);
-            /* Only redraw if we actually changed dolphin_view */
-            if(do_toggle) {
-                with_view_model(
-                    receiver->view,
-                    ProtoPirateReceiverModel * model,
-                    { model->dolphin_view = !model->dolphin_view; },
-                    true);
-            }
 
             if(do_ok_cb && receiver->callback) {
                 receiver->callback(ProtoPirateCustomEventViewReceiverOK, receiver->context);
@@ -597,8 +493,13 @@ ProtoPirateReceiver* protopirate_view_receiver_alloc(bool auto_save) {
             model->auto_save = auto_save;
             model->animation_frame = 0;
             model->sub_decode_progress = 0;
-            model->dolphin_view = true;
             model->sub_decode_mode = false;
+            model->icon_int_ant = icon_animation_alloc(&A_SubGhz_Internal_ant);
+            view_tie_icon_animation(receiver->view, model->icon_int_ant);
+            model->icon_ext_ant = icon_animation_alloc(&A_SubGhz_External_ant);
+            view_tie_icon_animation(receiver->view, model->icon_ext_ant);
+            icon_animation_start(model->icon_int_ant);
+            icon_animation_start(model->icon_ext_ant);
         },
         true);
 
@@ -616,6 +517,8 @@ void protopirate_view_receiver_free(ProtoPirateReceiver* receiver) {
             furi_string_free(model->preset_str);
             furi_string_free(model->history_stat_str);
             furi_string_free(model->draw_scratch);
+            icon_animation_stop(model->icon_int_ant);
+            icon_animation_stop(model->icon_ext_ant);
         },
         false);
 
