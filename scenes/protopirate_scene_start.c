@@ -33,14 +33,14 @@ void protopirate_scene_start_on_enter(void* context) {
 
     submenu_add_item(
         app->submenu,
-        "Receive",
+        "Clone Remote",
         SubmenuIndexProtoPirateReceiver,
         protopirate_scene_start_submenu_callback,
         app);
 
     submenu_add_item(
         app->submenu,
-        "Saved Captures",
+        "Saved Remotes",
         SubmenuIndexProtoPirateSaved,
         protopirate_scene_start_submenu_callback,
         app);
@@ -54,7 +54,7 @@ void protopirate_scene_start_on_enter(void* context) {
 #ifdef ENABLE_SUB_DECODE_SCENE
     submenu_add_item(
         app->submenu,
-        "Sub Decode",
+        "Sub Decoder",
         SubmenuIndexProtoPirateSubDecode,
         protopirate_scene_start_submenu_callback,
         app);
