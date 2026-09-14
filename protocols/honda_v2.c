@@ -192,9 +192,9 @@ static uint8_t honda_v2_button_from_signature(uint32_t signature) {
 static const char* honda_v2_button_name(uint8_t button) {
     switch(button) {
     case HONDA_V2_BTN_LOCK:
-        return "Lock";
+        return "LOCK";
     case HONDA_V2_BTN_UNLOCK:
-        return "Unlock";
+        return "UNLOCK";
     default:
         return "Unknown";
     }

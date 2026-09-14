@@ -42,10 +42,10 @@ typedef enum {
 static const char* fiat_v0_display_suffix(uint8_t endbyte) {
     const uint8_t low_nibble = endbyte & 0x0FU;
     if((low_nibble >= 0x04U) && (low_nibble <= 0x07U)) {
-        return "Lock";
+        return "LOCK";
     }
     if((low_nibble >= 0x08U) && (low_nibble <= 0x0BU)) {
-        return "Unlock";
+        return "UNLOCK";
     }
     return "??";
 }

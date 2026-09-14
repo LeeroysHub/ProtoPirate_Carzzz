@@ -99,11 +99,11 @@ static bool renault_v0_button_valid(uint8_t button) {
 static const char* renault_v0_get_button_name(uint8_t button) {
     switch(button) {
     case 0x05:
-        return "Trunk";
+        return "BOOT";
     case 0x06:
-        return "Lock";
+        return "LOCK";
     case 0x0A:
-        return "Unlock";
+        return "UNLOCK";
     default:
         return "?";
     }

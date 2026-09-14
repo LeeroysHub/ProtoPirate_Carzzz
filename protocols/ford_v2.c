@@ -138,17 +138,17 @@ static uint8_t ford_v2_uint8_parity(uint8_t value) {
 static const char* ford_v2_button_name(uint8_t btn) {
     switch(btn) {
     case 0x10:
-        return "Lock";
+        return "LOCK";
     case 0x11:
-        return "Unlock";
+        return "UNLOCK";
     case 0x13:
-        return "Trunk";
+        return "TRUNK";
     case 0x14:
-        return "Panic";
+        return "PANIC";
     case 0x15:
-        return "RemoteStart";
+        return "RENOTE START";
     default:
-        return "Unknown";
+        return "UNKNOWN";
     }
 }
 

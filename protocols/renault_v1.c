@@ -142,15 +142,15 @@ const SubGhzProtocol renault_v1_protocol = {
 
 static const char* hitag2_get_button_name(uint8_t btn) {
     static const char* const names[] = {
-        "Sync",
-        "Lock",
-        "Unlock",
+        "SYNC",
+        "LOCK",
+        "UNLOCK",
         "??",
-        "Trunk",
+        "BOOT",
         "??",
         "??",
         "??",
-        "Panic",
+        "PANIC",
     };
     return (btn < COUNT_OF(names)) ? names[btn] : "??";
 }

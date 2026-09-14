@@ -818,13 +818,13 @@ void subghz_protocol_decoder_ford_v0_get_string(void* context, FuriString* outpu
 
     const char* button_name = "??";
     if(instance->button == 0x01)
-        button_name = "Panic";
+        button_name = "PANIC";
     else if(instance->button == 0x02)
-        button_name = "Lock";
+        button_name = "LOCK";
     else if(instance->button == 0x04)
-        button_name = "Unlock";
+        button_name = "UNLOCK";
     else if(instance->button == 0x08)
-        button_name = "Boot";
+        button_name = "BOOT";
 
     furi_string_cat_printf(
         output,

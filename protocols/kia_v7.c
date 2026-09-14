@@ -65,12 +65,12 @@ struct SubGhzProtocolEncoderKiaV7 {
 static const char* kia_v7_get_button_name(uint8_t button) {
     switch(button) {
     case 0x01:
-        return "Lock";
+        return "LOCK";
     case 0x02:
-        return "Unlock";
+        return "UNLOCK";
     case 0x03:
     case 0x08:
-        return "Trunk";
+        return "BOOT";
     default:
         return "??";
     }

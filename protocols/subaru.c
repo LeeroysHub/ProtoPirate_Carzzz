@@ -52,7 +52,7 @@ typedef enum {
 } SubaruDecoderStep;
 
 static const char* subaru_get_button_name(uint8_t btn) {
-    static const char* const names[4] = {"Lock", "Unlock", "Trunk", "Panic"};
+    static const char* const names[4] = {"LOCK", "UNLOCK", "BOOT", "PANIC"};
     return names[btn & 0x03];
 }
 

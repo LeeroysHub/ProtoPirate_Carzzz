@@ -86,9 +86,9 @@ static const char* ford_v3_button_name(uint8_t btn, uint8_t variant) {
     if(variant == FORD_V3_VARIANT_US) {
         switch(btn) {
         case FORD_V3_BTN_LOCK:
-            return "Lock";
+            return "LOCK";
         case FORD_V3_BTN_UNLOCK:
-            return "Unlock";
+            return "UNLOCK";
         default:
             return "?";
         }
@@ -96,9 +96,9 @@ static const char* ford_v3_button_name(uint8_t btn, uint8_t variant) {
 
     switch(btn) {
     case FORD_V3_BTN_LOCK:
-        return "Lock";
+        return "LOCK";
     case FORD_V3_BTN_UNLOCK:
-        return "Unlock";
+        return "UNLOCK";
     default:
         return "?";
     }

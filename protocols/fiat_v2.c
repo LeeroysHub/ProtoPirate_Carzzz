@@ -112,13 +112,13 @@ static bool fiat_v2_button_valid(uint8_t button) {
 static const char* fiat_v2_button_name(uint8_t button) {
     switch(button >> FIAT_V2_BTN_SHIFT) {
     case FIAT_V2_BUTTON_LOCK:
-        return "Lock";
+        return "LOCK";
     case FIAT_V2_BUTTON_UNLOCK:
-        return "Unlock";
+        return "UNLOCK";
     case FIAT_V2_BUTTON_TRUNK:
-        return "Trunk";
+        return "BOOT";
     default:
-        return "Unknown";
+        return "UNKNOWN";
     }
 }
 

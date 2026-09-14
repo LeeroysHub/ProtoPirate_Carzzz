@@ -100,13 +100,13 @@ static const uint8_t kia_v0_honda_crc_table[16] = {
 };
 
 static const char* const kia_v0_honda_button_names[7] = {
-    "Unlock",
-    "Trunk",
-    "Lock2",
-    "Unlock2",
-    "Trunk2",
-    "Unlock3",
-    "Trunk3",
+    "UNLOCK",
+    "BOOT",
+    "LOCK2",
+    "UNLOCK2",
+    "BOOT2",
+    "UNLOK3",
+    "BOOT3",
 };
 
 static bool kia_v0_is_kia_gap(uint32_t duration) {
@@ -351,22 +351,22 @@ static const char* kia_v0_button_name(uint8_t button, uint8_t type) {
     if(type == KIA_V0_TYPE_SUZUKI) {
         switch(button) {
         case 0x03:
-            return "Lock";
+            return "LOCK";
         case 0x04:
-            return "Unlock";
+            return "UNLOCK";
         case 0x02:
-            return "Trunk";
+            return "BOOT";
         default:
             return "??";
         }
     }
     switch(button) {
     case 0x01:
-        return "Lock";
+        return "LOCK";
     case 0x02:
-        return "Unlock";
+        return "UNLOCK";
     case 0x03:
-        return "Trunk";
+        return "BOOT";
     default:
         return "??";
     }
