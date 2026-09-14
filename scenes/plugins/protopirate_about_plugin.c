@@ -7,7 +7,7 @@ static const ProtoPirateAboutSceneHostApi* g_about_scene_host_api = NULL;
 #define TAG "PPAboutPlugin"
 
 #define CREDITS_START_Y    28
-#define CREDITS_END_Y      52
+#define CREDITS_END_Y      64
 #define CREDIT_LINE_HEIGHT 10
 #define SCROLL_SPEED       1
 
@@ -63,7 +63,7 @@ static const char* credits[] = {
 
 typedef struct {
     uint8_t frame;
-    uint8_t seed;
+    //uint8_t seed;
     int16_t scroll_offset;
 #ifdef ENABLE_EMULATE_FEATURE
     uint8_t combo_progress;
@@ -72,33 +72,23 @@ typedef struct {
 
 static GlitchState g_state = {0};
 
-static void draw_noise_pixels(Canvas* canvas, uint8_t density) {
-    for(uint8_t i = 0; i < density; i++) {
-        canvas_draw_dot(canvas, rand() % 128, rand() % 64);
-    }
-}
-
 static void about_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
 
-    srand(g_state.seed);
+    //srand(g_state.seed);
     canvas_clear(canvas);
 
     // Light background static
     canvas_set_color(canvas, ColorBlack);
-    draw_noise_pixels(canvas, 6 + (rand() % 6));
-
-    // Occasional subtle x-jitter
-    int8_t x_off = (rand() % 15 == 0) ? ((rand() % 4) - 2) : 0;
 
     // Animated TPP decoration (centered)
     canvas_set_font(canvas, FontKeyboard);
-    if(g_state.frame % 8 < 4) {
+    if(g_state.frame % 20 < 15) {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>=================<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "======================");
     } else {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>======[TPP]======<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "============ Leeroy ==");
     }
 
     // Draw credits region (clip area)
@@ -121,7 +111,7 @@ static void about_draw_callback(Canvas* canvas, void* context) {
 
         // Only draw if in visible region
         if(y >= CREDITS_START_Y - CREDIT_LINE_HEIGHT && y <= CREDITS_END_Y) {
-            canvas_draw_str(canvas, x_off, y, credits[i]);
+            canvas_draw_str(canvas, 0, y, credits[i]);
         }
     }
 
@@ -135,38 +125,21 @@ static void about_draw_callback(Canvas* canvas, void* context) {
     canvas_set_font(canvas, FontPrimary);
 
     //Need to get the FAP_VERSION FROM THE HOST API
-    char fap_name_and_version[20];
+    char fap_name_and_version[15];
     snprintf(
         fap_name_and_version,
         sizeof(fap_name_and_version),
-        "ProtoPirate v%s",
+        "Carzzz v%s",
         g_about_scene_host_api->fap_version);
     canvas_draw_str(canvas, 0, 10, fap_name_and_version);
 
     canvas_set_font(canvas, FontKeyboard);
-    if(g_state.frame % 8 < 4) {
+    if(g_state.frame % 20 < 15) {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>=================<<<");
+            canvas, 64, 18, AlignCenter, AlignBottom, "======================");
     } else {
         canvas_draw_str_aligned(
-            canvas, 64, 18, AlignCenter, AlignBottom, ">>>======[TPP]======<<<");
-    }
-
-    // Redraw static in header area
-    srand(g_state.seed + 1);
-    for(uint8_t i = 0; i < 3; i++) {
-        canvas_draw_dot(canvas, rand() % 128, rand() % (CREDITS_START_Y - CREDIT_LINE_HEIGHT));
-    }
-
-    // Footer: The Pirate's Plunder Discord
-    canvas_set_font(canvas, FontKeyboard);
-    canvas_draw_str_aligned(canvas, 127, 62, AlignRight, AlignBottom, "discord.gg/thepirates");
-
-    // Rare subtle glitch bar
-    if(rand() % 30 == 0) {
-        canvas_set_color(canvas, ColorXOR);
-        uint8_t y = rand() % 60;
-        canvas_draw_box(canvas, 0, y, 128, 2);
+            canvas, 64, 18, AlignCenter, AlignBottom, "============ Leeroy ==");
     }
 }
 
@@ -236,7 +209,6 @@ void plugin_protopirate_scene_about_on_enter(void* context) {
     }
 
     g_state.frame = 0;
-    g_state.seed = furi_get_tick() & 0xFF;
     g_state.scroll_offset = 0;
 #ifdef ENABLE_EMULATE_FEATURE
     g_state.combo_progress = 0;
