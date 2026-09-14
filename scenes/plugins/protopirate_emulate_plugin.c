@@ -912,39 +912,9 @@ static void emulate_draw_callback(Canvas* canvas, void* model) {
     canvas_draw_box(canvas, 0, 0, 128, 11);
     canvas_invert_color(canvas);
     canvas_set_font(canvas, FontSecondary);
-    const char* proto_name = furi_string_get_cstr(ctx->protocol_name);
-    canvas_draw_str_aligned(canvas, 64, 2, AlignCenter, AlignTop, proto_name);
-    canvas_invert_color(canvas);
-
-    canvas_set_font(canvas, FontSecondary);
+    canvas_draw_str_aligned(canvas, 64, 2, AlignCenter, AlignTop, "Car Key");
 
     char info_str[32];
-    if(ctx->serial <= 0xFFFFFFUL) {
-        snprintf(
-            info_str, sizeof(info_str), "SN:%06lX", (unsigned long)(ctx->serial & 0xFFFFFFUL));
-    } else {
-        snprintf(info_str, sizeof(info_str), "SN:%08lX", (unsigned long)ctx->serial);
-    }
-    canvas_draw_str(canvas, 2, 20, info_str);
-
-    snprintf(
-        info_str,
-        sizeof(info_str),
-        "F:%lu.%02lu",
-        ctx->freq / 1000000,
-        (ctx->freq % 1000000) / 10000);
-    canvas_draw_str(canvas, 2, 30, info_str);
-
-    if(ctx->current_counter > 0xFFFF) {
-        snprintf(
-            info_str,
-            sizeof(info_str),
-            "CNT:...%03lX",
-            (unsigned long)ctx->current_counter & 0xFFF);
-    } else {
-        snprintf(info_str, sizeof(info_str), "CNT:%04lX", (unsigned long)ctx->current_counter);
-    }
-    canvas_draw_str(canvas, 68, 20, info_str);
 
     if(ctx->current_counter > ctx->original_counter) {
         snprintf(
@@ -952,46 +922,44 @@ static void emulate_draw_callback(Canvas* canvas, void* model) {
             sizeof(info_str),
             "+%ld",
             (long)(ctx->current_counter - ctx->original_counter));
-        canvas_draw_str(canvas, 112, 20, info_str);
+        canvas_draw_str_aligned(canvas, 125, 2, AlignRight, AlignTop, info_str);
     }
 
-    snprintf(info_str, sizeof(info_str), "%s", ctx->preset);
-    canvas_draw_str(canvas, 95, 30, info_str);
-
-    canvas_set_font(canvas, FontSecondary);
+    //Invert the Canvas back now, we have finished the header.
+    canvas_invert_color(canvas);
 
     const char* unlock_text = ctx->replay_only ? "REPLAY" : "UNLOCK";
     uint16_t width_button = canvas_string_width(canvas, unlock_text) + 8;
     uint16_t height_button = canvas_current_font_height(canvas);
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 45 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 38 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas);
-    canvas_draw_str_aligned(canvas, 64, 49, AlignCenter, AlignBottom, unlock_text);
+    canvas_draw_str_aligned(canvas, 64, 42, AlignCenter, AlignBottom, unlock_text);
     canvas_invert_color(canvas);
 
     char* panic_text = "PANIC";
     width_button = canvas_string_width(canvas, panic_text) + 8;
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 33 - (height_button / 2), width_button, height_button, 3);
+        canvas, 64 - (width_button / 2), 23 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas);
-    canvas_draw_str_aligned(canvas, 64, 37, AlignCenter, AlignBottom, "LOCK");
-    canvas_invert_color(canvas);
-
-    canvas_draw_rbox(canvas, 0, 46 - (height_button / 2), width_button, height_button, 3);
-    canvas_invert_color(canvas);
-    canvas_draw_str_aligned(canvas, (width_button / 2), 50, AlignCenter, AlignBottom, panic_text);
+    canvas_draw_str_aligned(canvas, 64, 27, AlignCenter, AlignBottom, "LOCK");
     canvas_invert_color(canvas);
 
-    canvas_draw_rbox(
-        canvas, 127 - width_button, 46 - (height_button / 2), width_button, height_button, 3);
+    canvas_draw_rbox(canvas, 0, 38 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas);
-    canvas_draw_str_aligned(canvas, 127 - (width_button / 2), 50, AlignCenter, AlignBottom, "XXX");
+    canvas_draw_str_aligned(canvas, (width_button / 2), 42, AlignCenter, AlignBottom, panic_text);
     canvas_invert_color(canvas);
 
     canvas_draw_rbox(
-        canvas, 64 - (width_button / 2), 57 - (height_button / 2), width_button, height_button, 3);
+        canvas, 127 - width_button, 38 - (height_button / 2), width_button, height_button, 3);
     canvas_invert_color(canvas);
-    canvas_draw_str_aligned(canvas, 64, 61, AlignCenter, AlignBottom, "BOOT");
+    canvas_draw_str_aligned(canvas, 127 - (width_button / 2), 42, AlignCenter, AlignBottom, "XXX");
+    canvas_invert_color(canvas);
+
+    canvas_draw_rbox(
+        canvas, 64 - (width_button / 2), 53 - (height_button / 2), width_button, height_button, 3);
+    canvas_invert_color(canvas);
+    canvas_draw_str_aligned(canvas, 64, 57, AlignCenter, AlignBottom, "BOOT");
     canvas_invert_color(canvas);
 
     if(ctx->is_transmitting) {
