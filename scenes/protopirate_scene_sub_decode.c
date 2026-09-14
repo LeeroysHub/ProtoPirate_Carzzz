@@ -1363,7 +1363,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                     widget_add_button_element(
                         app->widget,
                         GuiButtonTypeLeft,
-                        "Emulate",
+                        "Remote",
                         protopirate_scene_sub_decode_widget_callback,
                         app);
                 }

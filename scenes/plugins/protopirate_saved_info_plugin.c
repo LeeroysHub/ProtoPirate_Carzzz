@@ -235,7 +235,7 @@ cleanup:
                 widget_add_button_element(
                     app->widget,
                     GuiButtonTypeLeft,
-                    "Emulate",
+                    "Remote",
                     plugin_protopirate_scene_saved_info_widget_callback,
                     app);
             }
