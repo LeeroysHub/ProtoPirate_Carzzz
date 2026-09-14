@@ -127,15 +127,15 @@ const SubGhzProtocol ford_protocol_v1 = {
 static const char* ford_v1_get_button_name(uint8_t btn) {
     switch(btn) {
     case 0:
-        return "Sync";
+        return "SYNC";
     case 1:
-        return "Lock";
+        return "LOCK";
     case 2:
-        return "Unlock";
+        return "UNLOCK";
     case 4:
-        return "Trunk";
+        return "BOOT";
     case 8:
-        return "Panic";
+        return "PANIC";
     default:
         return "??";
     }

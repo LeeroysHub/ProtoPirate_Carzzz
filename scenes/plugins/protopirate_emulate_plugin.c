@@ -601,7 +601,7 @@ static uint8_t emu_button_for_protocol(
         case InputKeyOk:
             return 0x02; // Unlock
         case InputKeyDown:
-            return 0x03; // Trunk
+            return 0x03; // Boot
         case InputKeyRight:
             return 0x08; // Panic
         default:
@@ -725,7 +725,7 @@ static uint8_t emu_button_for_protocol(
         case InputKeyOk:
             return 0x00; // Unlock
         case InputKeyDown:
-            return 0x09; // Trunk
+            return 0x09; // Boot
         case InputKeyLeft:
             return 0x0A; // Panic
         default:
@@ -738,7 +738,7 @@ static uint8_t emu_button_for_protocol(
         case InputKeyOk:
             return 0x2; // Unlock
         case InputKeyDown:
-            return 0x4; // Trunk
+            return 0x4; // Boot
         case InputKeyRight:
             return 0x5; // Remote Start
         case InputKeyLeft:
@@ -753,7 +753,7 @@ static uint8_t emu_button_for_protocol(
         case InputKeyOk:
             return 0x02; // Unlock
         case InputKeyDown:
-            return 0x04; // Trunk
+            return 0x04; // Boot
         case InputKeyRight:
             return 0x08; // Remote
         default:
@@ -775,7 +775,7 @@ static uint8_t emu_button_for_protocol(
         case InputKeyOk:
             return 0x2; // Unlock
         case InputKeyDown:
-            return 0x4; // Trunk
+            return 0x4; // Boot
         case InputKeyLeft:
             return 0x8; // Panic
         default:
@@ -789,7 +789,7 @@ static uint8_t emu_button_for_protocol(
             case InputKeyOk:
                 return 0x2; // Unlock
             case InputKeyDown:
-                return 0x4; // Trunk
+                return 0x4; // Boot
             case InputKeyLeft:
                 return 0x8; // Panic
             default:
@@ -841,7 +841,7 @@ static uint8_t emu_button_for_protocol(
         case InputKeyOk:
             return 0x8; // Unlock
         case InputKeyDown:
-            return 0x2; // Trunk
+            return 0x2; // Boot
         case InputKeyLeft:
             return 0x1; // Close
         default:

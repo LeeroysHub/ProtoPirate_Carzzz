@@ -24,15 +24,15 @@ _Static_assert(
 static const uint8_t honda_static_encoder_button_map[4] = {0x02, 0x04, 0x08, 0x05};
 #endif
 static const char* const honda_static_button_names[9] = {
-    "Lock",
-    "Unlock",
-    "Unknown",
-    "Trunk",
-    "Remote Start",
-    "Unknown",
-    "Unknown",
-    "Panic",
-    "Lock x2",
+    "LOCK",
+    "UNLOCK",
+    "UNKNOWN",
+    "BOOT",
+    "REMOTE START",
+    "UNKNOWN",
+    "UNKNOWN",
+    "PANIC",
+    "LOCK x2",
 };
 
 typedef struct {

@@ -51,22 +51,22 @@ typedef enum {
 typedef enum {
     HondaV1ButtonUnlock = 0,
     HondaV1ButtonLock = 8,
-    HondaV1ButtonTrunk = 9,
+    HondaV1ButtonBoot = 9,
     HondaV1ButtonPanic = 10,
 } HondaV1Button;
 
 static const char* const honda_v1_button_names[HONDA_V1_BUTTON_MAX + 1U] = {
-    [HondaV1ButtonUnlock] = "Unlock",
-    [HondaV1ButtonLock] = "Lock",
-    [HondaV1ButtonTrunk] = "Trunk",
-    [HondaV1ButtonPanic] = "Panic",
+    [HondaV1ButtonUnlock] = "UNLOCK",
+    [HondaV1ButtonLock] = "LOCK",
+    [HondaV1ButtonBoot] = "BOOT",
+    [HondaV1ButtonPanic] = "PANIC",
 };
 
 #if PROTOPIRATE_WITH_ENCODER
 static const uint32_t honda_v1_button_codes[HONDA_V1_BUTTON_MAX + 1U] = {
     [HondaV1ButtonUnlock] = 0x00080808,
     [HondaV1ButtonLock] = 0x00088888,
-    [HondaV1ButtonTrunk] = 0x00099190,
+    [HondaV1ButtonBoot] = 0x00099190,
     [HondaV1ButtonPanic] = 0x000FA7A0,
 };
 #endif

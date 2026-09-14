@@ -119,9 +119,9 @@ static bool chrysler_v0_is_long_mark(uint32_t duration) {
 static const char* chrysler_v0_get_button_name(uint8_t button) {
     switch(button) {
     case 1:
-        return "Lock";
+        return "LOCK";
     case 2:
-        return "Unlock";
+        return "UNLOCK";
     default:
         return "??";
     }
