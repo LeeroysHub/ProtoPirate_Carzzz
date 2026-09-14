@@ -13,7 +13,7 @@
 
 #define TAG "ProtoPirateSceneEmulate"
 
-#define EMULATE_PLUGIN_PATH APP_ASSETS_PATH("plugins/protopirate_emulate_plugin.fal")
+#define EMULATE_PLUGIN_PATH APP_DATA_PATH("plugins/protopirate_emulate_plugin.fal")
 
 static bool host_radio_init(void* app) {
     return protopirate_radio_init((ProtoPirateApp*)app);
