@@ -10,7 +10,7 @@
 #include <notification/notification_messages.h>
 
 #define TAG                "PPPsaBfHost"
-#define PSA_BF_PLUGIN_PATH APP_ASSETS_PATH("plugins/pp_bf.fal")
+#define PSA_BF_PLUGIN_PATH APP_DATA_PATH("plugins/pp_bf.fal")
 
 static bool host_ensure_widget(void* app) {
     return protopirate_ensure_widget((ProtoPirateApp*)app);

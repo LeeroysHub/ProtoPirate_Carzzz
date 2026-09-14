@@ -13,7 +13,7 @@
 
 #define TAG "PPSceneEmulate"
 
-#define EMULATE_PLUGIN_PATH APP_ASSETS_PATH("plugins/pp_emulate.fal")
+#define EMULATE_PLUGIN_PATH APP_DATA_PATH("plugins/pp_emulate.fal")
 
 static bool host_radio_init(void* app) {
     return protopirate_radio_init((ProtoPirateApp*)app);

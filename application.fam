@@ -89,7 +89,7 @@ App(
         "protocols/subaru.c",
         "protocols/star_line.c",
     ],
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -104,7 +104,7 @@ App(
         "protocols/aut64.c",
         "protocols/vag.c",
     ],
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -128,7 +128,7 @@ App(
         "protocols/renault_v1.c",
         "protocols/psa_crypto.c",
     ],
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -145,7 +145,7 @@ App(
         "protocols/ford_v3.c",
         "protocols/honda_v2.c",
     ],
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -159,7 +159,7 @@ App(
         "protocols/protocols_common.c",
         "protocols/honda_static.c",
     ],
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 # --- TX protocol plugins ---
@@ -195,7 +195,7 @@ def ProtoPirateTxProtocolPlugin(
             f"PP_TX_PROTOCOL_ITEM={protocol_item}",
         ],
         sources=tx_plugin_sources + [f"protocols/{source}" for source in protocol_sources],
-        fal_embedded=True,
+        fal_embedded=False,
     )
 
 ProtoPirateTxProtocolPlugin(
@@ -377,7 +377,7 @@ App(
         "protocols/protocols_common.c",
     ],
     fap_icon_assets="images",
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 if _ENABLE_TIMING_TUNER:
@@ -391,7 +391,7 @@ if _ENABLE_TIMING_TUNER:
             "scenes/protopirate_scene_timing_tuner.c",
             "protocols/protocol_timings.c",
         ],
-        fal_embedded=True,
+        fal_embedded=False,
     )
 
 if _ENABLE_EMULATE:
@@ -404,7 +404,7 @@ if _ENABLE_EMULATE:
             "scenes/plugins/protopirate_emulate_plugin.c",
             "protocols/protocol_items.c",
         ],
-        fal_embedded=True,
+        fal_embedded=False,
     )
 
 App(
@@ -422,7 +422,7 @@ App(
         "protocols/protocols_common.c",
     ],
     fap_icon_assets="images",
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -437,7 +437,7 @@ App(
         "scenes/plugins/protopirate_config_plugin.c",
     ],
     fap_icon_assets="images",
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -451,7 +451,7 @@ App(
         "protocols/protocols_common.c",
     ],
     fap_icon_assets="images",
-    fal_embedded=True,
+    fal_embedded=False,
 )
 
 App(
@@ -464,5 +464,5 @@ App(
         "scenes/plugins/protopirate_about_plugin.c",
     ],
     fap_icon_assets="images",
-    fal_embedded=True,
+    fal_embedded=False,
 )

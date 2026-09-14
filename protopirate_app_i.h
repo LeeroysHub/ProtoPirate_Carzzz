@@ -45,9 +45,9 @@
 #include <loader/firmware_api/firmware_api.h>
 #include "helpers/protopirate_settings.h"
 
-#define CONFIG_PLUGIN_PATH     APP_ASSETS_PATH("plugins/pp_config.fal")
-#define SAVED_INFO_PLUGIN_PATH APP_ASSETS_PATH("plugins/pp_saved_info.fal")
-#define ABOUT_PLUGIN_PATH      APP_ASSETS_PATH("plugins/pp_about.fal")
+#define CONFIG_PLUGIN_PATH     APP_DATA_PATH("plugins/pp_config.fal")
+#define SAVED_INFO_PLUGIN_PATH APP_DATA_PATH("plugins/pp_saved_info.fal")
+#define ABOUT_PLUGIN_PATH      APP_DATA_PATH("plugins/pp_about.fal")
 
 #define PROTOPIRATE_KEYSTORE_DIR_NAME APP_ASSETS_PATH("encrypted")
 
