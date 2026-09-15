@@ -86,10 +86,7 @@ struct ProtoPirateApp {
     SubGhzSetting* setting;
     ProtoPirateLock lock;
     FuriString* loaded_file_path;
-    bool auto_save;
-    bool check_saved;
-    bool sound;
-    bool datetime_filenames;
+    uint8_t option_flags;
     bool radio_initialized;
     uint32_t start_tx_time;
     uint8_t tx_power;
@@ -98,7 +95,6 @@ struct ProtoPirateApp {
     uint16_t save_history_idx;
     bool save_from_saved_info;
     bool emulate_disabled_for_loaded;
-    bool emulate_feature_enabled;
     CompositeApiResolver* plugin_resolver;
     PluginManager* plugin_manager;
 #ifdef ENABLE_EMULATE_FEATURE

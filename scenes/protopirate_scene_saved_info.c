@@ -15,7 +15,9 @@ static void protopirate_scene_saved_info_widget_callback(
 
     if((result == GuiButtonTypeLeft) && (type == InputTypeShort)) {
 #ifdef ENABLE_EMULATE_FEATURE
-        if(app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+        if(APP_OPTION_ENABLED(
+               app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
+           !app->emulate_disabled_for_loaded) {
             view_dispatcher_send_custom_event(
                 app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
         }
@@ -212,7 +214,9 @@ cleanup:
         widget_add_text_scroll_element(app->widget, 0, 0, 128, 50, furi_string_get_cstr(info_str));
 
 #ifdef ENABLE_EMULATE_FEATURE
-        if(app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+        if(APP_OPTION_ENABLED(
+               app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
+           !app->emulate_disabled_for_loaded) {
             widget_add_button_element(
                 app->widget,
                 GuiButtonTypeLeft,
@@ -274,7 +278,9 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
             consumed = true;
         }
 #ifdef ENABLE_EMULATE_FEATURE
-        if(event.event == ProtoPirateCustomEventSavedInfoEmulate && app->emulate_feature_enabled &&
+        if(event.event == ProtoPirateCustomEventSavedInfoEmulate &&
+           APP_OPTION_ENABLED(
+               app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
            !app->emulate_disabled_for_loaded) {
             FURI_LOG_I(TAG, "Emulate requested");
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);

@@ -9,16 +9,30 @@
 
 #define PROTOPIRATE_TX_POWER_MAX_INDEX 8U
 
+typedef enum ProtoPirateSettingsOptionFlags {
+    ProtoPirateSettingsOptionFlagsAutoSave = (1 << 0),
+    ProtoPirateSettingsOptionFlagsSound = (1 << 1),
+    ProtoPirateSettingsOptionFlagsHoppingEnabled = (1 << 2),
+    ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled = (1 << 3),
+    ProtoPirateSettingsOptionFlagsCheckSaved = (1 << 4),
+    ProtoPirateSettingsOptionFlagsDateTimeFileNames = (1 << 5),
+} ProtoPirateSettingsOptionFlags;
+
+#define APP_OPTION_ENABLED(flags, setting) ((flags & setting) == setting)
+#define SET_APP_OPTION_ENABLED(flags, setting, enabled) \
+    do {                                                \
+        if(APP_OPTION_ENABLED(flags, setting)) {        \
+            if(!enabled) flags -= setting;              \
+        } else {                                        \
+            if(enabled) flags += setting;               \
+        }                                               \
+    } while(0);
+
 typedef struct {
     uint32_t frequency;
     uint8_t preset_index;
     uint8_t tx_power;
-    bool auto_save;
-    bool sound;
-    bool hopping_enabled;
-    bool emulate_feature_enabled;
-    bool check_saved;
-    bool datetime_filenames;
+    uint8_t option_flags;
     uint16_t car_model_index;
 } ProtoPirateSettings;
 

@@ -56,7 +56,7 @@ static void protopirate_scene_receiver_callback(
         protopirate_history_add_to_history(app->txrx->history, decoder_base, app->txrx->preset);
 
     if(added) {
-        if(!(app->sound))
+        if(!(APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsSound)))
             notification_message(app->notifications, &sequence_semi_success);
         else
             notification_message(app->notifications, &sequence_single_vibro);
@@ -76,10 +76,10 @@ static void protopirate_scene_receiver_callback(
         protopirate_view_receiver_set_idx_menu(app->protopirate_receiver, last_index);
 
         uint16_t new_idx = protopirate_history_get_item(app->txrx->history) - 1;
-        if(app->auto_save) {
+        if(APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsAutoSave)) {
             protopirate_history_mark_auto_save_pending(app->txrx->history, new_idx);
         }
-        if(app->check_saved) {
+        if(APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsCheckSaved)) {
             protopirate_history_mark_saved_match_pending(app->txrx->history, new_idx);
         }
 
@@ -113,7 +113,8 @@ static bool protopirate_scene_receiver_process_auto_save(ProtoPirateApp* app) {
         FuriString* file_name_str = furi_string_alloc();
 
         if(saved_path && file_name_str) {
-            if(app->datetime_filenames) {
+            if(APP_OPTION_ENABLED(
+                   app->option_flags, ProtoPirateSettingsOptionFlagsDateTimeFileNames)) {
                 //Get the date and time to save.
                 DateTime date_time;
                 furi_hal_rtc_get_datetime(&date_time);
@@ -144,7 +145,11 @@ static bool protopirate_scene_receiver_process_auto_save(ProtoPirateApp* app) {
             furi_string_replace_all(file_name_str, " ", "_");
 
             if(protopirate_storage_save_capture(
-                   ff, furi_string_get_cstr(file_name_str), saved_path, app->datetime_filenames)) {
+                   ff,
+                   furi_string_get_cstr(file_name_str),
+                   saved_path,
+                   APP_OPTION_ENABLED(
+                       app->option_flags, ProtoPirateSettingsOptionFlagsDateTimeFileNames))) {
                 FURI_LOG_I(TAG, "Auto-saved: %s", furi_string_get_cstr(saved_path));
                 notification_message(app->notifications, &sequence_double_vibro);
             } else {
@@ -171,7 +176,8 @@ static bool protopirate_scene_receiver_process_auto_save(ProtoPirateApp* app) {
 static void protopirate_scene_receiver_process_saved_match(ProtoPirateApp* app) {
     furi_check(app);
 
-    if(!app->check_saved || !app->txrx || !app->txrx->history) {
+    if(!APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsCheckSaved) ||
+       !app->txrx || !app->txrx->history) {
         return;
     }
 
@@ -309,7 +315,9 @@ void protopirate_scene_receiver_on_enter(void* context) {
         app->protopirate_receiver, protopirate_scene_receiver_view_callback, app);
 
     protopirate_view_receiver_set_lock(app->protopirate_receiver, app->lock);
-    protopirate_view_receiver_set_autosave(app->protopirate_receiver, app->auto_save);
+    protopirate_view_receiver_set_autosave(
+        app->protopirate_receiver,
+        APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsAutoSave));
     protopirate_view_receiver_set_sub_decode_mode(app->protopirate_receiver, false);
 
     protopirate_scene_receiver_update_statusbar(app);
@@ -324,7 +332,11 @@ void protopirate_scene_receiver_on_enter(void* context) {
     FURI_LOG_I(TAG, "Is External: %s", is_external ? "YES" : "NO");
     FURI_LOG_I(TAG, "Frequency: %lu Hz", app->txrx->preset->frequency);
     FURI_LOG_I(TAG, "Modulation: %s", furi_string_get_cstr(app->txrx->preset->name));
-    FURI_LOG_I(TAG, "Auto-save: %s", app->auto_save ? "ON" : "OFF");
+    FURI_LOG_I(
+        TAG,
+        "Auto-save: %s",
+        APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsAutoSave) ? "ON" :
+                                                                                        "OFF");
 #endif
 
     view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewReceiver);
@@ -337,7 +349,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
 
 static void protopirate_scene_receiver_handle_back(ProtoPirateApp* app) {
     if(app->txrx->history && protopirate_history_get_item(app->txrx->history) > 0 &&
-       !app->auto_save) {
+       !APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsAutoSave)) {
         scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneReceiver, 1);
         scene_manager_next_scene(app->scene_manager, ProtoPirateSceneNeedSaving);
     } else {

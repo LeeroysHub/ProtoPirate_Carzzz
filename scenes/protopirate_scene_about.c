@@ -171,7 +171,8 @@ static bool about_input_callback(InputEvent* event, void* context) {
 
 #ifdef ENABLE_EMULATE_FEATURE
 static void about_show_emulate_toggle_popup(ProtoPirateApp* app) {
-    const bool now_enabled = app->emulate_feature_enabled;
+    const bool now_enabled =
+        APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled);
 
     DialogMessage* message = dialog_message_alloc();
     dialog_message_set_buttons(message, NULL, "OK", NULL);
@@ -234,16 +235,28 @@ bool protopirate_scene_about_on_event(void* context, SceneManagerEvent event) {
 #ifdef ENABLE_EMULATE_FEATURE
     else if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == ProtoPirateCustomEventAboutToggleEmulate) {
-            app->emulate_feature_enabled = !app->emulate_feature_enabled;
+            //Toggle Emulate on
+            SET_APP_OPTION_ENABLED(
+                app->option_flags,
+                ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled,
+                !APP_OPTION_ENABLED(
+                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled))
 
             ProtoPirateSettings settings;
             protopirate_settings_load(&settings);
-            settings.emulate_feature_enabled = app->emulate_feature_enabled;
+            SET_APP_OPTION_ENABLED(
+                settings.option_flags,
+                ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled,
+                APP_OPTION_ENABLED(
+                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled));
             protopirate_settings_save(&settings);
 
             notification_message(
                 app->notifications,
-                app->emulate_feature_enabled ? &sequence_success : &sequence_semi_success);
+                APP_OPTION_ENABLED(
+                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) ?
+                    &sequence_success :
+                    &sequence_semi_success);
 
             about_show_emulate_toggle_popup(app);
             consumed = true;

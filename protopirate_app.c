@@ -153,17 +153,9 @@ ProtoPirateApp* protopirate_app_alloc() {
     ProtoPirateSettings settings;
     protopirate_settings_load(&settings);
 
-    // Apply auto-save setting
-    app->auto_save = settings.auto_save;
-    app->sound = settings.sound;
-    app->check_saved = settings.check_saved;
+    // Apply option flags
+    app->option_flags = settings.option_flags;
     app->tx_power = settings.tx_power;
-    app->datetime_filenames = settings.datetime_filenames;
-#ifdef ENABLE_EMULATE_FEATURE
-    app->emulate_feature_enabled = settings.emulate_feature_enabled;
-#else
-    app->emulate_feature_enabled = false;
-#endif
 
     // Init setting - KEEP THIS, it's small
     app->setting = subghz_setting_alloc();
@@ -218,8 +210,8 @@ ProtoPirateApp* protopirate_app_alloc() {
         "Settings: freq=%lu, preset=%s, auto_save=%d, hopping=%d",
         frequency,
         preset_name,
-        settings.auto_save,
-        settings.hopping_enabled);
+        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsAutoSave),
+        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled));
 
     config_plugin_load(app);
     app->car_models_count = app->config_plugin->car_model_get_count();
@@ -250,8 +242,10 @@ ProtoPirateApp* protopirate_app_alloc() {
     config_plugin_unload(app);
 
     // Apply hopping state from settings
-    app->txrx->hopper_state = settings.hopping_enabled ? ProtoPirateHopperStateRunning :
-                                                         ProtoPirateHopperStateOFF;
+    app->txrx->hopper_state =
+        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled) ?
+            ProtoPirateHopperStateRunning :
+            ProtoPirateHopperStateOFF;
     app->txrx->hopper_idx_frequency = 0;
     app->txrx->hopper_timeout = 0;
     app->txrx->idx_menu_chosen = 0;
@@ -270,17 +264,8 @@ void protopirate_app_free(ProtoPirateApp* app) {
     // Save settings before exiting
     ProtoPirateSettings settings;
     settings.frequency = app->txrx->preset->frequency;
-    settings.auto_save = app->auto_save;
-    settings.sound = app->sound;
-    settings.check_saved = app->check_saved;
+    settings.option_flags = app->option_flags;
     settings.tx_power = app->tx_power;
-    settings.datetime_filenames = app->datetime_filenames;
-    settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
-#ifdef ENABLE_EMULATE_FEATURE
-    settings.emulate_feature_enabled = app->emulate_feature_enabled;
-#else
-    settings.emulate_feature_enabled = false;
-#endif
 
     //Get the selected Model, and get the preset to save.
     if(app->selected_model && app->selected_model->index) {
@@ -329,9 +314,10 @@ void protopirate_app_free(ProtoPirateApp* app) {
         "Saving settings: freq=%lu, preset=%u, auto_save=%d, hopping=%d, emulate=%d",
         settings.frequency,
         settings.preset_index,
-        settings.auto_save,
-        settings.hopping_enabled,
-        settings.emulate_feature_enabled);
+        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsAutoSave),
+        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled),
+        APP_OPTION_ENABLED(
+            settings.option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled));
 
     protopirate_settings_save(&settings);
 
@@ -411,7 +397,9 @@ int32_t protopirate_app(char* p) {
     //We now jump straight to emulate scene from Browser. If the user wanted the key to look at, just click back.
     if(load_saved) {
 #ifdef ENABLE_EMULATE_FEATURE
-        if(protopirate_app->emulate_feature_enabled) {
+        if(APP_OPTION_ENABLED(
+               protopirate_app->option_flags,
+               ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled)) {
             view_dispatcher_send_custom_event(
                 protopirate_app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
             notification_message(protopirate_app->notifications, &sequence_success);
