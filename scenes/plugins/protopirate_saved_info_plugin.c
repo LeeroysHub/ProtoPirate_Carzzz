@@ -115,7 +115,7 @@ void plugin_protopirate_scene_saved_info_on_enter(void* context) {
 
     // Read fields
     uint32_t temp_data = 0;
-    app->emulate_disabled_for_loaded = true;
+    app->app_flags.emulate_disabled_for_loaded = true;
 
     flipper_format_rewind(ff);
     if(flipper_format_read_string(ff, FF_PROTOCOL, temp_str)) {
@@ -123,7 +123,7 @@ void plugin_protopirate_scene_saved_info_on_enter(void* context) {
         furi_string_cat_printf(info_str, "Protocol: %s\n", protocol_name);
 
         //Can we emulate this type?
-        app->emulate_disabled_for_loaded =
+        app->app_flags.emulate_disabled_for_loaded =
             !g_saved_info_scene_host_api->protocol_catalog_can_tx(protocol_name);
 
         //Do we need to offer a Brute Force Option?
@@ -231,7 +231,8 @@ cleanup:
             scene_manager_set_scene_state(
                 app->scene_manager, ProtoPirateSceneSavedInfo, STATE_EMULATE);
 #ifdef ENABLE_EMULATE_FEATURE
-            if(app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+            if(app->option_flags.emulate_feature_enabled &&
+               !app->app_flags.emulate_disabled_for_loaded) {
                 widget_add_button_element(
                     app->widget,
                     GuiButtonTypeLeft,
@@ -331,8 +332,9 @@ bool plugin_protopirate_scene_saved_info_on_event(void* context, SceneManagerEve
         }
 
 #ifdef ENABLE_EMULATE_FEATURE
-        if(event.event == ProtoPirateCustomEventSavedInfoEmulate && app->emulate_feature_enabled &&
-           !app->emulate_disabled_for_loaded) {
+        if(event.event == ProtoPirateCustomEventSavedInfoEmulate &&
+           app->option_flags.emulate_feature_enabled &&
+           !app->app_flags.emulate_disabled_for_loaded) {
             FURI_LOG_I(TAG, "Emulate requested");
 
             //Send custom event back to the scene, so it can start emulate for us and avoid the crashes.

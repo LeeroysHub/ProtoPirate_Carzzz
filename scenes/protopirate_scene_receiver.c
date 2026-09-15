@@ -28,7 +28,7 @@ static void protopirate_scene_receiver_update_statusbar(void* context) {
         app, frequency_str, sizeof(frequency_str), modulation_str, sizeof(modulation_str));
 
     bool is_external = false;
-    if(app->radio_initialized && app->txrx->radio_device) {
+    if(app->app_flags.radio_initialized && app->txrx->radio_device) {
         is_external = radio_device_loader_is_external(app->txrx->radio_device);
     }
 
@@ -55,7 +55,7 @@ static void protopirate_scene_receiver_callback(
     FURI_LOG_I(TAG, "=== SIGNAL DECODED (%s) ===", decoder_base->protocol->name);
 
     //If save is happening, dont attempt to add to history yet.
-    while(app->deferred_storage_in_progress)
+    while(app->app_flags.deferred_storage_in_progress)
         furi_delay_ms(25);
 
     uint16_t count_before = protopirate_history_get_item(app->txrx->history);
@@ -63,7 +63,7 @@ static void protopirate_scene_receiver_callback(
         protopirate_history_add_to_history(app->txrx->history, decoder_base, app->txrx->preset);
 
     if(added) {
-        if(!(app->sound))
+        if(!app->option_flags.sound)
             notification_message(app->notifications, &sequence_semi_success);
         else
             notification_message(app->notifications, &sequence_single_vibro);
@@ -85,11 +85,11 @@ static void protopirate_scene_receiver_callback(
         uint16_t new_idx = protopirate_history_get_item(app->txrx->history) - 1;
 
         bool start_timer = false;
-        if(app->auto_save) {
+        if(app->option_flags.auto_save) {
             protopirate_history_mark_auto_save_pending(app->txrx->history, new_idx);
             start_timer = true;
         }
-        if(app->check_saved) {
+        if(app->option_flags.check_saved) {
             protopirate_history_mark_saved_match_pending(app->txrx->history, new_idx);
             start_timer = true;
         }
@@ -130,7 +130,7 @@ static bool protopirate_scene_receiver_process_auto_save(ProtoPirateApp* app) {
         FuriString* file_name_str = furi_string_alloc();
 
         if(saved_path && file_name_str) {
-            if(app->datetime_filenames) {
+            if(app->option_flags.datetime_filenames) {
                 //Get the date and time to save.
                 DateTime date_time;
                 furi_hal_rtc_get_datetime(&date_time);
@@ -161,7 +161,10 @@ static bool protopirate_scene_receiver_process_auto_save(ProtoPirateApp* app) {
             furi_string_replace_all(file_name_str, " ", "_");
 
             if(protopirate_storage_save_capture(
-                   ff, furi_string_get_cstr(file_name_str), saved_path, app->datetime_filenames)) {
+                   ff,
+                   furi_string_get_cstr(file_name_str),
+                   saved_path,
+                   app->option_flags.datetime_filenames)) {
                 FURI_LOG_I(TAG, "Auto-saved: %s", furi_string_get_cstr(saved_path));
                 notification_message(app->notifications, &sequence_double_vibro);
             } else {
@@ -188,7 +191,7 @@ static bool protopirate_scene_receiver_process_auto_save(ProtoPirateApp* app) {
 static void protopirate_scene_receiver_process_saved_match(ProtoPirateApp* app) {
     furi_check(app);
 
-    if(!app->check_saved || !app->txrx || !app->txrx->history) {
+    if(!app->option_flags.check_saved || !app->txrx || !app->txrx->history) {
         return;
     }
 
@@ -223,7 +226,7 @@ static void protopirate_scene_receiver_process_saved_match(ProtoPirateApp* app) 
 }
 
 static void protopirate_scene_receiver_process_deferred_storage(ProtoPirateApp* app) {
-    app->deferred_storage_in_progress = true;
+    app->app_flags.deferred_storage_in_progress = true;
     if(protopirate_scene_receiver_process_auto_save(app)) {
         return;
     }
@@ -231,7 +234,7 @@ static void protopirate_scene_receiver_process_deferred_storage(ProtoPirateApp* 
     protopirate_scene_receiver_process_saved_match(app);
 
     furi_timer_stop(app->deferred_storage_timer);
-    app->deferred_storage_in_progress = false;
+    app->app_flags.deferred_storage_in_progress = false;
 }
 
 static bool protopirate_scene_receiver_bind_rx_stack(ProtoPirateApp* app) {
@@ -264,7 +267,7 @@ static bool protopirate_scene_receiver_bind_rx_stack(ProtoPirateApp* app) {
 
 static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
     furi_check(app);
-    if(!app->radio_initialized) {
+    if(!app->app_flags.radio_initialized) {
         return;
     }
 
@@ -310,7 +313,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
         protopirate_history_release_scratch(app->txrx->history);
     }
 
-    if(!app->radio_initialized && !protopirate_radio_init(app)) {
+    if(!app->app_flags.radio_initialized && !protopirate_radio_init(app)) {
         FURI_LOG_E(TAG, "Failed to initialize radio for receiver scene");
         notification_message(app->notifications, &sequence_error);
         scene_manager_previous_scene(app->scene_manager);
@@ -334,7 +337,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
         app->protopirate_receiver, protopirate_scene_receiver_view_callback, app);
 
     protopirate_view_receiver_set_lock(app->protopirate_receiver, app->lock);
-    protopirate_view_receiver_set_autosave(app->protopirate_receiver, app->auto_save);
+    protopirate_view_receiver_set_autosave(app->protopirate_receiver, app->option_flags.auto_save);
     protopirate_view_receiver_set_sub_decode_mode(app->protopirate_receiver, false);
 
     protopirate_scene_receiver_update_statusbar(app);
@@ -352,7 +355,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
     FURI_LOG_I(TAG, "Is External: %s", is_external ? "YES" : "NO");
     FURI_LOG_I(TAG, "Frequency: %lu Hz", app->txrx->preset->frequency);
     FURI_LOG_I(TAG, "Modulation: %s", furi_string_get_cstr(app->txrx->preset->name));
-    FURI_LOG_I(TAG, "Auto-save: %s", app->auto_save ? "ON" : "OFF");
+    FURI_LOG_I(TAG, "Auto-save: %s", app->option_flags.auto_save ? "ON" : "OFF");
 #endif
 
     view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewReceiver);
@@ -365,7 +368,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
 
 static void protopirate_scene_receiver_handle_back(ProtoPirateApp* app) {
     if(app->txrx->history && protopirate_history_get_item(app->txrx->history) > 0 &&
-       !app->auto_save) {
+       !app->option_flags.auto_save) {
         scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneReceiver, 1);
         scene_manager_next_scene(app->scene_manager, ProtoPirateSceneNeedSaving);
     } else {
@@ -463,7 +466,7 @@ bool protopirate_scene_receiver_on_event(void* context, SceneManagerEvent event)
             }
         }
 
-        if(app->radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx &&
+        if(app->app_flags.radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx &&
            app->txrx->radio_device) {
             float rssi = subghz_devices_get_rssi(app->txrx->radio_device);
             protopirate_view_receiver_set_rssi(app->protopirate_receiver, rssi);
@@ -500,7 +503,7 @@ void protopirate_scene_receiver_on_exit(void* context) {
     const bool leaving_for_subscene =
         (scene_manager_get_scene_state(app->scene_manager, ProtoPirateSceneReceiver) == 1);
 
-    if(app->radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx) {
+    if(app->app_flags.radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx) {
         protopirate_rx_end(app);
     }
 

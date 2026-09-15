@@ -293,7 +293,7 @@ static void protopirate_scene_receiver_config_set_auto_save(VariableItem* item) 
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    app->auto_save = (index == 1);
+    app->option_flags.auto_save = (index == 1);
     variable_item_set_current_value_text(item, on_off_text[index]);
 }
 
@@ -301,7 +301,7 @@ static void protopirate_scene_receiver_config_set_datetime_filenames(VariableIte
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    app->datetime_filenames = (index == 1);
+    app->option_flags.datetime_filenames = (index == 1);
     variable_item_set_current_value_text(item, sequence_time_text[index]);
 }
 
@@ -309,7 +309,7 @@ static void protopirate_scene_receiver_config_set_check_saved(VariableItem* item
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    app->check_saved = (index == 1);
+    app->option_flags.check_saved = (index == 1);
     variable_item_set_current_value_text(item, on_off_text[index]);
 }
 
@@ -317,7 +317,7 @@ static void protopirate_scene_receiver_config_set_sound(VariableItem* item) {
     ProtoPirateApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    app->sound = (index == 1);
+    app->option_flags.sound = (index == 1);
     variable_item_set_current_value_text(item, on_off_text[index]);
 }
 
@@ -448,8 +448,8 @@ static void plugin_on_enter(void* context) {
         ON_OFF_COUNT,
         protopirate_scene_receiver_config_set_auto_save,
         app);
-    variable_item_set_current_value_index(item, app->auto_save ? 1 : 0);
-    variable_item_set_current_value_text(item, on_off_text[app->auto_save ? 1 : 0]);
+    variable_item_set_current_value_index(item, app->option_flags.auto_save ? 1 : 0);
+    variable_item_set_current_value_text(item, on_off_text[app->option_flags.auto_save ? 1 : 0]);
     // Date/time filenames option
     item = variable_item_list_add(
         app->variable_item_list,
@@ -457,9 +457,9 @@ static void plugin_on_enter(void* context) {
         2,
         protopirate_scene_receiver_config_set_datetime_filenames,
         app);
-    variable_item_set_current_value_index(item, app->datetime_filenames ? 1 : 0);
+    variable_item_set_current_value_index(item, app->option_flags.datetime_filenames ? 1 : 0);
     variable_item_set_current_value_text(
-        item, sequence_time_text[app->datetime_filenames ? 1 : 0]);
+        item, sequence_time_text[app->option_flags.datetime_filenames ? 1 : 0]);
 
     item = variable_item_list_add(
         app->variable_item_list,
@@ -467,8 +467,8 @@ static void plugin_on_enter(void* context) {
         ON_OFF_COUNT,
         protopirate_scene_receiver_config_set_check_saved,
         app);
-    variable_item_set_current_value_index(item, app->check_saved ? 1 : 0);
-    variable_item_set_current_value_text(item, on_off_text[app->check_saved ? 1 : 0]);
+    variable_item_set_current_value_index(item, app->option_flags.check_saved ? 1 : 0);
+    variable_item_set_current_value_text(item, on_off_text[app->option_flags.check_saved ? 1 : 0]);
 
     // Sound option
     item = variable_item_list_add(
@@ -477,8 +477,8 @@ static void plugin_on_enter(void* context) {
         ON_OFF_COUNT,
         protopirate_scene_receiver_config_set_sound,
         app);
-    variable_item_set_current_value_index(item, app->sound);
-    variable_item_set_current_value_text(item, on_off_text[app->sound ? 1 : 0]);
+    variable_item_set_current_value_index(item, app->option_flags.sound);
+    variable_item_set_current_value_text(item, on_off_text[app->option_flags.sound ? 1 : 0]);
 
     variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
     variable_item_list_set_enter_callback(

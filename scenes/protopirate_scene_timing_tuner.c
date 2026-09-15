@@ -651,14 +651,14 @@ void protopirate_scene_timing_tuner_on_enter(void* context) {
 
     if(!protopirate_ensure_view_about(app)) {
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
 
-    if(!app->radio_initialized && !protopirate_radio_init(app)) {
+    if(!app->app_flags.radio_initialized && !protopirate_radio_init(app)) {
         FURI_LOG_E(TAG, "Failed to initialize radio for timing tuner");
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
 
@@ -670,7 +670,7 @@ void protopirate_scene_timing_tuner_on_enter(void* context) {
     if(!app->txrx->receiver) {
         FURI_LOG_E(TAG, "Failed to allocate receiver for timing tuner");
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
 
@@ -678,7 +678,7 @@ void protopirate_scene_timing_tuner_on_enter(void* context) {
     if(!g_timing_ctx) {
         FURI_LOG_E(TAG, "Failed to allocate timing tuner context");
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
     memset(g_timing_ctx, 0, sizeof(TimingTunerContext));
@@ -706,7 +706,7 @@ void protopirate_scene_timing_tuner_on_enter(void* context) {
             view_set_input_callback(app->view_about, NULL);
             timing_tuner_context_free();
             notification_message(app->notifications, &sequence_error);
-            app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+            app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
             return;
         }
         // Set up worker callbacks
@@ -742,14 +742,14 @@ bool protopirate_scene_timing_tuner_on_event(void* context, SceneManagerEvent ev
 
     if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == 0) {
-            app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+            app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
             consumed = true;
         } else if(event.event == 1) {
             if(g_timing_ctx && g_timing_ctx->is_receiving) {
                 protopirate_rx_end(app);
                 g_timing_ctx->is_receiving = false;
             }
-            app->tool_scene_nav_pending = TOOL_SCENE_NAV_NEXT;
+            app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_NEXT;
             app->tool_scene_nav_target = ProtoPirateSceneReceiverConfig;
             consumed = true;
         }

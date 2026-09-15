@@ -24,7 +24,7 @@ static void protopirate_scene_receiver_info_text_input_callback(void* context) {
 
 static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
     widget_reset(app->widget);
-    app->emulate_disabled_for_loaded = true;
+    app->app_flags.emulate_disabled_for_loaded = true;
 
     FuriString* text = furi_string_alloc();
     protopirate_history_get_text_item_menu(app->txrx->history, text, app->txrx->idx_menu_chosen);
@@ -47,7 +47,8 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
             const char* canonical = protopirate_protocol_catalog_canonical_name(protocol_name);
             if(strcmp(canonical, "PSA") == 0) is_psa = true;
             offers_bf = protopirate_protocol_catalog_offers_bruteforce(protocol_name);
-            app->emulate_disabled_for_loaded = !protopirate_protocol_catalog_can_tx(protocol_name);
+            app->app_flags.emulate_disabled_for_loaded =
+                !protopirate_protocol_catalog_can_tx(protocol_name);
         }
         furi_string_free(protocol);
     }
@@ -130,7 +131,8 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
             app->scene_manager, ProtoPirateSceneReceiverInfo, STATE_EMULATE);
 
 #ifdef ENABLE_EMULATE_FEATURE
-        if(app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+        if(app->option_flags.emulate_feature_enabled &&
+           !app->app_flags.emulate_disabled_for_loaded) {
             widget_add_button_element(
                 app->widget,
                 GuiButtonTypeLeft,
@@ -179,10 +181,11 @@ static void protopirate_scene_receiver_info_widget_callback(
                STATE_BF) {
                 view_dispatcher_send_custom_event(
                     app->view_dispatcher, ProtoPirateCustomEventBruteforceStart);
-
             }
 #ifdef ENABLE_EMULATE_FEATURE
-            else if(app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+            else if(
+                app->option_flags.emulate_feature_enabled &&
+                !app->app_flags.emulate_disabled_for_loaded) {
                 view_dispatcher_send_custom_event(
                     app->view_dispatcher, ProtoPirateCustomEventReceiverInfoEmulate);
             }
@@ -204,7 +207,7 @@ void protopirate_scene_receiver_info_on_enter(void* context) {
         return;
     }
 
-    app->emulate_disabled_for_loaded = false;
+    app->app_flags.emulate_disabled_for_loaded = false;
 
     if(app->psa_bf_plugin) {
         if(app->psa_bf_plugin->is_running(app)) {
@@ -272,7 +275,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
             FuriString* filename_str = furi_string_alloc();
 
             if(ff) {
-                if(app->datetime_filenames) {
+                if(app->option_flags.datetime_filenames) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -305,7 +308,9 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                 // Get the next auto-generated filename (just the name part)
                 FuriString* auto_path = furi_string_alloc();
                 if(protopirate_storage_get_next_filename(
-                       furi_string_get_cstr(filename_str), auto_path, (app->datetime_filenames))) {
+                       furi_string_get_cstr(filename_str),
+                       auto_path,
+                       app->option_flags.datetime_filenames)) {
                     // Extract just the filename without folder and extension
                     const char* full = furi_string_get_cstr(auto_path);
                     const char* slash = strrchr(full, '/');
@@ -398,7 +403,8 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
 
 #ifdef ENABLE_EMULATE_FEATURE
         if(event.event == ProtoPirateCustomEventReceiverInfoEmulate &&
-           app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+           app->option_flags.emulate_feature_enabled &&
+           !app->app_flags.emulate_disabled_for_loaded) {
             FuriString* hist_path = furi_string_alloc();
             if(protopirate_history_get_capture_path(
                    app->txrx->history, app->txrx->idx_menu_chosen, hist_path)) {

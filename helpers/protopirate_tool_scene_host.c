@@ -209,13 +209,13 @@ static bool protopirate_tool_scene_plugin_ensure_loaded(
 static void protopirate_tool_scene_apply_pending_nav(ProtoPirateApp* app) {
     furi_check(app);
 
-    const uint8_t nav = app->tool_scene_nav_pending;
+    const uint8_t nav = app->app_flags.plugin_nav_pending;
     if(nav == TOOL_SCENE_NAV_NONE) {
         return;
     }
 
     const uint32_t target = app->tool_scene_nav_target;
-    app->tool_scene_nav_pending = TOOL_SCENE_NAV_NONE;
+    app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_NONE;
     app->tool_scene_nav_target = 0;
 
     switch(nav) {
@@ -237,7 +237,7 @@ bool protopirate_tool_scene_on_enter(void* context, ProtoPirateToolScenePluginKi
     ProtoPirateApp* app = context;
     furi_check(app);
 
-    app->tool_scene_nav_pending = TOOL_SCENE_NAV_NONE;
+    app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_NONE;
     app->tool_scene_nav_target = 0;
 
     if(!protopirate_tool_scene_plugin_ensure_loaded(app, kind) || !app->tool_scene_plugin) {

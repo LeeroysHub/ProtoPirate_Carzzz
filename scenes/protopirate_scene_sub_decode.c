@@ -513,14 +513,14 @@ void protopirate_scene_sub_decode_on_enter(void* context) {
 
     if(!protopirate_ensure_receiver_view(app) || !protopirate_ensure_widget(app)) {
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
 
-    if(!app->radio_initialized && !protopirate_radio_init(app)) {
+    if(!app->app_flags.radio_initialized && !protopirate_radio_init(app)) {
         FURI_LOG_E(TAG, "Failed to initialize radio for sub decode scene");
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
 
@@ -532,7 +532,7 @@ void protopirate_scene_sub_decode_on_enter(void* context) {
     if(!app->txrx->receiver) {
         FURI_LOG_E(TAG, "Failed to allocate receiver for sub decode scene");
         notification_message(app->notifications, &sequence_error);
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
 
@@ -541,7 +541,7 @@ void protopirate_scene_sub_decode_on_enter(void* context) {
     g_decode_ctx = malloc(sizeof(SubDecodeContext));
     if(!g_decode_ctx) {
         FURI_LOG_E(TAG, "Failed to allocate decode context");
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
         return;
     }
     memset(g_decode_ctx, 0, sizeof(SubDecodeContext));
@@ -569,7 +569,7 @@ void protopirate_scene_sub_decode_on_enter(void* context) {
             free(g_decode_ctx);
             g_decode_ctx = NULL;
             notification_message(app->notifications, &sequence_error);
-            app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+            app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
             return;
         }
         owns_history = true;
@@ -597,7 +597,7 @@ void protopirate_scene_sub_decode_on_enter(void* context) {
         g_decode_ctx->state = DecodeStateOpenFile;
         protopirate_scene_sub_decode_prepare_receiver_view(app);
     } else {
-        app->tool_scene_nav_pending = TOOL_SCENE_NAV_POP;
+        app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_POP;
     }
 }
 
@@ -637,7 +637,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 
             if(ff) {
                 FuriString* file_name_str = furi_string_alloc();
-                if(app->datetime_filenames) {
+                if(app->option_flags.datetime_filenames) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -667,7 +667,9 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 // Get the next auto-generated filename (just the name part)
                 FuriString* auto_path = furi_string_alloc();
                 if(protopirate_storage_get_next_filename(
-                       furi_string_get_cstr(file_name_str), auto_path, app->datetime_filenames)) {
+                       furi_string_get_cstr(file_name_str),
+                       auto_path,
+                       app->option_flags.datetime_filenames)) {
                     // Extract just the filename without folder and extension
                     const char* full = furi_string_get_cstr(auto_path);
                     const char* slash = strrchr(full, '/');
@@ -764,7 +766,8 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 #ifdef ENABLE_EMULATE_FEATURE
         else if(
             event.event == ProtoPirateCustomEventSubDecodeEmulate &&
-            app->emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+            app->option_flags.emulate_feature_enabled &&
+            !app->app_flags.emulate_disabled_for_loaded) {
             FlipperFormat* ff =
                 protopirate_history_get_raw_data(ctx->history, ctx->selected_history_index);
             if(ff && protopirate_storage_save_capture_to_path(ff, PROTOPIRATE_TEMP_FILE)) {
@@ -775,7 +778,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                     TAG,
                     "Emulate from sub-decode temp file: %s",
                     furi_string_get_cstr(app->loaded_file_path));
-                app->tool_scene_nav_pending = TOOL_SCENE_NAV_NEXT;
+                app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_NEXT;
                 app->tool_scene_nav_target = ProtoPirateSceneEmulate;
             } else {
                 FURI_LOG_E(
@@ -826,7 +829,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 
             if(!protopirate_scene_sub_decode_open_browser_for_next_file(app)) {
                 protopirate_history_reset(ctx->history);
-                app->tool_scene_nav_pending = TOOL_SCENE_NAV_SEARCH_PREVIOUS;
+                app->app_flags.plugin_nav_pending = TOOL_SCENE_NAV_SEARCH_PREVIOUS;
                 app->tool_scene_nav_target = ProtoPirateSceneStart;
             }
             consumed = true;
@@ -1315,7 +1318,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                     app);
 
                 bool left_button_bf = false;
-                app->emulate_disabled_for_loaded = true;
+                app->app_flags.emulate_disabled_for_loaded = true;
 
                 // Store reference to history item's flipper format for saving
                 FlipperFormat* ff =
@@ -1329,10 +1332,10 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 
                     if(have_proto) {
                         const char* protocol_name = furi_string_get_cstr(proto_str);
-                        app->emulate_disabled_for_loaded =
+                        app->app_flags.emulate_disabled_for_loaded =
                             !protopirate_protocol_catalog_can_tx(protocol_name);
                     } else {
-                        app->emulate_disabled_for_loaded = true;
+                        app->app_flags.emulate_disabled_for_loaded = true;
                     }
                     furi_string_free(proto_str);
                     if(offers_bf) {
@@ -1356,10 +1359,9 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                         }
                     }
                 }
-
 #ifdef ENABLE_EMULATE_FEATURE
-                if(!left_button_bf && app->emulate_feature_enabled &&
-                   !app->emulate_disabled_for_loaded) {
+                if(!left_button_bf && app->option_flags.emulate_feature_enabled &&
+                   !app->app_flags.emulate_disabled_for_loaded) {
                     widget_add_button_element(
                         app->widget,
                         GuiButtonTypeLeft,
@@ -1368,7 +1370,6 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                         app);
                 }
 #endif
-
                 scene_manager_set_scene_state(
                     app->scene_manager,
                     ProtoPirateSceneSubDecode,

@@ -60,12 +60,12 @@ static void host_storage_delete_temp(void) {
 static void protopirate_emulate_apply_pending_nav(ProtoPirateApp* app) {
     furi_check(app);
 
-    const uint8_t nav = app->emulate_nav_pending;
+    const uint8_t nav = app->app_flags.plugin_nav_pending;
     if(nav == EMULATE_NAV_NONE) {
         return;
     }
 
-    app->emulate_nav_pending = EMULATE_NAV_NONE;
+    app->app_flags.plugin_nav_pending = EMULATE_NAV_NONE;
 
     if(nav == EMULATE_NAV_POP) {
         scene_manager_previous_scene(app->scene_manager);
@@ -162,7 +162,7 @@ void protopirate_emulate_context_release(ProtoPirateApp* app) {
 void protopirate_scene_emulate_on_enter(void* context) {
     ProtoPirateApp* app = context;
 
-    app->emulate_nav_pending = EMULATE_NAV_NONE;
+    app->app_flags.plugin_nav_pending = EMULATE_NAV_NONE;
 
     if(!emulate_plugin_load(app)) {
         notification_message(app->notifications, &sequence_error);

@@ -179,7 +179,7 @@ static bool about_input_callback(InputEvent* event, void* context) {
 
 #ifdef ENABLE_EMULATE_FEATURE
 static void about_show_emulate_toggle_popup(ProtoPirateApp* app) {
-    const bool now_enabled = app->emulate_feature_enabled;
+    const bool now_enabled = app->option_flags.emulate_feature_enabled;
 
     DialogMessage* message = dialog_message_alloc();
     dialog_message_set_buttons(message, NULL, "OK", NULL);
@@ -243,17 +243,19 @@ bool plugin_protopirate_scene_about_on_event(void* context, SceneManagerEvent ev
     else if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == ProtoPirateCustomEventAboutToggleEmulate) {
             //Toggle Emulate on
-            app->emulate_feature_enabled = !app->emulate_feature_enabled;
+            app->option_flags.emulate_feature_enabled = !app->option_flags.emulate_feature_enabled;
 
             ProtoPirateSettings settings;
             g_about_scene_host_api->settings_load(&settings);
 
-            settings.emulate_feature_enabled = app->emulate_feature_enabled;
+            settings.option_flags.emulate_feature_enabled =
+                app->option_flags.emulate_feature_enabled;
             g_about_scene_host_api->settings_save(&settings);
 
             notification_message(
                 app->notifications,
-                app->emulate_feature_enabled ? &sequence_success : &sequence_semi_success);
+                app->option_flags.emulate_feature_enabled ? &sequence_success :
+                                                            &sequence_semi_success);
 
             about_show_emulate_toggle_popup(app);
             consumed = true;

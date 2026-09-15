@@ -72,6 +72,17 @@ typedef struct ProtoPirateTxRx {
     uint16_t idx_menu_chosen;
 } ProtoPirateTxRx;
 
+typedef union ProtoPirateAppFlags {
+    struct {
+        uint8_t emulate_disabled_for_loaded  : 1;
+        uint8_t radio_initialized            : 1;
+        uint8_t deferred_storage_in_progress : 1;
+        uint8_t plugin_nav_pending           : 2;
+        uint8_t reserved                     : 3;
+    };
+    uint8_t data;
+} ProtoPirateAppFlags;
+
 typedef struct ProtoPirateConfigPlugin ProtoPirateConfigPlugin;
 struct ProtoPirateApp {
     Gui* gui;
@@ -91,14 +102,8 @@ struct ProtoPirateApp {
     SubGhzSetting* setting;
     ProtoPirateLock lock;
     FuriString* loaded_file_path;
-    uint8_t deferred_storage_in_progress : 1;
-    uint8_t auto_save                    : 1;
-    uint8_t check_saved                  : 1;
-    uint8_t sound                        : 1;
-    uint8_t datetime_filenames           : 1;
-    uint8_t radio_initialized            : 1;
-    uint8_t emulate_disabled_for_loaded  : 1;
-    uint8_t emulate_feature_enabled      : 1;
+    ProtoPirateOptionFlags option_flags;
+    ProtoPirateAppFlags app_flags;
     uint32_t start_tx_time;
     uint8_t tx_power;
     char* save_filename;
@@ -110,7 +115,6 @@ struct ProtoPirateApp {
 #define EMULATE_NAV_POP      1U
 #define EMULATE_NAV_STOP_APP 2U
     const ProtoPirateEmulatePlugin* emulate_plugin;
-    uint8_t emulate_nav_pending;
 #endif
     const ProtoPirateConfigPlugin* config_plugin;
     const ProtoPirateSavedInfoPlugin* saved_info_plugin;
@@ -124,7 +128,6 @@ struct ProtoPirateApp {
 #define TOOL_SCENE_NAV_POP             1U
 #define TOOL_SCENE_NAV_NEXT            2U
 #define TOOL_SCENE_NAV_SEARCH_PREVIOUS 3U
-    uint8_t tool_scene_nav_pending;
     uint32_t tool_scene_nav_target;
 
     ProtoPirateCarModel* selected_model;
