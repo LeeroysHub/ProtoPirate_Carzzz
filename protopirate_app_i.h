@@ -107,7 +107,6 @@ struct ProtoPirateApp {
     uint32_t start_tx_time;
     uint8_t tx_power;
     char* save_filename;
-    FuriString* save_protocol;
     uint16_t save_history_idx;
     PluginManager* plugin_manager;
 #ifdef ENABLE_EMULATE_FEATURE

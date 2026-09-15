@@ -334,8 +334,6 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                 furi_string_free(auto_path);
 
                 // Store context for when text input confirms
-                if(app->save_protocol) furi_string_free(app->save_protocol);
-                app->save_protocol = protocol; // transfer ownership
                 app->save_history_idx = app->txrx->idx_menu_chosen;
 
                 // Configure and show text input
@@ -375,12 +373,6 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                     FURI_LOG_E(TAG, "Save failed");
                 }
                 furi_string_free(save_path);
-            }
-
-            // Clean up save protocol string
-            if(app->save_protocol) {
-                furi_string_free(app->save_protocol);
-                app->save_protocol = NULL;
             }
 
             // Return to the receiver info widget
