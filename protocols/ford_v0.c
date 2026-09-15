@@ -18,9 +18,9 @@ static const SubGhzBlockConst subghz_protocol_ford_v0_const = {
     .min_count_bit_for_found = 64,
 };
 
-#define FORD_V0_PREAMBLE_PAIRS  4
+#define FORD_V0_PREAMBLE_PAIRS  6
 #define FORD_V0_GAP_US          3500
-#define FORD_V0_TOTAL_BURSTS    6
+#define FORD_V0_TOTAL_BURSTS    3
 #define FORD_V0_UPLOAD_CAPACITY (((FORD_V0_TOTAL_BURSTS - 1U) * 169U) + 168U)
 _Static_assert(
     FORD_V0_UPLOAD_CAPACITY <= PP_SHARED_UPLOAD_CAPACITY,
