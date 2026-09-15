@@ -91,7 +91,6 @@ struct ProtoPirateApp {
     uint32_t start_tx_time;
     uint8_t tx_power;
     char save_filename[64];
-    FuriString* save_protocol;
     uint16_t save_history_idx;
     bool save_from_saved_info;
     bool emulate_disabled_for_loaded;

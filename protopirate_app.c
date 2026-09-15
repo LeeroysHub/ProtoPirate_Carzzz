@@ -139,7 +139,6 @@ ProtoPirateApp* protopirate_app_alloc() {
     view_dispatcher_add_view(
         app->view_dispatcher, ProtoPirateViewSubmenu, submenu_get_view(app->submenu));
 
-    app->save_protocol = NULL;
     app->save_from_saved_info = false;
     app->save_history_idx = 0;
     app->emulate_disabled_for_loaded = false;
@@ -341,11 +340,6 @@ void protopirate_app_free(ProtoPirateApp* app) {
         FURI_LOG_D(TAG, "Freeing file_path");
         furi_string_free(app->file_path);
         app->file_path = NULL;
-    }
-
-    if(app->save_protocol) {
-        furi_string_free(app->save_protocol);
-        app->save_protocol = NULL;
     }
 
     protopirate_psa_bf_context_release(app);
