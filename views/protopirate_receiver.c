@@ -257,8 +257,7 @@ void protopirate_view_receiver_draw(Canvas* canvas, ProtoPirateReceiverModel* mo
             elements_scrollbar_pos(canvas, 128, 0, 49, scroll_pos, scrollable_total);
         }
     } else {
-        canvas_draw_icon(
-            canvas, 0, 0, model->external_radio ? &I_Fishing_123x52 : &I_Scanning_123x52);
+        canvas_draw_icon(canvas, 0, 0, &I_Scanning_96x52);
         canvas_set_font(canvas, FontPrimary);
         canvas_draw_str(canvas, 63, 46, "Scanning...");
         canvas_set_font(canvas, FontSecondary);
