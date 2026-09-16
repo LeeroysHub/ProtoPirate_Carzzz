@@ -2,7 +2,12 @@
 
 #include "helpers/protopirate_models.h"
 #include <lib/flipper_application/flipper_application.h>
+
+#ifdef USE_BUILT_IN_VARIABLE_ITEM_LIST 
 #include "helpers/variable_item_list.h"
+#else
+#include "gui/modules/variable_item_list.h"
+#endif
 
 #define PROTOPIRATE_CONFIG_PLUGIN_APP_ID      "protopirate_config_plugin"
 #define PROTOPIRATE_CONFIG_PLUGIN_API_VERSION 2U

@@ -427,11 +427,12 @@ App(
     apptype=FlipperAppType.PLUGIN,
     entry_point="protopirate_config_plugin_ep",
     requires=["proto_pirate"],
+    #cdefines=["USE_BUILT_IN_VARIABLE_ITEM_LIST"],
     sources=[
         "helpers/protopirate_protocol_plugin_host.c",
         "helpers/protopirate_models.c",
         "helpers/protopirate_txrx.c",
-        "helpers/variable_item_list.c",
+        #"helpers/variable_item_list.c",
         "protocols/protocol_items.c",
         "scenes/plugins/protopirate_config_plugin.c",
     ],
