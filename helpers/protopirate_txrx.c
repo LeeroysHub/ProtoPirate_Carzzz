@@ -105,11 +105,11 @@ void protopirate_begin(ProtoPirateApp* app, uint8_t* preset_data) {
 uint32_t protopirate_rx(ProtoPirateApp* app, uint32_t frequency) {
     furi_check(app);
     furi_check(app->txrx);
-    if(!app->radio_initialized || !app->txrx->radio_device || !app->txrx->worker) {
+    if(!app->app_flags.radio_initialized || !app->txrx->radio_device || !app->txrx->worker) {
         FURI_LOG_E(
             TAG,
             "RX start rejected (radio_initialized=%d, radio=%p, worker=%p)",
-            app->radio_initialized,
+            app->app_flags.radio_initialized,
             app->txrx->radio_device,
             app->txrx->worker);
         app->txrx->txrx_state = ProtoPirateTxRxStateIDLE;
@@ -204,7 +204,7 @@ void protopirate_release_shared_radio_state(ProtoPirateApp* app) {
 }
 
 void protopirate_rx_stack_suspend_for_tx(ProtoPirateApp* app) {
-    if(!app || !app->radio_initialized) {
+    if(!app || !app->app_flags.radio_initialized) {
         return;
     }
 
@@ -227,7 +227,7 @@ void protopirate_rx_stack_suspend_for_tx(ProtoPirateApp* app) {
 }
 
 void protopirate_rx_stack_resume_after_tx(ProtoPirateApp* app) {
-    if(!app || !app->radio_initialized || !app->txrx->environment) {
+    if(!app || !app->app_flags.radio_initialized || !app->txrx->environment) {
         return;
     }
 

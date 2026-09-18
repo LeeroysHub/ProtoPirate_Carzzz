@@ -139,9 +139,8 @@ ProtoPirateApp* protopirate_app_alloc() {
     view_dispatcher_add_view(
         app->view_dispatcher, ProtoPirateViewSubmenu, submenu_get_view(app->submenu));
 
-    app->save_from_saved_info = false;
     app->save_history_idx = 0;
-    app->emulate_disabled_for_loaded = false;
+    app->app_flags.data = 0;
     memset(app->save_filename, 0, sizeof(app->save_filename));
 
     // File Browser path
@@ -246,9 +245,6 @@ ProtoPirateApp* protopirate_app_alloc() {
     app->txrx->hopper_idx_frequency = 0;
     app->txrx->hopper_timeout = 0;
     app->txrx->idx_menu_chosen = 0;
-
-    app->radio_initialized = false;
-
     return app;
 }
 
@@ -256,7 +252,7 @@ void protopirate_app_free(ProtoPirateApp* app) {
     furi_check(app);
 
     FURI_LOG_I(TAG, "=== protopirate_app_free called ===");
-    FURI_LOG_D(TAG, "State: radio_initialized=%d", app->radio_initialized);
+    FURI_LOG_D(TAG, "State: radio_initialized=%d", app->app_flags.radio_initialized);
 
     // Save settings before exiting
     ProtoPirateSettings settings;

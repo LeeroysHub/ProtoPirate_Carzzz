@@ -179,14 +179,14 @@ static bool emulate_hitag2_recovered_yes(FlipperFormat* flipper_format) {
 }
 
 static void emulate_request_nav_pop(ProtoPirateApp* app) {
-    app->emulate_nav_pending = EMULATE_NAV_POP;
+    app->app_flags.plugin_nav_pending = EMULATE_NAV_POP;
 }
 
 static void emulate_request_nav_after_exit(ProtoPirateApp* app) {
     if(scene_manager_has_previous_scene(app->scene_manager, ProtoPirateSceneStart)) {
-        app->emulate_nav_pending = EMULATE_NAV_POP;
+        app->app_flags.plugin_nav_pending = EMULATE_NAV_POP;
     } else {
-        app->emulate_nav_pending = EMULATE_NAV_STOP_APP;
+        app->app_flags.plugin_nav_pending = EMULATE_NAV_STOP_APP;
     }
 }
 
@@ -325,7 +325,7 @@ static const uint8_t tx_power_value[TX_PRESET_VALUES_COUNT] = {
 
 static bool emulate_radio_ready(ProtoPirateApp* app) {
     furi_check(app);
-    return app->radio_initialized && app->txrx && app->txrx->radio_device &&
+    return app->app_flags.radio_initialized && app->txrx && app->txrx->radio_device &&
            app->txrx->environment;
 }
 
@@ -1501,8 +1501,8 @@ static void plugin_on_exit(void* context) {
 
     if(g_host_api && g_host_api->storage_delete_temp) g_host_api->storage_delete_temp();
 
-    if(app->radio_initialized && app->txrx && app->txrx->environment && app->txrx->preset &&
-       app->txrx->preset->data && app->txrx->preset->name && g_host_api &&
+    if(app->app_flags.radio_initialized && app->txrx && app->txrx->environment &&
+       app->txrx->preset && app->txrx->preset->data && app->txrx->preset->name && g_host_api &&
        g_host_api->apply_protocol_registry_for_context) {
         const char* preset_name = furi_string_get_cstr(app->txrx->preset->name);
         if(preset_name) {

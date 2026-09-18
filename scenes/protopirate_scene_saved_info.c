@@ -15,7 +15,8 @@ static void protopirate_scene_saved_info_widget_callback(
 
     if((result == GuiButtonTypeLeft) && (type == InputTypeShort)) {
 #ifdef ENABLE_EMULATE_FEATURE
-        if(app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+        if(app->option_flags.emulate_feature_enabled &&
+           !app->app_flags.emulate_disabled_for_loaded) {
             view_dispatcher_send_custom_event(
                 app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
         }
@@ -108,13 +109,14 @@ void protopirate_scene_saved_info_on_enter(void* context) {
 
     // Read fields
     uint32_t temp_data = 0;
-    app->emulate_disabled_for_loaded = true;
+    app->app_flags.emulate_disabled_for_loaded = true;
 
     flipper_format_rewind(ff);
     if(flipper_format_read_string(ff, FF_PROTOCOL, temp_str)) {
         const char* protocol_name = furi_string_get_cstr(temp_str);
         furi_string_cat_printf(info_str, "Protocol: %s\n", protocol_name);
-        app->emulate_disabled_for_loaded = !protopirate_protocol_catalog_can_tx(protocol_name);
+        app->app_flags.emulate_disabled_for_loaded =
+            !protopirate_protocol_catalog_can_tx(protocol_name);
     }
 
     flipper_format_rewind(ff);
@@ -212,7 +214,8 @@ cleanup:
         widget_add_text_scroll_element(app->widget, 0, 0, 128, 50, furi_string_get_cstr(info_str));
 
 #ifdef ENABLE_EMULATE_FEATURE
-        if(app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+        if(app->option_flags.emulate_feature_enabled &&
+           !app->app_flags.emulate_disabled_for_loaded) {
             widget_add_button_element(
                 app->widget,
                 GuiButtonTypeLeft,
@@ -275,7 +278,8 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
         }
 #ifdef ENABLE_EMULATE_FEATURE
         if(event.event == ProtoPirateCustomEventSavedInfoEmulate &&
-           app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
+           app->option_flags.emulate_feature_enabled &&
+           !app->app_flags.emulate_disabled_for_loaded) {
             FURI_LOG_I(TAG, "Emulate requested");
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);
             consumed = true;

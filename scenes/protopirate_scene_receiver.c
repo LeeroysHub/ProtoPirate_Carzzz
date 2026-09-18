@@ -25,7 +25,7 @@ static void protopirate_scene_receiver_update_statusbar(void* context) {
         app, frequency_str, sizeof(frequency_str), modulation_str, sizeof(modulation_str));
 
     bool is_external = false;
-    if(app->radio_initialized && app->txrx->radio_device) {
+    if(app->app_flags.radio_initialized && app->txrx->radio_device) {
         is_external = radio_device_loader_is_external(app->txrx->radio_device);
     }
 
@@ -246,7 +246,7 @@ static bool protopirate_scene_receiver_bind_rx_stack(ProtoPirateApp* app) {
 
 static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
     furi_check(app);
-    if(!app->radio_initialized) {
+    if(!app->app_flags.radio_initialized) {
         return;
     }
 
@@ -288,7 +288,7 @@ void protopirate_scene_receiver_on_enter(void* context) {
         protopirate_history_release_scratch(app->txrx->history);
     }
 
-    if(!app->radio_initialized && !protopirate_radio_init(app)) {
+    if(!app->app_flags.radio_initialized && !protopirate_radio_init(app)) {
         FURI_LOG_E(TAG, "Failed to initialize radio for receiver scene");
         notification_message(app->notifications, &sequence_error);
         scene_manager_previous_scene(app->scene_manager);
@@ -440,7 +440,7 @@ bool protopirate_scene_receiver_on_event(void* context, SceneManagerEvent event)
             }
         }
 
-        if(app->radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx &&
+        if(app->app_flags.radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx &&
            app->txrx->radio_device) {
             float rssi = subghz_devices_get_rssi(app->txrx->radio_device);
             protopirate_view_receiver_set_rssi(app->protopirate_receiver, rssi);
@@ -474,7 +474,7 @@ void protopirate_scene_receiver_on_exit(void* context) {
     const bool leaving_for_subscene =
         (scene_manager_get_scene_state(app->scene_manager, ProtoPirateSceneReceiver) == 1);
 
-    if(app->radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx) {
+    if(app->app_flags.radio_initialized && app->txrx->txrx_state == ProtoPirateTxRxStateRx) {
         protopirate_rx_end(app);
     }
 
