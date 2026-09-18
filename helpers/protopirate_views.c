@@ -58,8 +58,7 @@ bool protopirate_ensure_receiver_view(ProtoPirateApp* app) {
         return true;
     }
 
-    app->protopirate_receiver = protopirate_view_receiver_alloc(
-        APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsAutoSave));
+    app->protopirate_receiver = protopirate_view_receiver_alloc(app->option_flags.auto_save);
 
     if(!app->protopirate_receiver) {
         return false;

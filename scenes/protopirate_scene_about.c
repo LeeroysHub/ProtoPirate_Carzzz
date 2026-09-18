@@ -171,8 +171,7 @@ static bool about_input_callback(InputEvent* event, void* context) {
 
 #ifdef ENABLE_EMULATE_FEATURE
 static void about_show_emulate_toggle_popup(ProtoPirateApp* app) {
-    const bool now_enabled =
-        APP_OPTION_ENABLED(app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled);
+    const bool now_enabled = app->option_flags.emulate_feature_enabled;
 
     DialogMessage* message = dialog_message_alloc();
     dialog_message_set_buttons(message, NULL, "OK", NULL);
@@ -236,27 +235,19 @@ bool protopirate_scene_about_on_event(void* context, SceneManagerEvent event) {
     else if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == ProtoPirateCustomEventAboutToggleEmulate) {
             //Toggle Emulate on
-            SET_APP_OPTION_ENABLED(
-                app->option_flags,
-                ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled,
-                !APP_OPTION_ENABLED(
-                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled))
+            app->option_flags.emulate_feature_enabled = !app->option_flags.emulate_feature_enabled;
 
             ProtoPirateSettings settings;
             protopirate_settings_load(&settings);
-            SET_APP_OPTION_ENABLED(
-                settings.option_flags,
-                ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled,
-                APP_OPTION_ENABLED(
-                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled));
+
+            settings.option_flags.emulate_feature_enabled =
+                app->option_flags.emulate_feature_enabled;
             protopirate_settings_save(&settings);
 
             notification_message(
                 app->notifications,
-                APP_OPTION_ENABLED(
-                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) ?
-                    &sequence_success :
-                    &sequence_semi_success);
+                app->option_flags.emulate_feature_enabled ? &sequence_success :
+                                                            &sequence_semi_success);
 
             about_show_emulate_toggle_popup(app);
             consumed = true;

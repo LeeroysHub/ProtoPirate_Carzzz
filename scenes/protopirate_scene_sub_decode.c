@@ -628,8 +628,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 
             if(ff) {
                 FuriString* file_name_str = furi_string_alloc();
-                if(APP_OPTION_ENABLED(
-                       app->option_flags, ProtoPirateSettingsOptionFlagsDateTimeFileNames)) {
+                if(app->option_flags.datetime_filenames) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -661,8 +660,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 if(protopirate_storage_get_next_filename(
                        furi_string_get_cstr(file_name_str),
                        auto_path,
-                       APP_OPTION_ENABLED(
-                           app->option_flags, ProtoPirateSettingsOptionFlagsDateTimeFileNames))) {
+                       app->option_flags.datetime_filenames)) {
                     // Extract just the filename without folder and extension
                     const char* full = furi_string_get_cstr(auto_path);
                     const char* slash = strrchr(full, '/');
@@ -752,9 +750,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
 #ifdef ENABLE_EMULATE_FEATURE
         else if(
             event.event == ProtoPirateCustomEventSubDecodeEmulate &&
-            APP_OPTION_ENABLED(
-                app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
-            !app->emulate_disabled_for_loaded) {
+            app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
             FlipperFormat* ff =
                 protopirate_history_get_raw_data(ctx->history, ctx->selected_history_index);
             if(ff && protopirate_storage_save_capture_to_path(ff, PROTOPIRATE_TEMP_FILE)) {
@@ -1350,9 +1346,7 @@ bool protopirate_scene_sub_decode_on_event(void* context, SceneManagerEvent even
                 }
 
 #ifdef ENABLE_EMULATE_FEATURE
-                if(!left_button_used &&
-                   APP_OPTION_ENABLED(
-                       app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
+                if(!left_button_used && app->option_flags.emulate_feature_enabled &&
                    !app->emulate_disabled_for_loaded) {
                     widget_add_button_element(
                         app->widget,

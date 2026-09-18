@@ -209,8 +209,8 @@ ProtoPirateApp* protopirate_app_alloc() {
         "Settings: freq=%lu, preset=%s, auto_save=%d, hopping=%d",
         frequency,
         preset_name,
-        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsAutoSave),
-        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled));
+        app->option_flags.auto_save,
+        app->option_flags.hopping_enabled);
 
     config_plugin_load(app);
     app->car_models_count = app->config_plugin->car_model_get_count();
@@ -241,10 +241,8 @@ ProtoPirateApp* protopirate_app_alloc() {
     config_plugin_unload(app);
 
     // Apply hopping state from settings
-    app->txrx->hopper_state =
-        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled) ?
-            ProtoPirateHopperStateRunning :
-            ProtoPirateHopperStateOFF;
+    app->txrx->hopper_state = app->option_flags.hopping_enabled ? ProtoPirateHopperStateRunning :
+                                                                  ProtoPirateHopperStateOFF;
     app->txrx->hopper_idx_frequency = 0;
     app->txrx->hopper_timeout = 0;
     app->txrx->idx_menu_chosen = 0;
@@ -313,10 +311,9 @@ void protopirate_app_free(ProtoPirateApp* app) {
         "Saving settings: freq=%lu, preset=%u, auto_save=%d, hopping=%d, emulate=%d",
         settings.frequency,
         settings.preset_index,
-        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsAutoSave),
-        APP_OPTION_ENABLED(settings.option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled),
-        APP_OPTION_ENABLED(
-            settings.option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled));
+        app->option_flags.auto_save,
+        app->option_flags.hopping_enabled,
+        app->option_flags.emulate_feature_enabled);
 
     protopirate_settings_save(&settings);
 
@@ -391,9 +388,7 @@ int32_t protopirate_app(char* p) {
     //We now jump straight to emulate scene from Browser. If the user wanted the key to look at, just click back.
     if(load_saved) {
 #ifdef ENABLE_EMULATE_FEATURE
-        if(APP_OPTION_ENABLED(
-               protopirate_app->option_flags,
-               ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled)) {
+        if(protopirate_app->option_flags.emulate_feature_enabled) {
             view_dispatcher_send_custom_event(
                 protopirate_app->view_dispatcher, ProtoPirateCustomEventSavedInfoEmulate);
             notification_message(protopirate_app->notifications, &sequence_success);

@@ -142,9 +142,7 @@ static void protopirate_receiver_info_build_normal_widget(ProtoPirateApp* app) {
             app);
     } else
 #ifdef ENABLE_EMULATE_FEATURE
-        if(APP_OPTION_ENABLED(
-               app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
-           !app->emulate_disabled_for_loaded) {
+        if(app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
         widget_add_button_element(
             app->widget,
             GuiButtonTypeLeft,
@@ -193,10 +191,7 @@ static void protopirate_scene_receiver_info_widget_callback(
                     app->view_dispatcher, ProtoPirateCustomEventReceiverInfoBruteforceStart);
             }
 #ifdef ENABLE_EMULATE_FEATURE
-            else if(
-                APP_OPTION_ENABLED(
-                    app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
-                !app->emulate_disabled_for_loaded) {
+            else if(app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
                 view_dispatcher_send_custom_event(
                     app->view_dispatcher, ProtoPirateCustomEventReceiverInfoEmulate);
             }
@@ -288,8 +283,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
             FuriString* filename_str = furi_string_alloc();
 
             if(ff) {
-                if(APP_OPTION_ENABLED(
-                       app->option_flags, ProtoPirateSettingsOptionFlagsDateTimeFileNames)) {
+                if(app->option_flags.datetime_filenames) {
                     //Get the date and time to save.
                     DateTime date_time;
                     furi_hal_rtc_get_datetime(&date_time);
@@ -324,8 +318,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                 if(protopirate_storage_get_next_filename(
                        furi_string_get_cstr(filename_str),
                        auto_path,
-                       (APP_OPTION_ENABLED(
-                           app->option_flags, ProtoPirateSettingsOptionFlagsDateTimeFileNames)))) {
+                       app->option_flags.datetime_filenames)) {
                     // Extract just the filename without folder and extension
                     const char* full = furi_string_get_cstr(auto_path);
                     const char* slash = strrchr(full, '/');
@@ -395,9 +388,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
 
 #ifdef ENABLE_EMULATE_FEATURE
         if(event.event == ProtoPirateCustomEventReceiverInfoEmulate &&
-           APP_OPTION_ENABLED(
-               app->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled) &&
-           !app->emulate_disabled_for_loaded) {
+           app->option_flags.emulate_feature_enabled && !app->emulate_disabled_for_loaded) {
             FuriString* hist_path = furi_string_alloc();
             if(protopirate_history_get_capture_path(
                    app->txrx->history, app->txrx->idx_menu_chosen, hist_path)) {

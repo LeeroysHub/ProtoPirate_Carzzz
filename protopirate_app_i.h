@@ -86,7 +86,7 @@ struct ProtoPirateApp {
     SubGhzSetting* setting;
     ProtoPirateLock lock;
     FuriString* loaded_file_path;
-    uint8_t option_flags;
+    ProtoPirateOptionFlags option_flags;
     bool radio_initialized;
     uint32_t start_tx_time;
     uint8_t tx_power;

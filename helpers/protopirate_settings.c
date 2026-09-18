@@ -16,7 +16,7 @@ void protopirate_settings_set_defaults(ProtoPirateSettings* settings) {
     settings->frequency = 433920000;
     settings->preset_index = 0;
     settings->tx_power = 0;
-    settings->option_flags = 0;
+    settings->option_flags.data = 0;
     settings->car_model_index = 0;
 }
 
@@ -78,7 +78,7 @@ void protopirate_settings_load(ProtoPirateSettings* settings) {
             FURI_LOG_W(TAG, "Failed to read Option Flags, using default");
             option_flags_temp = 0;
         }
-        settings->option_flags = option_flags_temp;
+        settings->option_flags.data = option_flags_temp;
 
         // Read tx-power
         uint32_t tx_power_temp = 0;
@@ -104,13 +104,11 @@ void protopirate_settings_load(ProtoPirateSettings* settings) {
             "Settings loaded: freq=%lu, preset=%u, auto_save=%d, hopping=%d, emulate=%d, check_saved=%d, sound = %d",
             settings->frequency,
             settings->preset_index,
-            APP_OPTION_ENABLED(settings->option_flags, ProtoPirateSettingsOptionFlagsAutoSave),
-            APP_OPTION_ENABLED(
-                settings->option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled),
-            APP_OPTION_ENABLED(
-                settings->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled),
-            APP_OPTION_ENABLED(settings->option_flags, ProtoPirateSettingsOptionFlagsCheckSaved),
-            APP_OPTION_ENABLED(settings->option_flags, ProtoPirateSettingsOptionFlagsSound));
+            settings->option_flags.auto_save,
+            settings->option_flags.hopping_enabled,
+            settings->option_flags.emulate_feature_enabled,
+            settings->option_flags.check_saved,
+            settings->option_flags.sound);
 
     } while(false);
 
@@ -153,7 +151,7 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
             break;
         }
 
-        uint32_t option_flags_temp = settings->option_flags;
+        uint32_t option_flags_temp = settings->option_flags.data;
         if(!flipper_format_write_uint32(ff, "OptionFlags", &option_flags_temp, 1)) {
             FURI_LOG_E(TAG, "Failed to write option flags");
             break;
@@ -177,13 +175,11 @@ void protopirate_settings_save(ProtoPirateSettings* settings) {
             "Settings saved: freq=%lu, preset=%u, auto_save=%d, hopping=%d, emulate=%d, check_saved=%d, sound=%d",
             settings->frequency,
             settings->preset_index,
-            APP_OPTION_ENABLED(settings->option_flags, ProtoPirateSettingsOptionFlagsAutoSave),
-            APP_OPTION_ENABLED(
-                settings->option_flags, ProtoPirateSettingsOptionFlagsHoppingEnabled),
-            APP_OPTION_ENABLED(
-                settings->option_flags, ProtoPirateSettingsOptionFlagsEmulateFeatureEnabled),
-            APP_OPTION_ENABLED(settings->option_flags, ProtoPirateSettingsOptionFlagsCheckSaved),
-            APP_OPTION_ENABLED(settings->option_flags, ProtoPirateSettingsOptionFlagsSound));
+            settings->option_flags.auto_save,
+            settings->option_flags.hopping_enabled,
+            settings->option_flags.emulate_feature_enabled,
+            settings->option_flags.check_saved,
+            settings->option_flags.sound);
 
     } while(false);
 
