@@ -32,13 +32,16 @@ bool protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent even
     //I can't set the next scene from inside the plugin, or it causes crazy crashes.
     if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == ProtoPirateCustomEventSavedInfoEmulateDelayedStart) {
-//Start Emulate Scene.
 #ifdef ENABLE_EMULATE_FEATURE
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneEmulate);
-            return true;
 #endif
+            return true;
         } else if(event.event == ProtoPirateCustomEventSavedInfoExit) {
-            scene_manager_previous_scene(((ProtoPirateApp*)context)->scene_manager);
+            scene_manager_previous_scene(app->scene_manager);
+            return true;
+        } else if(event.event == ProtoPirateCustomEventSavedStopApp) {
+            scene_manager_stop(app->scene_manager);
+            view_dispatcher_stop(app->view_dispatcher);
             return true;
         }
     }

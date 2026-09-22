@@ -140,6 +140,14 @@ static void protopirate_app_tick_event_callback(void* context) {
     scene_manager_handle_tick_event(app->scene_manager);
 }
 
+static bool process_favorite_launch(char** args) {
+    if(*args && strlen(*args) > 4 && strncmp(*args, "fav/", 4) == 0) {
+        *args += 3;
+        return true;
+    }
+    return false;
+}
+
 ProtoPirateApp* protopirate_app_alloc() {
     protopirate_storage_purge_temp_history_at_startup();
     ProtoPirateApp* app = malloc(sizeof(ProtoPirateApp));
@@ -441,26 +449,25 @@ int32_t protopirate_app(char* p) {
     }
 
     // Handle Command line PSF that may have been passed to us
-    bool load_saved = (p && strlen(p));
-    if(load_saved) protopirate_app->loaded_file_path = furi_string_alloc_set(p);
+    protopirate_app->app_flags.favorite_launch = process_favorite_launch(&p);
+    protopirate_app->app_flags.saved_launch = (p && strlen(p));
+    if(protopirate_app->app_flags.saved_launch)
+        protopirate_app->loaded_file_path = furi_string_alloc_set(p);
 
-//We now jump straight to emulate scene from Browser.
+        //Beep if we are going to emulate.
 #ifdef ENABLE_EMULATE_FEATURE
-    scene_manager_next_scene(
-        protopirate_app->scene_manager,
-        (load_saved) ?
-            ((protopirate_app->option_flags.emulate_feature_enabled) ? ProtoPirateSceneEmulate :
-                                                                       ProtoPirateSceneSavedInfo) :
-            ProtoPirateSceneStart);
-#else
-    scene_manager_next_scene(
-        protopirate_app->scene_manager,
-        (load_saved) ? ProtoPirateSceneSavedInfo : ProtoPirateSceneStart);
-#endif
-
-    //Pop up the beep if we are startng emulate.
-    if(load_saved && protopirate_app->option_flags.emulate_feature_enabled) {
+    if(protopirate_app->app_flags.saved_launch &&
+       protopirate_app->option_flags.emulate_feature_enabled &&
+       protopirate_app->app_flags.favorite_launch) {
+        scene_manager_next_scene(protopirate_app->scene_manager, ProtoPirateSceneEmulate);
         notification_message(protopirate_app->notifications, &sequence_success);
+    } else
+#endif
+    {
+        scene_manager_next_scene(
+            protopirate_app->scene_manager,
+            (protopirate_app->app_flags.saved_launch) ? ProtoPirateSceneSavedInfo :
+                                                        ProtoPirateSceneStart);
     }
 
     //Run the App

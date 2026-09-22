@@ -77,8 +77,10 @@ typedef union ProtoPirateAppFlags {
         uint8_t emulate_disabled_for_loaded  : 1;
         uint8_t radio_initialized            : 1;
         uint8_t deferred_storage_in_progress : 1;
+        uint8_t favorite_launch              : 1;
+        uint8_t saved_launch                 : 1;
         uint8_t plugin_nav_pending           : 2;
-        uint8_t reserved                     : 3;
+        uint8_t reserved                     : 1;
     };
     uint8_t data;
 } ProtoPirateAppFlags;

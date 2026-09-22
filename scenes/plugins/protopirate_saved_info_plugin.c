@@ -47,8 +47,12 @@ void plugin_protopirate_scene_saved_info_on_enter(void* context) {
 
     if(!g_saved_info_scene_host_api->ensure_widget(app)) {
         notification_message(app->notifications, &sequence_error);
-        view_dispatcher_send_custom_event(
-            app->view_dispatcher, ProtoPirateCustomEventSavedInfoExit);
+        if(app->app_flags.saved_launch) {
+            view_dispatcher_send_custom_event(
+                app->view_dispatcher, ProtoPirateCustomEventSavedStopApp);
+        } else
+            view_dispatcher_send_custom_event(
+                app->view_dispatcher, ProtoPirateCustomEventSavedInfoExit);
         return;
     }
 
@@ -278,17 +282,22 @@ switch_view:
 bool plugin_protopirate_scene_saved_info_on_event(void* context, SceneManagerEvent event) {
     ProtoPirateApp* app = context;
     bool consumed = false;
-
-    //load_emu* = false;
     if(event.type == SceneManagerEventTypeTick) {
         if(app->psa_bf_plugin && app->psa_bf_plugin->is_running(app)) {
             app->psa_bf_plugin->on_scene_event(app, ProtoPiratePsaBfContextSavedInfo, event);
             consumed = true;
         }
     } else if(event.type == SceneManagerEventTypeBack) {
-        return (
-            app->psa_bf_plugin && app->psa_bf_plugin->is_running &&
-            app->psa_bf_plugin->on_scene_event(app, ProtoPiratePsaBfContextReceiverInfo, event));
+        if(app->psa_bf_plugin && app->psa_bf_plugin->is_running &&
+           app->psa_bf_plugin->on_scene_event(app, ProtoPiratePsaBfContextReceiverInfo, event)) {
+            consumed = true;
+        } else {
+            if(app->app_flags.saved_launch) {
+                view_dispatcher_send_custom_event(
+                    app->view_dispatcher, ProtoPirateCustomEventSavedStopApp);
+                consumed = true;
+            }
+        }
     } else if(event.type == SceneManagerEventTypeCustom) {
         if(event.event == ProtoPirateCustomEventSavedInfoDelete) {
             FURI_LOG_I(TAG, "Delete requested");
@@ -310,12 +319,16 @@ bool plugin_protopirate_scene_saved_info_on_event(void* context, SceneManagerEve
 
                 //Delete if the user said yes.
                 if(dialog_result == DialogMessageButtonLeft) {
-                    notification_message(app->notifications, &sequence_semi_success);
                     g_saved_info_scene_host_api->storage_delete_file(
                         furi_string_get_cstr(app->loaded_file_path));
+                    notification_message(app->notifications, &sequence_semi_success);
 
-                    view_dispatcher_send_custom_event(
-                        app->view_dispatcher, ProtoPirateCustomEventSavedInfoExit);
+                    if(app->app_flags.saved_launch) {
+                        view_dispatcher_send_custom_event(
+                            app->view_dispatcher, ProtoPirateCustomEventSavedStopApp);
+                    } else
+                        view_dispatcher_send_custom_event(
+                            app->view_dispatcher, ProtoPirateCustomEventSavedInfoExit);
                 }
             }
             consumed = true;

@@ -183,7 +183,8 @@ static void emulate_request_nav_pop(ProtoPirateApp* app) {
 }
 
 static void emulate_request_nav_after_exit(ProtoPirateApp* app) {
-    if(scene_manager_has_previous_scene(app->scene_manager, ProtoPirateSceneStart)) {
+    if(scene_manager_has_previous_scene(app->scene_manager, ProtoPirateSceneStart) ||
+       (app->app_flags.saved_launch && !app->app_flags.favorite_launch)) {
         app->app_flags.plugin_nav_pending = EMULATE_NAV_POP;
     } else {
         app->app_flags.plugin_nav_pending = EMULATE_NAV_STOP_APP;
