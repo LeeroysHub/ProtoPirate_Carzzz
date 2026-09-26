@@ -439,6 +439,7 @@ bool protopirate_scene_receiver_on_event(void* context, SceneManagerEvent event)
 
         case ProtoPirateCustomEventViewReceiverConfig:
             scene_manager_set_scene_state(app->scene_manager, ProtoPirateSceneReceiver, 1);
+            app->app_flags.show_lock_keyboard = true;
             scene_manager_next_scene(app->scene_manager, ProtoPirateSceneReceiverConfig);
             consumed = true;
             break;

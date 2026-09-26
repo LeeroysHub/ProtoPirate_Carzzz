@@ -363,6 +363,7 @@ static void plugin_on_enter(void* context) {
     if(!protopirate_ensure_variable_item_list(app)) {
         notification_message(app->notifications, &sequence_error);
         scene_manager_previous_scene(app->scene_manager);
+        app->app_flags.show_lock_keyboard = false;
         return;
     }
 
@@ -480,10 +481,15 @@ static void plugin_on_enter(void* context) {
     variable_item_set_current_value_index(item, app->option_flags.sound);
     variable_item_set_current_value_text(item, on_off_text[app->option_flags.sound ? 1 : 0]);
 
-    variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
-    variable_item_list_set_enter_callback(
-        app->variable_item_list, protopirate_scene_receiver_config_var_list_enter_callback, app);
-
+    //Only show the Lock Keyboard Option in Receiver. Timing Tuner Doesnt respect it, and its wierd in Configuration from the Main Menu.
+    if(app->app_flags.show_lock_keyboard) {
+        variable_item_list_add(app->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
+        variable_item_list_set_enter_callback(
+            app->variable_item_list,
+            protopirate_scene_receiver_config_var_list_enter_callback,
+            app);
+        app->app_flags.show_lock_keyboard = false;
+    }
     view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewVariableItemList);
 }
 
