@@ -8,6 +8,8 @@
 
 #define TAG "PPTxRx"
 
+#define HOPPER_PAUSE_THRESHOLD -60.0f
+
 void protopirate_rx_stack_teardown_for_registry_switch(ProtoPirateApp* app) {
     furi_check(app);
     furi_check(app->txrx);
@@ -240,8 +242,11 @@ void protopirate_rx_stack_resume_after_tx(ProtoPirateApp* app) {
 bool protopirate_hopper_update(ProtoPirateApp* app) {
     furi_check(app);
 
-    if(app->key_found) {
-        app->key_found = false;
+    //If save is happening, or we just found a key, dont hop yet.
+    if(app->key_found || app->deferred_storage_in_progress) {
+        //Reset the key found, if it was that.
+        if(app->key_found) app->key_found = false;
+        app->txrx->hopper_state = ProtoPirateHopperStatePause;
         return false;
     }
 
@@ -262,7 +267,7 @@ bool protopirate_hopper_update(ProtoPirateApp* app) {
     if(app->txrx->hopper_state == ProtoPirateHopperStateRunning) {
         rssi = subghz_devices_get_rssi(app->txrx->radio_device);
 
-        if(rssi > -75.0f) {
+        if(rssi > HOPPER_PAUSE_THRESHOLD) {
             app->txrx->hopper_timeout = 20;
             app->txrx->hopper_state = ProtoPirateHopperStateRSSITimeOut;
             return false;
