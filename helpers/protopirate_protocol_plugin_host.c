@@ -47,8 +47,6 @@ static const SubGhzProtocolRegistry protopirate_empty_protocol_registry = {
 };
 
 void protopirate_unload_protocol_plugin(ProtoPirateApp* app) {
-    furi_check(app->txrx);
-
     if(app->txrx->environment) {
         subghz_environment_set_protocol_registry(
             app->txrx->environment, &protopirate_empty_protocol_registry);
@@ -69,10 +67,6 @@ static bool protopirate_ensure_protocol_registry_plugin(
     ProtoPirateApp* app,
     ProtoPirateProtocolRegistryRoute route,
     const SubGhzProtocolRegistry** registry) {
-    furi_check(app);
-    furi_check(app->txrx);
-    furi_check(registry);
-
     *registry = NULL;
 
     if(!app->txrx->environment) {
@@ -128,10 +122,6 @@ static bool protopirate_ensure_tx_protocol_plugin(
     ProtoPirateApp* app,
     const char* protocol_name,
     const SubGhzProtocolRegistry** registry) {
-    furi_check(app);
-    furi_check(app->txrx);
-    furi_check(registry);
-
     *registry = NULL;
 
     if(!app->txrx->environment) {
@@ -190,9 +180,6 @@ static bool protopirate_ensure_tx_protocol_plugin(
 #endif
 
 bool protopirate_refresh_protocol_registry(ProtoPirateApp* app, bool ensure_receiver_ready) {
-    furi_check(app);
-    furi_check(app->txrx);
-
     if(!app->txrx->environment || !app->txrx->preset) {
         return true;
     }
@@ -258,9 +245,6 @@ bool protopirate_refresh_protocol_registry(ProtoPirateApp* app, bool ensure_rece
 }
 
 static bool protopirate_ensure_receiver_allocated(ProtoPirateApp* app) {
-    furi_check(app);
-    furi_check(app->txrx);
-
     if(app->txrx->receiver) {
         return true;
     }
@@ -285,9 +269,6 @@ bool protopirate_apply_protocol_registry_for_context(
     const uint8_t* preset_data,
     size_t preset_data_size,
     const char* protocol_name) {
-    furi_check(app);
-    furi_check(app->txrx);
-
     if(!app->txrx->environment) {
         return false;
     }

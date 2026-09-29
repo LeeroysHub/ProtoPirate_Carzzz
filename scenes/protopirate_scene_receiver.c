@@ -53,8 +53,6 @@ static void protopirate_scene_receiver_callback(
     SubGhzProtocolDecoderBase* decoder_base,
     void* context) {
     UNUSED(receiver);
-    furi_check(decoder_base);
-    furi_check(context);
     ProtoPirateApp* app = context;
 
     FURI_LOG_I(TAG, "=== SIGNAL DECODED (%s) ===", decoder_base->protocol->name);
@@ -241,8 +239,6 @@ static void protopirate_scene_receiver_process_deferred_storage(ProtoPirateApp* 
 }
 
 static bool protopirate_scene_receiver_bind_rx_stack(ProtoPirateApp* app) {
-    furi_check(app);
-
     if(!app->txrx->receiver) {
         FURI_LOG_E(TAG, "SubGhz receiver unavailable — staying on receiver in degraded mode");
         notification_message(app->notifications, &sequence_error);
@@ -269,7 +265,6 @@ static bool protopirate_scene_receiver_bind_rx_stack(ProtoPirateApp* app) {
 }
 
 static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
-    furi_check(app);
     if(!app->radio_initialized) {
         return;
     }
@@ -303,7 +298,6 @@ void deferred_storage_timer_callback(void* app) {
 }
 
 void protopirate_scene_receiver_on_enter(void* context) {
-    furi_check(context);
     ProtoPirateApp* app = context;
 
     if(!protopirate_ensure_receiver_view(app)) {
@@ -382,7 +376,6 @@ static void protopirate_scene_receiver_handle_back(ProtoPirateApp* app) {
 }
 
 bool protopirate_scene_receiver_on_event(void* context, SceneManagerEvent event) {
-    furi_check(context);
     ProtoPirateApp* app = context;
     bool consumed = false;
 
@@ -502,7 +495,6 @@ bool protopirate_scene_receiver_on_event(void* context, SceneManagerEvent event)
 }
 
 void protopirate_scene_receiver_on_exit(void* context) {
-    furi_check(context);
     ProtoPirateApp* app = context;
 
     FURI_LOG_I(TAG, "=== EXITING RECEIVER SCENE ===");
@@ -527,7 +519,6 @@ void protopirate_scene_receiver_on_exit(void* context) {
 }
 
 void protopirate_scene_receiver_view_callback(ProtoPirateCustomEvent event, void* context) {
-    furi_check(context);
     ProtoPirateApp* app = context;
     view_dispatcher_send_custom_event(app->view_dispatcher, event);
 }
