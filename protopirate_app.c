@@ -149,11 +149,11 @@ ProtoPirateApp* protopirate_app_alloc() {
 
     FURI_LOG_I(
         TAG,
-        "Settings: freq=%lu, preset=%s, auto_save=%d, hopping=%d",
+        "Settings: freq=%lu, preset=%s, auto_save=%d, hopping=%u",
         frequency,
         preset_name,
         settings.auto_save,
-        settings.hopping_enabled);
+        settings.hopper_state);
 
     // Null out plugin pointers just in case.
     app->plugin_flipper_application = NULL;
@@ -220,8 +220,13 @@ ProtoPirateApp* protopirate_app_alloc() {
 #endif
 
     // Apply hopping state from settings
-    app->txrx->hopper_state = settings.hopping_enabled ? ProtoPirateHopperStateRunning :
-                                                         ProtoPirateHopperStateOFF;
+    if(settings.hopper_state) {
+        app->txrx->hopper_state = ProtoPirateHopperStateRunning;
+        app->txrx->hopper_rssi = settings.hopper_state;
+    } else {
+        app->txrx->hopper_state = ProtoPirateHopperStateOFF;
+        app->txrx->hopper_rssi = 0;
+    }
     app->txrx->hopper_idx_frequency = 0;
     app->txrx->hopper_timeout = 0;
     app->txrx->idx_menu_chosen = 0;
@@ -245,12 +250,14 @@ void protopirate_app_free(ProtoPirateApp* app) {
     settings.check_saved = app->check_saved;
     settings.tx_power = app->tx_power;
     settings.datetime_filenames = app->datetime_filenames;
-    settings.hopping_enabled = (app->txrx->hopper_state != ProtoPirateHopperStateOFF);
 #ifdef ENABLE_EMULATE_FEATURE
     settings.emulate_feature_enabled = app->emulate_feature_enabled;
 #else
     settings.emulate_feature_enabled = false;
 #endif
+    settings.hopper_state = (app->txrx->hopper_state == ProtoPirateHopperStateOFF) ?
+                                ProtoPirateHopperStateOFF :
+                                app->txrx->hopper_rssi;
 
     //Get the selected Model, and get the preset to save.
 #ifdef ENABLE_MODELS_DATABASE
@@ -298,11 +305,11 @@ void protopirate_app_free(ProtoPirateApp* app) {
 
     FURI_LOG_I(
         TAG,
-        "Saving settings: freq=%lu, preset=%u, auto_save=%d, hopping=%d, emulate=%d",
+        "Saving settings: freq=%lu, preset=%u, auto_save=%d, hopping=%u, emulate=%d",
         settings.frequency,
         settings.preset_index,
         settings.auto_save,
-        settings.hopping_enabled,
+        settings.hopper_state,
         settings.emulate_feature_enabled);
 
     protopirate_settings_save(&settings);

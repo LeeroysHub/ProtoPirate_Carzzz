@@ -73,9 +73,9 @@ typedef enum {
 
 typedef enum {
     ProtoPirateHopperStateOFF,
-    ProtoPirateHopperStateRunning,
     ProtoPirateHopperStatePause,
     ProtoPirateHopperStateRSSITimeOut,
+    ProtoPirateHopperStateRunning,
 } ProtoPirateHopperState;
 
 typedef enum {

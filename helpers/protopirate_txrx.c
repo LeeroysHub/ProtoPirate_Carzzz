@@ -1,8 +1,8 @@
-#include "protopirate_txrx.h"
 #include "../protopirate_app_i.h"
-#include "protopirate_protocol_plugin_host.h"
-#include "protopirate_radio.h"
-#include "protopirate_views.h"
+//#include "protopirate_txrx.h"
+//#include "protopirate_protocol_plugin_host.h"
+//#include "protopirate_radio.h"
+//#include "protopirate_views.h"
 
 #include <stdio.h>
 
@@ -247,8 +247,8 @@ bool protopirate_hopper_update(ProtoPirateApp* app) {
     if(app->txrx->hopper_state == ProtoPirateHopperStateRunning) {
         rssi = subghz_devices_get_rssi(app->txrx->radio_device);
 
-        if(rssi > HOPPER_PAUSE_THRESHOLD) {
-            app->txrx->hopper_timeout = 20;
+        if(rssi > (0 - app->txrx->hopper_rssi)) {
+            app->txrx->hopper_timeout = 10;
             app->txrx->hopper_state = ProtoPirateHopperStateRSSITimeOut;
             return false;
         }

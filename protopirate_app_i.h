@@ -64,6 +64,7 @@ typedef struct ProtoPirateTxRx {
     const SubGhzDevice* radio_device;
     ProtoPirateTxRxState txrx_state;
     ProtoPirateHopperState hopper_state;
+    uint8_t hopper_rssi;
     ProtoPirateRxKeyState rx_key_state;
     uint8_t hopper_idx_frequency;
     uint8_t hopper_timeout;

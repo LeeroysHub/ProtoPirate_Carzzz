@@ -16,10 +16,10 @@ typedef struct {
     uint8_t tx_power;
     bool auto_save;
     bool sound;
-    bool hopping_enabled;
     bool emulate_feature_enabled;
     bool check_saved;
     bool datetime_filenames;
+    uint8_t hopper_state;
 #ifdef ENABLE_MODELS_DATABASE
     uint16_t car_model_index;
 #endif

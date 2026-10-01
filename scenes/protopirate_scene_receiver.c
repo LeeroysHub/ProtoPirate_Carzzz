@@ -113,6 +113,7 @@ static void protopirate_scene_receiver_callback(
         FURI_LOG_D(TAG, "Capture not admitted (full or duplicate)");
     }
 
+    //Pause the Hopper for a long time, we found a key!
     if(app->txrx->hopper_state == ProtoPirateHopperStateRunning) {
         app->txrx->hopper_state = ProtoPirateHopperStatePause;
         app->txrx->hopper_timeout = 50;
@@ -272,19 +273,19 @@ static void protopirate_scene_receiver_start_rx_stack(ProtoPirateApp* app) {
         return;
     }
 
-    if(app->txrx->hopper_state != ProtoPirateHopperStateOFF) {
-        app->txrx->hopper_state = ProtoPirateHopperStateRunning;
-    }
-
     protopirate_begin(app, app->txrx->preset->data);
 
+    //Get preset frequency or next hop frequency.
     uint32_t frequency = app->txrx->preset->frequency;
-    if(app->txrx->hopper_state == ProtoPirateHopperStateRunning) {
+    if(app->txrx->hopper_state != ProtoPirateHopperStateOFF) {
         frequency = subghz_setting_get_hopper_frequency(app->setting, 0);
         app->txrx->hopper_idx_frequency = 0;
         app->txrx->preset->frequency = frequency;
+        //Restore the Hopper, it could be paused.
+        app->txrx->hopper_state = ProtoPirateHopperStateRunning;
     }
 
+    //Resume the RX Stack and start Receiving
     protopirate_rx_stack_resume_after_tx(app);
     if(!protopirate_scene_receiver_bind_rx_stack(app)) {
         return;
