@@ -69,8 +69,11 @@ static void protopirate_scene_receiver_callback(
         app->key_found = true;
         if(!(app->sound))
             notification_message(app->notifications, &sequence_semi_success);
-        else
+        else {
             notification_message(app->notifications, &sequence_single_vibro);
+            notification_message(app->notifications, &sequence_display_backlight_on);
+        }
+
         FURI_LOG_I(
             TAG,
             "Added to history, total items: %u",
