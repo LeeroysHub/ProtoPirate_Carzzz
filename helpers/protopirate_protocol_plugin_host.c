@@ -98,7 +98,7 @@ static bool protopirate_ensure_protocol_registry_plugin(
            ProtoPirateSharedPluginsTXRX,
            plugin_path)) {
         FURI_LOG_E(TAG, "Failed to load RX protocol plugin %s", plugin_path);
-        protopirate_unload_protocol_plugin(app);
+        //protopirate_unload_protocol_plugin(app);
         return false;
     }
 
@@ -172,7 +172,7 @@ static bool protopirate_ensure_tx_protocol_plugin(
            ProtoPirateSharedPluginsTXRX,
            plugin_path)) {
         FURI_LOG_E(TAG, "Failed to load TX protocol plugin %s", plugin_path);
-        protopirate_unload_protocol_plugin(app);
+        //protopirate_unload_protocol_plugin(app); // DEFINITELY NOT NEEDED.
         return false;
     }
 

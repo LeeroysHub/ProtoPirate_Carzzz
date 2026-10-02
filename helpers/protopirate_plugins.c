@@ -208,7 +208,7 @@ bool shared_plugin_load(
                 const ProtoPirateToolScenePlugin* plugin_tool_scene = app_descriptor->entry_point;
                 if(!plugin_tool_scene || !plugin_tool_scene->on_enter ||
                    !plugin_tool_scene->set_host_api) {
-                    FURI_LOG_E(TAG, "Tool Scene plugin entry point is invalid");
+                    FURI_LOG_E(TAG, "Tool Scene plugin functions are invalid");
                 } else {
                     *plugin_pointer = plugin_tool_scene;
                     return_value = true;
@@ -217,7 +217,7 @@ bool shared_plugin_load(
                 const ProtoPiratePsaBfPlugin* plugin_psa_bf = app_descriptor->entry_point;
                 if(!plugin_psa_bf || !plugin_psa_bf->set_host_api || !plugin_psa_bf->is_running ||
                    !plugin_psa_bf->on_scene_event) {
-                    FURI_LOG_E(TAG, "PSA plugin entry point is invalid");
+                    FURI_LOG_E(TAG, "PSA plugin functions are invalid");
                 } else {
                     *plugin_pointer = plugin_psa_bf;
                     return_value = true;
