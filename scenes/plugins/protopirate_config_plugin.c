@@ -2,6 +2,8 @@
 #include "../../helpers/protopirate_models.h"
 #include <gui/view_dispatcher.h>
 
+#define TAG "PPConfigPlugin"
+
 static const ProtoPirateSharedPluginHostApi* g_config_scene_host_api = NULL;
 
 #define ON_OFF_COUNT 2
@@ -361,7 +363,7 @@ static void
     protopirate_scene_receiver_config_var_list_enter_callback(void* context, uint32_t index) {
     ProtoPirateApp* app = context;
 
-    FURI_LOG_D("TEST", "Index= %lu", index);
+    FURI_LOG_D(TAG, "Index= %lu", index);
 
     switch(index) {
 #ifdef ENABLE_MODELS_DATABASE

@@ -162,9 +162,9 @@ ProtoPirateApp* protopirate_app_alloc() {
            ProtoPirateSharedPluginsConfig,
            NULL) &&
        app->running_plugin.config_plugin) {
-        FURI_LOG_D("test", "getting count");
+        FURI_LOG_D(TAG, "Getting Models count");
         app->car_models_count = app->running_plugin.config_plugin->car_model_get_count();
-        FURI_LOG_D("test", "got count");
+        FURI_LOG_D(TAG, "Got Models count");
     } else {
         notification_message(app->notifications, &sequence_error);
         app->car_models_count = 0;
