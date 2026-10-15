@@ -7,6 +7,7 @@
 
 bool protopirate_ensure_widget(ProtoPirateApp* app) {
     if(app->widget) {
+        widget_reset(app->widget);
         return true;
     }
 
@@ -121,6 +122,7 @@ void protopirate_views_free(ProtoPirateApp* app) {
 
 void protopirate_widget_free(ProtoPirateApp* app) {
     if(app->widget) {
+        view_dispatcher_switch_to_view(app->view_dispatcher, ProtoPirateViewSubmenu);
         view_dispatcher_remove_view(app->view_dispatcher, ProtoPirateViewWidget);
         widget_free(app->widget);
         app->widget = NULL;
